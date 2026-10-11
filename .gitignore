@@ -4,3 +4,4 @@ python/lib/site-packages/llvmlite/binding/llvmlite.dll
 /t/VSCodium
 /t/VSCode
 *.pyc
+*.log

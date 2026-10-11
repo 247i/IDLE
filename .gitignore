@@ -1,6 +1,4 @@
 t/pandoc.exe
-python/lib/site-packages/_polars_runtime_32/_polars_runtime.pyd
-python/lib/site-packages/llvmlite/binding/llvmlite.dll
 /t/VSCodium
 /t/VSCode
 *.pyc

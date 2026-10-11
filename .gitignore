@@ -5,3 +5,9 @@ python/lib/site-packages/llvmlite/binding/llvmlite.dll
 /t/VSCode
 *.pyc
 *.log
+*.bak
+python/etc/jupyter/serverconfig/jupyterlabapputilsextensionannouncements.json
+settings/settings/.spyder-py3/config/spyder.ini
+settings/settings/.spyder-py3/config/transient.ini
+settings/settings/.spyder-py3/pdb_history.sqlite
+settings/settings/.spyder-py3/spyder.lock/symlink

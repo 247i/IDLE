@@ -1,0 +1,21 @@
+09:46:14.220 [MainThread] INFO    thonny: Thonny version: 5.0.0
+09:46:14.220 [MainThread] INFO    thonny: cwd: D:\All\Script\PyThon
+09:46:14.220 [MainThread] INFO    thonny: original argv: ['D:\\All\\Script\\PyThon\\thonny.exe']
+09:46:14.220 [MainThread] INFO    thonny: sys.executable: D:\All\Script\PyThon\pythonw.exe
+09:46:14.220 [MainThread] INFO    thonny: sys.argv: ['D:\\All\\Script\\PyThon\\thonny.exe']
+09:46:14.220 [MainThread] INFO    thonny: sys.path: ['D:\\All\\Script\\PyThon\\python314.zip', 'D:\\All\\Script\\PyThon\\Lib\\site-packages\\thonny\\vendored_libs', 'D:\\All\\Script\\PyThon\\DLLs', 'D:\\All\\Script\\PyThon\\Lib', 'D:\\All\\Script\\PyThon', 'D:\\All\\Script\\PyThon\\Lib\\site-packages']
+09:46:14.221 [MainThread] INFO    thonny: sys.flags: sys.flags(debug=0, inspect=0, interactive=0, optimize=0, dont_write_bytecode=0, no_user_site=1, no_site=0, ignore_environment=1, verbose=0, bytes_warning=0, quiet=0, hash_randomization=1, isolated=1, dev_mode=False, utf8_mode=0, warn_default_encoding=0, safe_path=True, int_max_str_digits=4300)
+09:46:19.048 [MainThread] INFO    thonny.workbench: Starting Workbench
+09:46:19.281 [MainThread] INFO    thonny.workbench: Creating runner
+09:46:19.369 [MainThread] INFO    thonny.workbench: Start loading plugins
+09:46:21.710 [MainThread] INFO    thonny.workbench: Done loading plugins
+09:46:21.714 [MainThread] WARNING thonny.workbench: Could not find UI theme 'clam', switching to default
+09:46:21.952 [MainThread] INFO    thonny.workbench: Opening views
+09:46:22.615 [MainThread] INFO    thonny.plugins.cpython_frontend.cp_front: Creating LocalCPythonProxy
+09:46:22.615 [MainThread] INFO    thonny.running: Starting the backend: ['D:\\All\\Script\\PyThon\\python.exe', '-u', '-B', 'D:\\All\\Script\\PyThon\\Lib\\site-packages\\thonny\\plugins\\cpython_backend\\cp_launcher.py', 'C:\\Users\\inthirua', "{'run.warn_module_shadowing': True}"] C:\Users\inthirua
+09:46:29.523 [MainThread] INFO    thonny.ui_utils: Parent y: 50, rooty: 125, vrooty: 0
+09:46:29.523 [MainThread] INFO    thonny.ui_utils: Placing .!aboutdialog with geometry +422+89
+09:46:37.889 [MainThread] INFO    thonny.running: Killing backend process
+09:46:37.890 [MainThread] INFO    thonny.shell: BaseShellText._on_backend_terminated
+09:46:37.895 [Thread-2 (_listen_stdout)] INFO    thonny.running: Reader got EOF
+09:46:37.909 [MainThread] INFO    thonny.workbench: Exporting clipboard

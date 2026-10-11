@@ -1,0 +1,95 @@
+# PyScripter Languages.
+#
+# Copyright (C) Kiriakos Vlahos  2005-2018
+# This file is distributed under the same license as PyScripter
+# தமிழ்நேரம் <TamilNeram247@gmail.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PyScripter Languages\n"
+"POT-Creation-Date: 2018-01-23 16:26\n"
+"PO-Revision-Date: 2026-08-30 20:26\n"
+"Last-Translator: தமிழ்நேரம் <TamilNeram247@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Arabic"
+msgstr "அரபு"
+
+msgid "Simplified Chinese"
+msgstr "எளிமைப்படுத்தப்பட்ட சீனம்"
+
+msgid "Traditional Chinese"
+msgstr "பாரம்பரிய சீன"
+
+msgid "English"
+msgstr "ஆங்கிலம்"
+
+#. Language of France
+msgid "French"
+msgstr "பிரஞ்சு"
+
+#. Language of Germany, Austria
+msgid "German"
+msgstr "செர்மன்"
+
+#. Language of Greece
+msgid "Greek"
+msgstr "கிரேக்கம்"
+
+#. Language of Italy
+msgid "Italian"
+msgstr "இத்தாலிய"
+
+#. Language of Iran
+msgid "Persian"
+msgstr "பெர்சியன்"
+
+#. Language of Japan, Asia
+msgid "Japanese"
+msgstr "சப்பானியர்கள்"
+
+#. Language of Kabyle people
+msgid "Taqbaylit"
+msgstr "தக்பைலித்"
+
+#. Language of Korea
+msgid "Korean"
+msgstr "கொரியன்"
+
+#. Language of Poland, Europe
+msgid "Polish"
+msgstr "போலீச்"
+
+#. Language of Portugal, Europe
+msgid "Portuguese (Portugal)"
+msgstr "போர்த்துகீசியம் (போர்ச்சுகல்)"
+
+#. Language of Portugal, Brazil
+msgid "Portuguese (Brazil)"
+msgstr "போர்த்துகீசியம் (பிரேசில்)"
+
+#. Language of Russia
+msgid "Russian"
+msgstr "ரச்ய"
+
+#. Language of Slovakia
+msgid "Slovak"
+msgstr "ச்லோவாக்"
+
+#. Language of Spain
+msgid "Spanish"
+msgstr "ச்பானிச்"
+
+#. Language of Tamil Nadu
+msgid "Tamil"
+msgstr "தமிழ்"
+
+#. Language of Turkey
+msgid "Turkish"
+msgstr "துருக்கிய"
+
+#. Language of Ukraine
+msgid "Ukrainian"
+msgstr "உக்ரேனிய"

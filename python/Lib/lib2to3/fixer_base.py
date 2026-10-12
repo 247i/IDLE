@@ -4,7 +4,6 @@
 """Base class for fixers (optional, but recommended)."""
 
 # Python imports
-import logging
 import itertools
 
 # Local imports
@@ -27,7 +26,6 @@ class BaseFix(object):
     pattern_tree = None # Tree representation of the pattern
     options = None  # Options object passed to initializer
     filename = None # The filename (set by set_filename)
-    logger = None   # A logger (set by set_filename)
     numbers = itertools.count(1) # For new_name()
     used_names = set() # A set of all used NAMEs
     order = "post" # Does the fixer prefer pre- or post-order traversal
@@ -50,7 +48,7 @@ class BaseFix(object):
         """Initializer.  Subclass may override.
 
         Args:
-            options: an dict containing the options passed to RefactoringTool
+            options: a dict containing the options passed to RefactoringTool
             that could be used to customize the fixer through the command line.
             log: a list to append warnings and other messages to.
         """
@@ -70,12 +68,11 @@ class BaseFix(object):
                                                                  with_tree=True)
 
     def set_filename(self, filename):
-        """Set the filename, and a logger derived from it.
+        """Set the filename.
 
         The main refactoring tool should call this.
         """
         self.filename = filename
-        self.logger = logging.getLogger(filename)
 
     def match(self, node):
         """Returns match for a given parse tree node.

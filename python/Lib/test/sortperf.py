@@ -22,7 +22,7 @@ def randfloats(n):
     fn = os.path.join(td, "rr%06d" % n)
     try:
         fp = open(fn, "rb")
-    except IOError:
+    except OSError:
         r = random.random
         result = [r() for i in range(n)]
         try:
@@ -35,9 +35,9 @@ def randfloats(n):
                 if fp:
                     try:
                         os.unlink(fn)
-                    except os.error:
+                    except OSError:
                         pass
-        except IOError as msg:
+        except OSError as msg:
             print("can't write", fn, ":", msg)
     else:
         result = marshal.load(fp)
@@ -57,14 +57,14 @@ def flush():
     sys.stdout.flush()
 
 def doit(L):
-    t0 = time.clock()
+    t0 = time.perf_counter()
     L.sort()
-    t1 = time.clock()
+    t1 = time.perf_counter()
     print("%6.2f" % (t1-t0), end=' ')
     flush()
 
 def tabulate(r):
-    """Tabulate sort speed for lists of various sizes.
+    r"""Tabulate sort speed for lists of various sizes.
 
     The sizes are 2**i for i in r (the argument, a list).
 
@@ -134,7 +134,7 @@ def tabulate(r):
         L = list(range(half - 1, -1, -1))
         L.extend(range(half))
         # Force to float, so that the timings are comparable.  This is
-        # significantly faster if we leave tham as ints.
+        # significantly faster if we leave them as ints.
         L = list(map(float, L))
         doit(L) # !sort
         print()

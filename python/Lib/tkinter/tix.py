@@ -1,7 +1,3 @@
-# -*-mode: python; fill-column: 75; tab-width: 8 -*-
-#
-# $Id$
-#
 # Tix.py -- Tix widget wrappers.
 #
 #       For Tix, see http://tix.sourceforge.net
@@ -25,15 +21,20 @@
 # Compare the demo tixwidgets.py to the original Tcl program and you will
 # appreciate the advantages.
 #
+# NOTE: This module is deprecated since Python 3.6.
 
+import os
+import warnings
+import tkinter
 from tkinter import *
-from tkinter import _flatten, _cnfmerge, _default_root
+from tkinter import _cnfmerge
 
-# WARNING - TkVersion is a limited precision floating point number
-if TkVersion < 3.999:
-    raise ImportError("This version of Tix.py requires Tk 4.0 or higher")
-
-import _tkinter # If this fails your Python may not be configured for Tk
+warnings.warn(
+    'The Tix Tk extension is unmaintained, and the tkinter.tix wrapper module'
+    ' is deprecated in favor of tkinter.ttk',
+    DeprecationWarning,
+    stacklevel=2,
+    )
 
 # Some more constants (for consistency with Tkinter)
 WINDOW = 'window'
@@ -72,7 +73,6 @@ TCL_ALL_EVENTS    = 0
 # BEWARE - this is implemented by copying some code from the Widget class
 #          in Tkinter (to override Widget initialization) and is therefore
 #          liable to break.
-import tkinter, os
 
 # Could probably add this to Tkinter.Misc
 class tixCommand:
@@ -122,13 +122,9 @@ class tixCommand:
         elif cnf:
             cnf = _cnfmerge(cnf)
         if cnf is None:
-            cnf = {}
-            for x in self.tk.split(self.tk.call('tix', 'configure')):
-                cnf[x[0][1:]] = (x[0][1:],) + x[1:]
-            return cnf
-        if isinstance(cnf, StringType):
-            x = self.tk.split(self.tk.call('tix', 'configure', '-'+cnf))
-            return (x[0][1:],) + x[1:]
+            return self._getconfigure('tix', 'configure')
+        if isinstance(cnf, str):
+            return self._getconfigure1('tix', 'configure', '-'+cnf)
         return self.tk.call(('tix', 'configure') + self._options(cnf))
 
     def tix_filedialog(self, dlgclass=None):
@@ -225,7 +221,7 @@ class Tk(tkinter.Tk, tixCommand):
         self.tk.eval('package require Tix')
 
     def destroy(self):
-        # For safety, remove an delete_window binding before destroy
+        # For safety, remove the delete_window binding before destroy
         self.protocol("WM_DELETE_WINDOW", "")
         tkinter.Tk.destroy(self)
 
@@ -380,7 +376,7 @@ class TixWidget(tkinter.Widget):
         """Return the name of all subwidgets."""
         try:
             x = self.tk.call(self._w, 'subwidgets', '-all')
-            return self.tk.split(x)
+            return self.tk.splitlist(x)
         except TclError:
             return None
 
@@ -388,19 +384,17 @@ class TixWidget(tkinter.Widget):
         """Set configuration options for all subwidgets (and self)."""
         if option == '':
             return
-        elif not isinstance(option, StringType):
+        elif not isinstance(option, str):
             option = repr(option)
-        if not isinstance(value, StringType):
+        if not isinstance(value, str):
             value = repr(value)
         names = self._subwidget_names()
         for name in names:
             self.tk.call(name, 'configure', '-' + option, value)
     # These are missing from Tkinter
     def image_create(self, imgtype, cnf={}, master=None, **kw):
-        if not master:
-            master = tkinter._default_root
-            if not master:
-                raise RuntimeError('Too early to create image')
+        if master is None:
+            master = self
         if kw and cnf: cnf = _cnfmerge((cnf, kw))
         elif kw: cnf = kw
         options = ()
@@ -473,24 +467,20 @@ class TixSubWidget(TixWidget):
             self.tk.call('destroy', self._w)
 
 
-# Useful func. to split Tcl lists and return as a dict. From Tkinter.py
-def _lst2dict(lst):
-    dict = {}
-    for x in lst:
-        dict[x[0][1:]] = (x[0][1:],) + x[1:]
-    return dict
-
 # Useful class to create a display style - later shared by many items.
 # Contributed by Steffen Kremser
 class DisplayStyle:
     """DisplayStyle - handle configuration options shared by
     (multiple) Display Items"""
 
-    def __init__(self, itemtype, cnf={}, **kw):
-        master = _default_root              # global from Tkinter
-        if not master and 'refwindow' in cnf: master=cnf['refwindow']
-        elif not master and 'refwindow' in kw:  master= kw['refwindow']
-        elif not master: raise RuntimeError("Too early to create display style: no root window")
+    def __init__(self, itemtype, cnf={}, *, master=None, **kw):
+        if master is None:
+            if 'refwindow' in kw:
+                master = kw['refwindow']
+            elif 'refwindow' in cnf:
+                master = cnf['refwindow']
+            else:
+                master = tkinter._get_default_root('create display style')
         self.tk = master.tk
         self.stylename = self.tk.call('tixDisplayStyle', itemtype,
                             *self._options(cnf,kw) )
@@ -515,10 +505,8 @@ class DisplayStyle:
         self.tk.call(self.stylename, 'configure', '-%s'%key, value)
 
     def config(self, cnf={}, **kw):
-        return _lst2dict(
-            self.tk.split(
-            self.tk.call(
-                  self.stylename, 'configure', *self._options(cnf,kw))))
+        return self._getconfigure(
+            self.stylename, 'configure', *self._options(cnf,kw))
 
     def __getitem__(self,key):
         return self.tk.call(self.stylename, 'cget', '-%s'%key)
@@ -715,7 +703,7 @@ class DirSelectBox(TixWidget):
 
 class ExFileSelectBox(TixWidget):
     """ExFileSelectBox - MS Windows style file select box.
-    It provides an convenient method for the user to select files.
+    It provides a convenient method for the user to select files.
 
     Subwidget       Class
     ---------       -----
@@ -773,7 +761,7 @@ class DirSelectDialog(TixWidget):
 # Should inherit from a Dialog class
 class ExFileSelectDialog(TixWidget):
     """ExFileSelectDialog - MS Windows style file select dialog.
-    It provides an convenient method for the user to select files.
+    It provides a convenient method for the user to select files.
 
     Subwidgets       Class
     ----------       -----
@@ -881,7 +869,7 @@ class HList(TixWidget, XView, YView):
         return self.tk.call(self._w, 'add', entry, *self._options(cnf, kw))
 
     def add_child(self, parent=None, cnf={}, **kw):
-        if not parent:
+        if parent is None:
             parent = ''
         return self.tk.call(
                      self._w, 'addchild', parent, *self._options(cnf, kw))
@@ -928,9 +916,7 @@ class HList(TixWidget, XView, YView):
 
     def header_configure(self, col, cnf={}, **kw):
         if cnf is None:
-            return _lst2dict(
-                self.tk.split(
-                self.tk.call(self._w, 'header', 'configure', col)))
+            return self._getconfigure(self._w, 'header', 'configure', col)
         self.tk.call(self._w, 'header', 'configure', col,
                      *self._options(cnf, kw))
 
@@ -938,7 +924,11 @@ class HList(TixWidget, XView, YView):
         return self.tk.call(self._w, 'header', 'cget', col, opt)
 
     def header_exists(self,  col):
-        return self.tk.call(self._w, 'header', 'exists', col)
+        # A workaround to Tix library bug (issue #25464).
+        # The documented command is "exists", but only erroneous "exist" is
+        # accepted.
+        return self.tk.getboolean(self.tk.call(self._w, 'header', 'exist', col))
+    header_exist = header_exists
 
     def header_delete(self, col):
         self.tk.call(self._w, 'header', 'delete', col)
@@ -955,9 +945,8 @@ class HList(TixWidget, XView, YView):
 
     def indicator_configure(self, entry, cnf={}, **kw):
         if cnf is None:
-            return _lst2dict(
-                self.tk.split(
-                self.tk.call(self._w, 'indicator', 'configure', entry)))
+            return self._getconfigure(
+                self._w, 'indicator', 'configure', entry)
         self.tk.call(
               self._w, 'indicator', 'configure', entry, *self._options(cnf, kw))
 
@@ -1017,9 +1006,7 @@ class HList(TixWidget, XView, YView):
 
     def item_configure(self, entry, col, cnf={}, **kw):
         if cnf is None:
-            return _lst2dict(
-                self.tk.split(
-                self.tk.call(self._w, 'item', 'configure', entry, col)))
+            return self._getconfigure(self._w, 'item', 'configure', entry, col)
         self.tk.call(self._w, 'item', 'configure', entry, col,
               *self._options(cnf, kw))
 
@@ -1038,9 +1025,7 @@ class HList(TixWidget, XView, YView):
 
     def entryconfigure(self, entry, cnf={}, **kw):
         if cnf is None:
-            return _lst2dict(
-                self.tk.split(
-                self.tk.call(self._w, 'entryconfigure', entry)))
+            return self._getconfigure(self._w, 'entryconfigure', entry)
         self.tk.call(self._w, 'entryconfigure', entry,
               *self._options(cnf, kw))
 
@@ -1072,8 +1057,8 @@ class InputOnly(TixWidget):
 
 class LabelEntry(TixWidget):
     """LabelEntry - Entry field with label. Packages an entry widget
-    and a label into one mega widget. It can beused be used to simplify
-    the creation of ``entry-form'' type of interface.
+    and a label into one mega widget. It can be used to simplify the creation
+    of ``entry-form'' type of interface.
 
     Subwidgets       Class
     ----------       -----
@@ -1130,7 +1115,7 @@ class ListNoteBook(TixWidget):
 
     def pages(self):
         # Can't call subwidgets_all directly because we don't want .nbframe
-        names = self.tk.split(self.tk.call(self._w, 'pages'))
+        names = self.tk.splitlist(self.tk.call(self._w, 'pages'))
         ret = []
         for x in names:
             ret.append(self.subwidget(x))
@@ -1176,7 +1161,7 @@ class NoteBook(TixWidget):
 
     def pages(self):
         # Can't call subwidgets_all directly because we don't want .nbframe
-        names = self.tk.split(self.tk.call(self._w, 'pages'))
+        names = self.tk.splitlist(self.tk.call(self._w, 'pages'))
         ret = []
         for x in names:
             ret.append(self.subwidget(x))
@@ -1254,9 +1239,7 @@ class PanedWindow(TixWidget):
 
     def paneconfigure(self, entry, cnf={}, **kw):
         if cnf is None:
-            return _lst2dict(
-                self.tk.split(
-                self.tk.call(self._w, 'paneconfigure', entry)))
+            return self._getconfigure(self._w, 'paneconfigure', entry)
         self.tk.call(self._w, 'paneconfigure', entry, *self._options(cnf, kw))
 
     def panes(self):
@@ -1601,8 +1584,7 @@ class CheckList(TixWidget):
         '''Returns a list of items whose status matches status. If status is
      not specified, the list of items in the "on" status will be returned.
      Mode can be on, off, default'''
-        c = self.tk.split(self.tk.call(self._w, 'getselection', mode))
-        return self.tk.splitlist(c)
+        return self.tk.splitlist(self.tk.call(self._w, 'getselection', mode))
 
     def getstatus(self, entrypath):
         '''Returns the current status of entryPath.'''
@@ -1910,7 +1892,7 @@ class Grid(TixWidget, XView, YView):
         containing the current size setting of the given column.  When
         option-value pairs are given, the corresponding options of the
         size setting of the given column are changed. Options may be one
-        of the follwing:
+        of the following:
               pad0 pixels
                      Specifies the paddings to the left of a column.
               pad1 pixels
@@ -1923,7 +1905,7 @@ class Grid(TixWidget, XView, YView):
                      or a real number following by the word chars
                      (e.g. 3.4chars) that sets the width of the column to the
                      given number of characters."""
-        return self.tk.split(self.tk.call(self._w, 'size', 'column', index,
+        return self.tk.splitlist(self.tk.call(self._w, 'size', 'column', index,
                              *self._options({}, kw)))
 
     def size_row(self, index, **kw):
@@ -1935,7 +1917,7 @@ class Grid(TixWidget, XView, YView):
         When no option-value pair is given, this command returns a list con-
         taining the current size setting of the given row . When option-value
         pairs are given, the corresponding options of the size setting of the
-        given row are changed. Options may be one of the follwing:
+        given row are changed. Options may be one of the following:
               pad0 pixels
                      Specifies the paddings to the top of a row.
               pad1 pixels
@@ -1948,7 +1930,7 @@ class Grid(TixWidget, XView, YView):
                      or a real number following by the word chars
                      (e.g. 3.4chars) that sets the height of the row to the
                      given number of characters."""
-        return self.tk.split(self.tk.call(
+        return self.tk.splitlist(self.tk.call(
                     self, 'size', 'row', index, *self._options({}, kw)))
 
     def unset(self, x, y):

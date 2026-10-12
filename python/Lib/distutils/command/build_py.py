@@ -3,9 +3,9 @@
 Implements the Distutils 'build_py' command."""
 
 import os
-import imp
+import importlib.util
 import sys
-from glob import glob
+import glob
 
 from distutils.core import Command
 from distutils.errors import *
@@ -125,9 +125,10 @@ class build_py (Command):
         files = []
         for pattern in globs:
             # Each pattern has to be converted to a platform-specific path
-            filelist = glob(os.path.join(src_dir, convert_path(pattern)))
+            filelist = glob.glob(os.path.join(glob.escape(src_dir), convert_path(pattern)))
             # Files that match more than one pattern are only added once
-            files.extend([fn for fn in filelist if fn not in files])
+            files.extend([fn for fn in filelist if fn not in files
+                and os.path.isfile(fn)])
         return files
 
     def build_package_data(self):
@@ -215,7 +216,7 @@ class build_py (Command):
 
     def find_package_modules(self, package, package_dir):
         self.check_package(package, package_dir)
-        module_files = glob(os.path.join(package_dir, "*.py"))
+        module_files = glob.glob(os.path.join(glob.escape(package_dir), "*.py"))
         modules = []
         setup_script = os.path.abspath(self.distribution.script_name)
 
@@ -312,11 +313,11 @@ class build_py (Command):
             outputs.append(filename)
             if include_bytecode:
                 if self.compile:
-                    outputs.append(imp.cache_from_source(filename,
-                                                         debug_override=True))
+                    outputs.append(importlib.util.cache_from_source(
+                        filename, optimization=''))
                 if self.optimize > 0:
-                    outputs.append(imp.cache_from_source(filename,
-                                                         debug_override=False))
+                    outputs.append(importlib.util.cache_from_source(
+                        filename, optimization=self.optimize))
 
         outputs += [
             os.path.join(build_dir, filename)

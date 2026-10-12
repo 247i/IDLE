@@ -1,8 +1,6 @@
 """Utility functions, node construction macros, etc."""
 # Author: Collin Winter
 
-from itertools import islice
-
 # Local imports
 from .pgen2 import token
 from .pytree import Leaf, Node
@@ -129,6 +127,29 @@ def FromImport(package_name, name_leafs):
     imp = Node(syms.import_from, children)
     return imp
 
+def ImportAndCall(node, results, names):
+    """Returns an import statement and calls a method
+    of the module:
+
+    import module
+    module.name()"""
+    obj = results["obj"].clone()
+    if obj.type == syms.arglist:
+        newarglist = obj.clone()
+    else:
+        newarglist = Node(syms.arglist, [obj.clone()])
+    after = results["after"]
+    if after:
+        after = [n.clone() for n in after]
+    new = Node(syms.power,
+               Attr(Name(names[0]), Name(names[1])) +
+               [Node(syms.trailer,
+                     [results["lpar"].clone(),
+                      newarglist,
+                      results["rpar"].clone()])] + after)
+    new.prefix = node.prefix
+    return new
+
 
 ###########################################################
 ### Determine whether a node represents a given literal
@@ -164,8 +185,8 @@ def parenthesize(node):
     return Node(syms.atom, [LParen(), node, RParen()])
 
 
-consuming_calls = set(["sorted", "list", "set", "any", "all", "tuple", "sum",
-                       "min", "max", "enumerate"])
+consuming_calls = {"sorted", "list", "set", "any", "all", "tuple", "sum",
+                   "min", "max", "enumerate"}
 
 def attr_chain(obj, attr):
     """Follow an attribute chain.
@@ -336,7 +357,7 @@ def touch_import(package, name, node):
     root.insert_child(insert_pos, Node(syms.simple_stmt, children))
 
 
-_def_syms = set([syms.classdef, syms.funcdef])
+_def_syms = {syms.classdef, syms.funcdef}
 def find_binding(name, node, package=None):
     """ Returns the node which binds variable name, otherwise None.
         If optional argument package is supplied, only imports will
@@ -379,7 +400,7 @@ def find_binding(name, node, package=None):
                 return ret
     return None
 
-_block_syms = set([syms.funcdef, syms.classdef, syms.trailer])
+_block_syms = {syms.funcdef, syms.classdef, syms.trailer}
 def _find(name, node):
     nodes = [node]
     while nodes:
@@ -391,7 +412,7 @@ def _find(name, node):
     return None
 
 def _is_import_binding(node, name, package=None):
-    """ Will reuturn node if node will import name, or node
+    """ Will return node if node will import name, or node
         will import * from package.  None is returned otherwise.
         See test cases for examples. """
 

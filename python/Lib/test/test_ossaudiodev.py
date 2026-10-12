@@ -1,9 +1,10 @@
 from test import support
+from test.support import import_helper
 support.requires('audio')
 
 from test.support import findfile
 
-ossaudiodev = support.import_module('ossaudiodev')
+ossaudiodev = import_helper.import_module('ossaudiodev')
 
 import errno
 import sys
@@ -44,7 +45,7 @@ class OSSAudioDevTests(unittest.TestCase):
     def play_sound_file(self, data, rate, ssize, nchannels):
         try:
             dsp = ossaudiodev.open('w')
-        except IOError as msg:
+        except OSError as msg:
             if msg.args[0] in (errno.EACCES, errno.ENOENT,
                                errno.ENODEV, errno.EBUSY):
                 raise unittest.SkipTest(msg)
@@ -77,10 +78,10 @@ class OSSAudioDevTests(unittest.TestCase):
         # set parameters based on .au file headers
         dsp.setparameters(AFMT_S16_NE, nchannels, rate)
         self.assertTrue(abs(expected_time - 3.51) < 1e-2, expected_time)
-        t1 = time.time()
+        t1 = time.monotonic()
         dsp.write(data)
         dsp.close()
-        t2 = time.time()
+        t2 = time.monotonic()
         elapsed_time = t2 - t1
 
         percent_diff = (abs(elapsed_time - expected_time) / expected_time) * 100
@@ -170,17 +171,32 @@ class OSSAudioDevTests(unittest.TestCase):
             pass
         self.assertTrue(dsp.closed)
 
+    def test_on_closed(self):
+        dsp = ossaudiodev.open('w')
+        dsp.close()
+        self.assertRaises(ValueError, dsp.fileno)
+        self.assertRaises(ValueError, dsp.read, 1)
+        self.assertRaises(ValueError, dsp.write, b'x')
+        self.assertRaises(ValueError, dsp.writeall, b'x')
+        self.assertRaises(ValueError, dsp.bufsize)
+        self.assertRaises(ValueError, dsp.obufcount)
+        self.assertRaises(ValueError, dsp.obufcount)
+        self.assertRaises(ValueError, dsp.obuffree)
+        self.assertRaises(ValueError, dsp.getptr)
 
-def test_main():
+        mixer = ossaudiodev.openmixer()
+        mixer.close()
+        self.assertRaises(ValueError, mixer.fileno)
+
+def setUpModule():
     try:
         dsp = ossaudiodev.open('w')
-    except (ossaudiodev.error, IOError) as msg:
+    except (ossaudiodev.error, OSError) as msg:
         if msg.args[0] in (errno.EACCES, errno.ENOENT,
                            errno.ENODEV, errno.EBUSY):
             raise unittest.SkipTest(msg)
         raise
     dsp.close()
-    support.run_unittest(__name__)
 
 if __name__ == "__main__":
-    test_main()
+    unittest.main()

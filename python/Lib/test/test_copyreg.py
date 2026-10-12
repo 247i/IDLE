@@ -1,11 +1,13 @@
 import copyreg
 import unittest
 
-from test import support
 from test.pickletester import ExtensionSaver
 
 class C:
     pass
+
+def pickle_C(c):
+    return C, ()
 
 
 class WithoutSlots(object):
@@ -15,6 +17,12 @@ class WithWeakref(object):
     __slots__ = ('__weakref__',)
 
 class WithPrivate(object):
+    __slots__ = ('__spam',)
+
+class _WithLeadingUnderscoreAndPrivate(object):
+    __slots__ = ('__spam',)
+
+class ___(object):
     __slots__ = ('__spam',)
 
 class WithSingleString(object):
@@ -27,16 +35,15 @@ class WithInherited(WithSingleString):
 class CopyRegTestCase(unittest.TestCase):
 
     def test_class(self):
-        self.assertRaises(TypeError, copyreg.pickle,
-                          C, None, None)
+        copyreg.pickle(C, pickle_C)
 
     def test_noncallable_reduce(self):
         self.assertRaises(TypeError, copyreg.pickle,
-                          type(1), "not a callable")
+                          C, "not a callable")
 
     def test_noncallable_constructor(self):
         self.assertRaises(TypeError, copyreg.pickle,
-                          type(1), int, "not a callable")
+                          C, pickle_C, "not a callable")
 
     def test_bool(self):
         import copy
@@ -105,6 +112,10 @@ class CopyRegTestCase(unittest.TestCase):
         self.assertEqual(copyreg._slotnames(WithWeakref), [])
         expected = ['_WithPrivate__spam']
         self.assertEqual(copyreg._slotnames(WithPrivate), expected)
+        expected = ['_WithLeadingUnderscoreAndPrivate__spam']
+        self.assertEqual(copyreg._slotnames(_WithLeadingUnderscoreAndPrivate),
+                         expected)
+        self.assertEqual(copyreg._slotnames(___), ['__spam'])
         self.assertEqual(copyreg._slotnames(WithSingleString), ['spam'])
         expected = ['eggs', 'spam']
         expected.sort()
@@ -113,9 +124,5 @@ class CopyRegTestCase(unittest.TestCase):
         self.assertEqual(result, expected)
 
 
-def test_main():
-    support.run_unittest(CopyRegTestCase)
-
-
 if __name__ == "__main__":
-    test_main()
+    unittest.main()

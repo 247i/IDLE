@@ -8,7 +8,7 @@ from distutils.errors import *
 from distutils.spawn import spawn
 from distutils.file_util import move_file
 from distutils.dir_util import mkpath
-from distutils.dep_util import newer_pairwise, newer_group
+from distutils.dep_util import newer_group
 from distutils.util import split_quoted, execute
 from distutils import log
 
@@ -351,7 +351,7 @@ class CCompiler:
         return macros, objects, extra, pp_opts, build
 
     def _get_cc_args(self, pp_opts, debug, before):
-        # works for unixccompiler, emxccompiler, cygwinccompiler
+        # works for unixccompiler, cygwinccompiler
         cc_args = pp_opts + ['-c']
         if debug:
             cc_args[:0] = ['-g']
@@ -392,7 +392,7 @@ class CCompiler:
         return output_dir, macros, include_dirs
 
     def _prep_compile(self, sources, output_dir, depends=None):
-        """Decide which souce files must be recompiled.
+        """Decide which source files must be recompiled.
 
         Determine the list of object files corresponding to 'sources',
         and figure out which ones really need to be recompiled.
@@ -545,7 +545,7 @@ class CCompiler:
         'extra_preargs' and 'extra_postargs' are implementation- dependent.
         On platforms that have the notion of a command-line (e.g. Unix,
         DOS/Windows), they are most likely lists of strings: extra
-        command-line arguments to prepand/append to the compiler command
+        command-line arguments to prepend/append to the compiler command
         line.  On other platforms, consult the implementation class
         documentation.  In any event, they are intended as an escape hatch
         for those occasions when the abstract compiler framework doesn't
@@ -752,7 +752,7 @@ class CCompiler:
         raise NotImplementedError
 
     def library_option(self, lib):
-        """Return the compiler option to add 'dir' to the list of libraries
+        """Return the compiler option to add 'lib' to the list of libraries
         linked into the shared library or executable.
         """
         raise NotImplementedError
@@ -781,8 +781,9 @@ class CCompiler:
             for incl in includes:
                 f.write("""#include "%s"\n""" % incl)
             f.write("""\
-main (int argc, char **argv) {
+int main (int argc, char **argv) {
     %s();
+    return 0;
 }
 """ % funcname)
         finally:
@@ -875,9 +876,9 @@ main (int argc, char **argv) {
     def library_filename(self, libname, lib_type='static',     # or 'shared'
                          strip_dir=0, output_dir=''):
         assert output_dir is not None
-        if lib_type not in ("static", "shared", "dylib"):
+        if lib_type not in ("static", "shared", "dylib", "xcode_stub"):
             raise ValueError(
-                  "'lib_type' must be \"static\", \"shared\" or \"dylib\"")
+                  "'lib_type' must be \"static\", \"shared\", \"dylib\", or \"xcode_stub\"")
         fmt = getattr(self, lib_type + "_lib_format")
         ext = getattr(self, lib_type + "_lib_extension")
 
@@ -926,7 +927,6 @@ _default_compilers = (
     # on a cygwin built python we can use gcc like an ordinary UNIXish
     # compiler
     ('cygwin.*', 'unix'),
-    ('os2emx', 'emx'),
 
     # OS name mappings
     ('posix', 'unix'),
@@ -960,7 +960,7 @@ def get_default_compiler(osname=None, platform=None):
 # is assumed to be in the 'distutils' package.)
 compiler_class = { 'unix':    ('unixccompiler', 'UnixCCompiler',
                                "standard UNIX-style compiler"),
-                   'msvc':    ('msvccompiler', 'MSVCCompiler',
+                   'msvc':    ('_msvccompiler', 'MSVCCompiler',
                                "Microsoft Visual C++"),
                    'cygwin':  ('cygwinccompiler', 'CygwinCCompiler',
                                "Cygwin port of GNU C Compiler for Win32"),
@@ -968,8 +968,6 @@ compiler_class = { 'unix':    ('unixccompiler', 'UnixCCompiler',
                                "Mingw32 port of GNU C Compiler for Win32"),
                    'bcpp':    ('bcppcompiler', 'BCPPCompiler',
                                "Borland C++ Compiler"),
-                   'emx':     ('emxccompiler', 'EMXCCompiler',
-                               "EMX port of GNU C Compiler for OS/2"),
                  }
 
 def show_compilers():

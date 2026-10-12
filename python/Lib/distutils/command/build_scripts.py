@@ -51,7 +51,7 @@ class build_scripts(Command):
 
 
     def copy_scripts(self):
-        """Copy each script listed in 'self.scripts'; if it's marked as a
+        r"""Copy each script listed in 'self.scripts'; if it's marked as a
         Python script in the Unix way (first line matches 'first_line_re',
         ie. starts with "\#!" and contains "python"), then adjust the first
         line to refer to the current Python interpreter as we copy.
@@ -74,7 +74,7 @@ class build_scripts(Command):
             # script.
             try:
                 f = open(script, "rb")
-            except IOError:
+            except OSError:
                 if not self.dry_run:
                     raise
                 f = None
@@ -126,10 +126,9 @@ class build_scripts(Command):
                             "The shebang ({!r}) is not decodable "
                             "from the script encoding ({})"
                             .format(shebang, encoding))
-                    outf = open(outfile, "wb")
-                    outf.write(shebang)
-                    outf.writelines(f.readlines())
-                    outf.close()
+                    with open(outfile, "wb") as outf:
+                        outf.write(shebang)
+                        outf.writelines(f.readlines())
                 if f:
                     f.close()
             else:

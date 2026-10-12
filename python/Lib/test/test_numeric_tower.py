@@ -5,7 +5,6 @@ import random
 import math
 import sys
 import operator
-from test.support import run_unittest
 
 from decimal import Decimal as D
 from fractions import Fraction as F
@@ -14,6 +13,27 @@ from fractions import Fraction as F
 # on the reduction of x modulo the prime _PyHASH_MODULUS.
 _PyHASH_MODULUS = sys.hash_info.modulus
 _PyHASH_INF = sys.hash_info.inf
+
+
+class DummyIntegral(int):
+    """Dummy Integral class to test conversion of the Rational to float."""
+
+    def __mul__(self, other):
+        return DummyIntegral(super().__mul__(other))
+    __rmul__ = __mul__
+
+    def __truediv__(self, other):
+        return NotImplemented
+    __rtruediv__ = __truediv__
+
+    @property
+    def numerator(self):
+        return DummyIntegral(self)
+
+    @property
+    def denominator(self):
+        return DummyIntegral(1)
+
 
 class HashTest(unittest.TestCase):
     def check_equal_hash(self, x, y):
@@ -122,6 +142,13 @@ class HashTest(unittest.TestCase):
         self.assertEqual(hash(F(7*_PyHASH_MODULUS, 1)), 0)
         self.assertEqual(hash(F(-_PyHASH_MODULUS, 1)), 0)
 
+        # The numbers ABC doesn't enforce that the "true" division
+        # of integers produces a float.  This tests that the
+        # Rational.__float__() method has required type conversions.
+        x = F._from_coprime_ints(DummyIntegral(1), DummyIntegral(2))
+        self.assertRaises(TypeError, lambda: x.numerator/x.denominator)
+        self.assertEqual(float(x), 0.5)
+
     def test_hash_normalization(self):
         # Test for a bug encountered while changing long_hash.
         #
@@ -150,7 +177,7 @@ class ComparisonTest(unittest.TestCase):
         # int, float, Fraction, Decimal
         test_values = [
             float('-inf'),
-            D('-1e999999999'),
+            D('-1e425000000'),
             -1e308,
             F(-22, 7),
             -3.14,
@@ -199,8 +226,5 @@ class ComparisonTest(unittest.TestCase):
                 self.assertRaises(TypeError, op, v, z)
 
 
-def test_main():
-    run_unittest(HashTest, ComparisonTest)
-
 if __name__ == '__main__':
-    test_main()
+    unittest.main()

@@ -1,63 +1,56 @@
-# Test the frozen module defined in frozen.c.
+"""Basic test of the frozen module (source is in Python/frozen.c)."""
 
-from test.support import captured_stdout, run_unittest
-import unittest
+# The Python/frozen.c source code contains a marshalled Python module
+# and therefore depends on the marshal format as well as the bytecode
+# format.  If those formats have been changed then frozen.c needs to be
+# updated.
+#
+# The test_importlib also tests this module but because those tests
+# are much more complicated, it might be unclear why they are failing.
+# Invalid marshalled data in frozen.c could case the interpreter to
+# crash when __hello__ is imported.
+
+import importlib.machinery
 import sys
+import unittest
+from test.support import captured_stdout, import_helper
 
-class FrozenTests(unittest.TestCase):
+
+class TestFrozen(unittest.TestCase):
     def test_frozen(self):
-        with captured_stdout() as stdout:
-            try:
-                import __hello__
-            except ImportError as x:
-                self.fail("import __hello__ failed:" + str(x))
-            self.assertEqual(__hello__.initialized, True)
-            self.assertEqual(len(dir(__hello__)), 7, dir(__hello__))
-            self.assertEqual(stdout.getvalue(), 'Hello world!\n')
+        name = '__hello__'
+        if name in sys.modules:
+            del sys.modules[name]
+        with import_helper.frozen_modules():
+            import __hello__
+        with captured_stdout() as out:
+            __hello__.main()
+        self.assertEqual(out.getvalue(), 'Hello world!\n')
 
-        with captured_stdout() as stdout:
-            try:
+    def test_frozen_submodule_in_unfrozen_package(self):
+        with import_helper.CleanImport('__phello__', '__phello__.spam'):
+            with import_helper.frozen_modules(enabled=False):
                 import __phello__
-            except ImportError as x:
-                self.fail("import __phello__ failed:" + str(x))
-            self.assertEqual(__phello__.initialized, True)
-            if not "__phello__.spam" in sys.modules:
-                self.assertEqual(len(dir(__phello__)), 8, dir(__phello__))
-            else:
-                self.assertEqual(len(dir(__phello__)), 9, dir(__phello__))
-            self.assertEqual(__phello__.__path__, [__phello__.__name__])
-            self.assertEqual(stdout.getvalue(), 'Hello world!\n')
+            with import_helper.frozen_modules(enabled=True):
+                import __phello__.spam as spam
+        self.assertIs(spam, __phello__.spam)
+        self.assertIsNot(__phello__.__spec__.loader,
+                         importlib.machinery.FrozenImporter)
+        self.assertIs(spam.__spec__.loader,
+                      importlib.machinery.FrozenImporter)
 
-        with captured_stdout() as stdout:
-            try:
-                import __phello__.spam
-            except ImportError as x:
-                self.fail("import __phello__.spam failed:" + str(x))
-            self.assertEqual(__phello__.spam.initialized, True)
-            self.assertEqual(len(dir(__phello__.spam)), 7)
-            self.assertEqual(len(dir(__phello__)), 9)
-            self.assertEqual(stdout.getvalue(), 'Hello world!\n')
+    def test_unfrozen_submodule_in_frozen_package(self):
+        with import_helper.CleanImport('__phello__', '__phello__.spam'):
+            with import_helper.frozen_modules(enabled=True):
+                import __phello__
+            with import_helper.frozen_modules(enabled=False):
+                import __phello__.spam as spam
+        self.assertIs(spam, __phello__.spam)
+        self.assertIs(__phello__.__spec__.loader,
+                      importlib.machinery.FrozenImporter)
+        self.assertIsNot(spam.__spec__.loader,
+                         importlib.machinery.FrozenImporter)
 
-        try:
-            import __phello__.foo
-        except ImportError:
-            pass
-        else:
-            self.fail("import __phello__.foo should have failed")
 
-            try:
-                import __phello__.foo
-            except ImportError:
-                pass
-            else:
-                self.fail("import __phello__.foo should have failed")
-
-        del sys.modules['__hello__']
-        del sys.modules['__phello__']
-        del sys.modules['__phello__.spam']
-
-def test_main():
-    run_unittest(FrozenTests)
-
-if __name__ == "__main__":
-    test_main()
+if __name__ == '__main__':
+    unittest.main()

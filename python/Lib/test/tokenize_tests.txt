@@ -1,5 +1,5 @@
 # Tests for the 'tokenize' module.
-# Large bits stolen from test_grammar.py. 
+# Large bits stolen from test_grammar.py.
 
 # Comments
 "#"
@@ -114,8 +114,12 @@ x = b'abc' + B'ABC'
 y = b"abc" + B"ABC"
 x = br'abc' + Br'ABC' + bR'ABC' + BR'ABC'
 y = br"abc" + Br"ABC" + bR"ABC" + BR"ABC"
+x = rb'abc' + rB'ABC' + Rb'ABC' + RB'ABC'
+y = rb"abc" + rB"ABC" + Rb"ABC" + RB"ABC"
 x = br'\\' + BR'\\'
+x = rb'\\' + RB'\\'
 x = br'\'' + ''
+x = rb'\'' + ''
 y = br'''
 foo bar \\
 baz''' + BR'''
@@ -123,6 +127,10 @@ foo'''
 y = Br"""foo
 bar \\ baz
 """ + bR'''spam
+'''
+y = rB"""foo
+bar \\ baz
+""" + Rb'''spam
 '''
 
 # Indentation

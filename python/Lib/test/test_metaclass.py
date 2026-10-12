@@ -1,3 +1,7 @@
+import doctest
+import unittest
+
+
 doctests = """
 
 Basic class construction.
@@ -128,7 +132,7 @@ Check for duplicate keywords.
     ...
     Traceback (most recent call last):
     [...]
-    SyntaxError: keyword argument repeated
+    SyntaxError: keyword argument repeated: metaclass
     >>>
 
 Another way.
@@ -159,9 +163,12 @@ Use a __prepare__ method that returns an instrumented dict.
     ...     bar = 123
     ...
     d['__module__'] = 'test.test_metaclass'
+    d['__qualname__'] = 'C'
+    d['__firstlineno__'] = 1
     d['foo'] = 4
     d['foo'] = 42
     d['bar'] = 123
+    d['__static_attributes__'] = ()
     >>>
 
 Use a metaclass that doesn't derive from type.
@@ -177,12 +184,12 @@ Use a metaclass that doesn't derive from type.
     ...     b = 24
     ...
     meta: C ()
-    ns: [('__module__', 'test.test_metaclass'), ('a', 42), ('b', 24)]
+    ns: [('__firstlineno__', 1), ('__module__', 'test.test_metaclass'), ('__qualname__', 'C'), ('__static_attributes__', ()), ('a', 42), ('b', 24)]
     kw: []
     >>> type(C) is dict
     True
     >>> print(sorted(C.items()))
-    [('__module__', 'test.test_metaclass'), ('a', 42), ('b', 24)]
+    [('__firstlineno__', 1), ('__module__', 'test.test_metaclass'), ('__qualname__', 'C'), ('__static_attributes__', ()), ('a', 42), ('b', 24)]
     >>>
 
 And again, with a __prepare__ attribute.
@@ -199,11 +206,14 @@ And again, with a __prepare__ attribute.
     ...
     prepare: C () [('other', 'booh')]
     d['__module__'] = 'test.test_metaclass'
+    d['__qualname__'] = 'C'
+    d['__firstlineno__'] = 1
     d['a'] = 1
     d['a'] = 2
     d['b'] = 3
+    d['__static_attributes__'] = ()
     meta: C ()
-    ns: [('__module__', 'test.test_metaclass'), ('a', 2), ('b', 3)]
+    ns: [('__firstlineno__', 1), ('__module__', 'test.test_metaclass'), ('__qualname__', 'C'), ('__static_attributes__', ()), ('a', 2), ('b', 3)]
     kw: [('other', 'booh')]
     >>>
 
@@ -244,14 +254,49 @@ Test failures in looking up the __prepare__ method work.
     [...]
     test.test_metaclass.ObscureException
 
+Test setting attributes with a non-base type in mro() (gh-127773).
+
+    >>> class Base:
+    ...     value = 1
+    ...
+    >>> class Meta(type):
+    ...     def mro(cls):
+    ...         return (cls, Base, object)
+    ...
+    >>> class WeirdClass(metaclass=Meta):
+    ...     pass
+    ...
+    >>> Base.value
+    1
+    >>> WeirdClass.value
+    1
+    >>> Base.value = 2
+    >>> Base.value
+    2
+    >>> WeirdClass.value
+    2
+    >>> Base.value = 3
+    >>> Base.value
+    3
+    >>> WeirdClass.value
+    3
+
 """
 
-__test__ = {'doctests' : doctests}
+import sys
 
-def test_main(verbose=False):
-    from test import support
-    from test import test_metaclass
-    support.run_doctest(test_metaclass, verbose)
+# Trace function introduces __locals__ which causes various tests to fail.
+if hasattr(sys, 'gettrace') and sys.gettrace():
+    __test__ = {}
+else:
+    __test__ = {'doctests' : doctests}
+
+def load_tests(loader, tests, pattern):
+    tests.addTest(doctest.DocTestSuite())
+    return tests
+
 
 if __name__ == "__main__":
-    test_main(verbose=True)
+    # set __name__ to match doctest expectations
+    __name__ = "test.test_metaclass"
+    unittest.main()

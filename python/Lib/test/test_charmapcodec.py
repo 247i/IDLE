@@ -9,7 +9,7 @@ Written by Marc-Andre Lemburg (mal@lemburg.com).
 
 """#"
 
-import test.support, unittest
+import unittest
 
 import codecs
 
@@ -20,12 +20,15 @@ def codec_search_function(encoding):
         return tuple(testcodec.getregentry())
     return None
 
-codecs.register(codec_search_function)
-
 # test codec's name (see test/testcodec.py)
 codecname = 'testcodec'
 
 class CharmapCodecTest(unittest.TestCase):
+
+    def setUp(self):
+        codecs.register(codec_search_function)
+        self.addCleanup(codecs.unregister, codec_search_function)
+
     def test_constructorx(self):
         self.assertEqual(str(b'abc', codecname), 'abc')
         self.assertEqual(str(b'xdef', codecname), 'abcdef')
@@ -49,8 +52,5 @@ class CharmapCodecTest(unittest.TestCase):
     def test_maptoundefined(self):
         self.assertRaises(UnicodeError, str, b'abc\001', codecname)
 
-def test_main():
-    test.support.run_unittest(CharmapCodecTest)
-
 if __name__ == "__main__":
-    test_main()
+    unittest.main()

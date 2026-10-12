@@ -37,6 +37,12 @@ class bdist(Command):
                      "[default: dist]"),
                     ('skip-build', None,
                      "skip rebuilding everything (for testing/debugging)"),
+                    ('owner=', 'u',
+                     "Owner name used when creating a tar file"
+                     " [default: current user]"),
+                    ('group=', 'g',
+                     "Group name used when creating a tar file"
+                     " [default: current group]"),
                    ]
 
     boolean_options = ['skip-build']
@@ -52,21 +58,19 @@ class bdist(Command):
     # This won't do in reality: will need to distinguish RPM-ish Linux,
     # Debian-ish Linux, Solaris, FreeBSD, ..., Windows, Mac OS.
     default_format = {'posix': 'gztar',
-                      'nt': 'zip',
-                      'os2': 'zip'}
+                      'nt': 'zip'}
 
     # Establish the preferred order (for the --help-formats option).
-    format_commands = ['rpm', 'gztar', 'bztar', 'ztar', 'tar',
-                       'wininst', 'zip', 'msi']
+    format_commands = ['rpm', 'gztar', 'bztar', 'xztar', 'ztar', 'tar',
+                       'zip', 'msi']
 
     # And the real information.
     format_command = {'rpm':   ('bdist_rpm',  "RPM distribution"),
                       'gztar': ('bdist_dumb', "gzip'ed tar file"),
                       'bztar': ('bdist_dumb', "bzip2'ed tar file"),
+                      'xztar': ('bdist_dumb', "xz'ed tar file"),
                       'ztar':  ('bdist_dumb', "compressed tar file"),
                       'tar':   ('bdist_dumb', "tar file"),
-                      'wininst': ('bdist_wininst',
-                                  "Windows executable installer"),
                       'zip':   ('bdist_dumb', "ZIP file"),
                       'msi':   ('bdist_msi',  "Microsoft Installer")
                       }
@@ -78,6 +82,8 @@ class bdist(Command):
         self.formats = None
         self.dist_dir = None
         self.skip_build = 0
+        self.group = None
+        self.owner = None
 
     def finalize_options(self):
         # have to finalize 'plat_name' before 'bdist_base'
@@ -122,6 +128,11 @@ class bdist(Command):
             sub_cmd = self.reinitialize_command(cmd_name)
             if cmd_name not in self.no_format_option:
                 sub_cmd.format = self.formats[i]
+
+            # passing the owner and group names for tar archiving
+            if cmd_name == 'bdist_dumb':
+                sub_cmd.owner = self.owner
+                sub_cmd.group = self.group
 
             # If we're going to need to run this command again, tell it to
             # keep its temporary files around so subsequent runs go faster.

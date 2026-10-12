@@ -1,19 +1,27 @@
 import unittest
 import tkinter
-from test.support import requires, run_unittest
-from tkinter.ttk import setup_master
+from test.support import requires
+from tkinter.test.support import AbstractTkTest
 
 requires('gui')
 
-class TextTest(unittest.TestCase):
+class TextTest(AbstractTkTest, unittest.TestCase):
 
     def setUp(self):
-        self.root = setup_master()
+        super().setUp()
         self.text = tkinter.Text(self.root)
 
-    def tearDown(self):
-        self.text.destroy()
-
+    def test_debug(self):
+        text = self.text
+        olddebug = text.debug()
+        try:
+            text.debug(0)
+            self.assertEqual(text.debug(), 0)
+            text.debug(1)
+            self.assertEqual(text.debug(), 1)
+        finally:
+            text.debug(olddebug)
+            self.assertEqual(text.debug(), olddebug)
 
     def test_search(self):
         text = self.text
@@ -33,7 +41,5 @@ class TextTest(unittest.TestCase):
         self.assertEqual(text.search('test', '1.0', 'end'), '1.3')
 
 
-tests_gui = (TextTest, )
-
 if __name__ == "__main__":
-    run_unittest(*tests_gui)
+    unittest.main()

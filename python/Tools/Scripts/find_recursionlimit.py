@@ -89,6 +89,12 @@ def test_cpickle(_cache={}):
         _pickle.Pickler(io.BytesIO(), protocol=-1).dump(l)
         _cache[n] = l
 
+def test_compiler_recursion():
+    # The compiler uses a scaling factor to support additional levels
+    # of recursion. This is a sanity check of that scaling to ensure
+    # it still raises RecursionError even at higher recursion limits
+    compile("()" * (10 * sys.getrecursionlimit()), "<single>", "single")
+
 def check_limit(n, test_func_name):
     sys.setrecursionlimit(n)
     if test_func_name.startswith("test_"):
@@ -101,7 +107,7 @@ def check_limit(n, test_func_name):
     # AttributeError can be raised because of the way e.g. PyDict_GetItem()
     # silences all exceptions and returns NULL, which is usually interpreted
     # as "missing attribute".
-    except (RuntimeError, AttributeError):
+    except (RecursionError, AttributeError):
         pass
     else:
         print("Yikes!")
@@ -117,5 +123,6 @@ if __name__ == '__main__':
         check_limit(limit, "test_getattr")
         check_limit(limit, "test_getitem")
         check_limit(limit, "test_cpickle")
+        check_limit(limit, "test_compiler_recursion")
         print("Limit of %d is fine" % limit)
         limit = limit + 100

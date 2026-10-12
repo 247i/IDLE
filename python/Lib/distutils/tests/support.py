@@ -6,6 +6,7 @@ import tempfile
 import unittest
 import sysconfig
 from copy import deepcopy
+from test.support import os_helper
 
 from distutils import log
 from distutils.log import DEBUG, INFO, WARN, ERROR, FATAL
@@ -32,14 +33,13 @@ class LoggingSilencer(object):
     def _log(self, level, msg, args):
         if level not in (DEBUG, INFO, WARN, ERROR, FATAL):
             raise ValueError('%s wrong log level' % str(level))
+        if not isinstance(msg, str):
+            raise TypeError("msg should be str, not '%.200s'"
+                            % (type(msg).__name__))
         self.logs.append((level, msg, args))
 
     def get_logs(self, *levels):
-        def _format(msg, args):
-            if len(args) == 0:
-                return msg
-            return msg % args
-        return [_format(msg, args) for level, msg, args
+        return [msg % args for level, msg, args
                 in self.logs if level in levels]
 
     def clear_logs(self):
@@ -63,8 +63,8 @@ class TempdirManager(object):
         os.chdir(self.old_cwd)
         super().tearDown()
         while self.tempdirs:
-            d = self.tempdirs.pop()
-            shutil.rmtree(d, os.name in ('nt', 'cygwin'))
+            tmpdir = self.tempdirs.pop()
+            os_helper.rmtree(tmpdir)
 
     def mkdtemp(self):
         """Create a temporary directory that will be cleaned up.
@@ -206,4 +206,4 @@ def fixup_build_ext(cmd):
                 cmd.library_dirs = []
             else:
                 name, equals, value = runshared.partition('=')
-                cmd.library_dirs = value.split(os.pathsep)
+                cmd.library_dirs = [d for d in value.split(os.pathsep) if d]

@@ -29,7 +29,7 @@ def main():
             filename = os.path.join(dir, prog)
             try:
                 st = os.stat(filename)
-            except os.error:
+            except OSError:
                 continue
             if not S_ISREG(st[ST_MODE]):
                 msg(filename + ': not a disk file')
@@ -49,6 +49,7 @@ def main():
                     msg(filename + ': not executable')
             if longlist:
                 sts = os.system('ls ' + longlist + ' ' + filename)
+                sts = os.waitstatus_to_exitcode(sts)
                 if sts: msg('"ls -l" exit status: ' + repr(sts))
         if not ident:
             msg(prog + ': not found')

@@ -1,25 +1,31 @@
-"""distutils.command.upload
+"""
+distutils.command.upload
 
-Implements the Distutils 'upload' subcommand (upload package to PyPI)."""
+Implements the Distutils 'upload' subcommand (upload package to a package
+index).
+"""
 
-from distutils.errors import *
+import os
+import io
+import hashlib
+from base64 import standard_b64encode
+from urllib.error import HTTPError
+from urllib.request import urlopen, Request
+from urllib.parse import urlparse
+from distutils.errors import DistutilsError, DistutilsOptionError
 from distutils.core import PyPIRCCommand
 from distutils.spawn import spawn
 from distutils import log
-import sys
-import os, io
-import socket
-import platform
-import configparser
-import http.client as httpclient
-from base64 import standard_b64encode
-import urllib.parse
 
-# this keeps compatibility for 2.3 and 2.4
-if sys.version < "2.5":
-    from md5 import md5
-else:
-    from hashlib import md5
+
+# PyPI Warehouse supports MD5, SHA256, and Blake2 (blake2-256)
+# https://bugs.python.org/issue40698
+_FILE_CONTENT_DIGESTS = {
+    "md5_digest": getattr(hashlib, "md5", None),
+    "sha256_digest": getattr(hashlib, "sha256", None),
+    "blake2_256_digest": getattr(hashlib, "blake2b", None),
+}
+
 
 class upload(PyPIRCCommand):
 
@@ -61,11 +67,22 @@ class upload(PyPIRCCommand):
 
     def run(self):
         if not self.distribution.dist_files:
-            raise DistutilsOptionError("No dist file created in earlier command")
+            msg = ("Must create and upload files in one command "
+                   "(e.g. setup.py sdist upload)")
+            raise DistutilsOptionError(msg)
         for command, pyversion, filename in self.distribution.dist_files:
             self.upload_file(command, pyversion, filename)
 
     def upload_file(self, command, pyversion, filename):
+        # Makes sure the repository URL is compliant
+        schema, netloc, url, params, query, fragments = \
+            urlparse(self.repository)
+        if params or query or fragments:
+            raise AssertionError("Incompatible url %s" % self.repository)
+
+        if schema not in ('http', 'https'):
+            raise AssertionError("unsupported schema " + schema)
+
         # Sign if requested
         if self.sign:
             gpg_args = ["gpg", "--detach-sign", "-a", filename]
@@ -81,11 +98,12 @@ class upload(PyPIRCCommand):
             content = f.read()
         finally:
             f.close()
+
         meta = self.distribution.metadata
         data = {
             # action
             ':action': 'file_upload',
-            'protcol_version': '1',
+            'protocol_version': '1',
 
             # identify release
             'name': meta.get_name(),
@@ -95,10 +113,9 @@ class upload(PyPIRCCommand):
             'content': (os.path.basename(filename),content),
             'filetype': command,
             'pyversion': pyversion,
-            'md5_digest': md5(content).hexdigest(),
 
             # additional meta-data
-            'metadata_version' : '1.0',
+            'metadata_version': '1.0',
             'summary': meta.get_description(),
             'home_page': meta.get_url(),
             'author': meta.get_contact(),
@@ -114,18 +131,23 @@ class upload(PyPIRCCommand):
             'requires': meta.get_requires(),
             'obsoletes': meta.get_obsoletes(),
             }
-        comment = ''
-        if command == 'bdist_rpm':
-            dist, version, id = platform.dist()
-            if dist:
-                comment = 'built for %s %s' % (dist, version)
-        elif command == 'bdist_dumb':
-            comment = 'built for %s' % platform.platform(terse=1)
-        data['comment'] = comment
+
+        data['comment'] = ''
+
+        # file content digests
+        for digest_name, digest_cons in _FILE_CONTENT_DIGESTS.items():
+            if digest_cons is None:
+                continue
+            try:
+                data[digest_name] = digest_cons(content).hexdigest()
+            except ValueError:
+                # hash digest not available or blocked by security policy
+                pass
 
         if self.sign:
-            data['gpg_signature'] = (os.path.basename(filename) + ".asc",
-                                     open(filename+".asc", "rb").read())
+            with open(filename + ".asc", "rb") as f:
+                data['gpg_signature'] = (os.path.basename(filename) + ".asc",
+                                         f.read())
 
         # set up the authentication
         user_pass = (self.username + ":" + self.password).encode('ascii')
@@ -135,13 +157,13 @@ class upload(PyPIRCCommand):
 
         # Build up the MIME payload for the POST data
         boundary = '--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'
-        sep_boundary = b'\n--' + boundary.encode('ascii')
-        end_boundary = sep_boundary + b'--'
+        sep_boundary = b'\r\n--' + boundary.encode('ascii')
+        end_boundary = sep_boundary + b'--\r\n'
         body = io.BytesIO()
         for key, value in data.items():
-            title = '\nContent-Disposition: form-data; name="%s"' % key
+            title = '\r\nContent-Disposition: form-data; name="%s"' % key
             # handle multiple entries for the same name
-            if type(value) != type([]):
+            if not isinstance(value, list):
                 value = [value]
             for value in value:
                 if type(value) is tuple:
@@ -151,52 +173,43 @@ class upload(PyPIRCCommand):
                     value = str(value).encode('utf-8')
                 body.write(sep_boundary)
                 body.write(title.encode('utf-8'))
-                body.write(b"\n\n")
+                body.write(b"\r\n\r\n")
                 body.write(value)
-                if value and value[-1:] == b'\r':
-                    body.write(b'\n')  # write an extra newline (lurve Macs)
         body.write(end_boundary)
-        body.write(b"\n")
         body = body.getvalue()
 
-        self.announce("Submitting %s to %s" % (filename, self.repository), log.INFO)
+        msg = "Submitting %s to %s" % (filename, self.repository)
+        self.announce(msg, log.INFO)
 
         # build the Request
-        # We can't use urllib since we need to send the Basic
-        # auth right with the first request
-        # TODO(jhylton): Can we fix urllib?
-        schema, netloc, url, params, query, fragments = \
-            urllib.parse.urlparse(self.repository)
-        assert not params and not query and not fragments
-        if schema == 'http':
-            http = httpclient.HTTPConnection(netloc)
-        elif schema == 'https':
-            http = httpclient.HTTPSConnection(netloc)
-        else:
-            raise AssertionError("unsupported schema "+schema)
+        headers = {
+            'Content-type': 'multipart/form-data; boundary=%s' % boundary,
+            'Content-length': str(len(body)),
+            'Authorization': auth,
+        }
 
-        data = ''
-        loglevel = log.INFO
+        request = Request(self.repository, data=body,
+                          headers=headers)
+        # send the data
         try:
-            http.connect()
-            http.putrequest("POST", url)
-            http.putheader('Content-type',
-                           'multipart/form-data; boundary=%s'%boundary)
-            http.putheader('Content-length', str(len(body)))
-            http.putheader('Authorization', auth)
-            http.endheaders()
-            http.send(body)
-        except socket.error as e:
+            result = urlopen(request)
+            status = result.getcode()
+            reason = result.msg
+        except HTTPError as e:
+            status = e.code
+            reason = e.msg
+        except OSError as e:
             self.announce(str(e), log.ERROR)
-            return
+            raise
 
-        r = http.getresponse()
-        if r.status == 200:
-            self.announce('Server response (%s): %s' % (r.status, r.reason),
+        if status == 200:
+            self.announce('Server response (%s): %s' % (status, reason),
                           log.INFO)
+            if self.show_response:
+                text = self._read_pypi_response(result)
+                msg = '\n'.join(('-' * 75, text, '-' * 75))
+                self.announce(msg, log.INFO)
         else:
-            self.announce('Upload failed (%s): %s' % (r.status, r.reason),
-                          log.ERROR)
-        if self.show_response:
-            msg = '\n'.join(('-' * 75, r.read(), '-' * 75))
-            self.announce(msg, log.INFO)
+            msg = 'Upload failed (%s): %s' % (status, reason)
+            self.announce(msg, log.ERROR)
+            raise DistutilsError(msg)

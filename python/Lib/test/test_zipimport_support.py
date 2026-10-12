@@ -12,10 +12,10 @@ import zipimport
 import doctest
 import inspect
 import linecache
-import pdb
 import unittest
-from test.script_helper import (spawn_python, kill_python, assert_python_ok,
-                                temp_dir, make_script, make_zip_script)
+from test.support import os_helper
+from test.support.script_helper import (spawn_python, kill_python, assert_python_ok,
+                                        make_script, make_zip_script)
 
 verbose = test.support.verbose
 
@@ -29,8 +29,9 @@ verbose = test.support.verbose
 #  test_cmd_line_script (covers the zipimport support in runpy)
 
 # Retrieve some helpers from other test cases
-from test import (test_doctest, sample_doctest, sample_doctest_no_doctests,
-                  sample_doctest_no_docstrings)
+from test.test_doctest import (test_doctest,
+                               sample_doctest, sample_doctest_no_doctests,
+                               sample_doctest_no_docstrings, sample_doctest_skip)
 
 
 def _run_object_doctest(obj, module):
@@ -39,7 +40,7 @@ def _run_object_doctest(obj, module):
     # Use the object's fully qualified name if it has one
     # Otherwise, use the module's name
     try:
-        name = "%s.%s" % (obj.__module__, obj.__name__)
+        name = "%s.%s" % (obj.__module__, obj.__qualname__)
     except AttributeError:
         name = module.__name__
     for example in finder.find(obj, name, module):
@@ -57,7 +58,7 @@ class ZipSupportTests(unittest.TestCase):
     # This used to use the ImportHooksBaseTestCase to restore
     # the state of the import related information
     # in the sys module after each test. However, that restores
-    # *too much* information and breaks for the invocation of
+    # *too much* information and breaks for the invocation
     # of test_doctest. So we do our own thing and leave
     # sys.modules alone.
     # We also clear the linecache and zipimport cache
@@ -78,7 +79,7 @@ class ZipSupportTests(unittest.TestCase):
 
     def test_inspect_getsource_issue4223(self):
         test_src = "def foo(): pass\n"
-        with temp_dir() as d:
+        with os_helper.temp_dir() as d:
             init_name = make_script(d, '__init__', test_src)
             name_in_zip = os.path.join('zip_pkg',
                                        os.path.basename(init_name))
@@ -100,38 +101,36 @@ class ZipSupportTests(unittest.TestCase):
         # everything still works correctly
         test_src = inspect.getsource(test_doctest)
         test_src = test_src.replace(
-                         "from test import test_doctest",
+                         "from test.test_doctest import test_doctest",
                          "import test_zipped_doctest as test_doctest")
-        test_src = test_src.replace("test.test_doctest",
+        test_src = test_src.replace("test.test_doctest.test_doctest",
                                     "test_zipped_doctest")
-        test_src = test_src.replace("test.sample_doctest",
+        test_src = test_src.replace("test.test_doctest.sample_doctest",
                                     "sample_zipped_doctest")
         # The sample doctest files rewritten to include in the zipped version.
         sample_sources = {}
         for mod in [sample_doctest, sample_doctest_no_doctests,
-                    sample_doctest_no_docstrings]:
+                    sample_doctest_no_docstrings, sample_doctest_skip]:
             src = inspect.getsource(mod)
-            src = src.replace("test.test_doctest", "test_zipped_doctest")
+            src = src.replace("test.test_doctest.test_doctest", "test_zipped_doctest")
             # Rewrite the module name so that, for example,
             # "test.sample_doctest" becomes "sample_zipped_doctest".
             mod_name = mod.__name__.split(".")[-1]
             mod_name = mod_name.replace("sample_", "sample_zipped_")
             sample_sources[mod_name] = src
 
-        with temp_dir() as d:
+        with os_helper.temp_dir() as d:
             script_name = make_script(d, 'test_zipped_doctest',
                                             test_src)
             zip_name, run_name = make_zip_script(d, 'test_zip',
                                                 script_name)
-            z = zipfile.ZipFile(zip_name, 'a')
-            for mod_name, src in sample_sources.items():
-                z.writestr(mod_name + ".py", src)
-            z.close()
+            with zipfile.ZipFile(zip_name, 'a') as z:
+                for mod_name, src in sample_sources.items():
+                    z.writestr(mod_name + ".py", src)
             if verbose:
-                zip_file = zipfile.ZipFile(zip_name, 'r')
-                print ('Contents of %r:' % zip_name)
-                zip_file.printdir()
-                zip_file.close()
+                with zipfile.ZipFile(zip_name, 'r') as zip_file:
+                    print ('Contents of %r:' % zip_name)
+                    zip_file.printdir()
             os.remove(script_name)
             sys.path.insert(0, zip_name)
             import test_zipped_doctest
@@ -167,20 +166,19 @@ class ZipSupportTests(unittest.TestCase):
                     test_zipped_doctest.test_DocTestRunner.verbose_flag,
                     test_zipped_doctest.test_Example,
                     test_zipped_doctest.test_debug,
-                    test_zipped_doctest.test_pdb_set_trace,
-                    test_zipped_doctest.test_pdb_set_trace_nested,
                     test_zipped_doctest.test_testsource,
                     test_zipped_doctest.test_trailing_space_in_test,
                     test_zipped_doctest.test_DocTestSuite,
                     test_zipped_doctest.test_DocTestFinder,
                 ]
-                # These remaining tests are the ones which need access
+                # These tests are the ones which need access
                 # to the data files, so we don't run them
                 fail_due_to_missing_data_files = [
                     test_zipped_doctest.test_DocFileSuite,
                     test_zipped_doctest.test_testfile,
                     test_zipped_doctest.test_unittest_reportflags,
                 ]
+
                 for obj in known_good_tests:
                     _run_object_doctest(obj, test_zipped_doctest)
             finally:
@@ -196,7 +194,7 @@ class ZipSupportTests(unittest.TestCase):
                     doctest.testmod()
                     """)
         pattern = 'File "%s", line 2, in %s'
-        with temp_dir() as d:
+        with os_helper.temp_dir() as d:
             script_name = make_script(d, 'script', test_src)
             rc, out, err = assert_python_ok(script_name)
             expected = pattern % (script_name, "__main__.Test")
@@ -223,23 +221,24 @@ class ZipSupportTests(unittest.TestCase):
                     import pdb
                     pdb.Pdb(nosigint=True).runcall(f)
                     """)
-        with temp_dir() as d:
+        with os_helper.temp_dir() as d:
             script_name = make_script(d, 'script', test_src)
             p = spawn_python(script_name)
             p.stdin.write(b'l\n')
             data = kill_python(p)
-            self.assertIn(script_name.encode('utf-8'), data)
+            # bdb/pdb applies normcase to its filename before displaying
+            self.assertIn(os.path.normcase(script_name.encode('utf-8')), data)
             zip_name, run_name = make_zip_script(d, "test_zip",
                                                 script_name, '__main__.py')
             p = spawn_python(zip_name)
             p.stdin.write(b'l\n')
             data = kill_python(p)
-            self.assertIn(run_name.encode('utf-8'), data)
+            # bdb/pdb applies normcase to its filename before displaying
+            self.assertIn(os.path.normcase(run_name.encode('utf-8')), data)
 
 
-def test_main():
-    test.support.run_unittest(ZipSupportTests)
+def tearDownModule():
     test.support.reap_children()
 
 if __name__ == '__main__':
-    test_main()
+    unittest.main()

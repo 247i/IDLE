@@ -67,7 +67,7 @@ import re
 import socket
 import collections
 import datetime
-import warnings
+import sys
 
 try:
     import ssl
@@ -80,10 +80,17 @@ from email.header import decode_header as _email_decode_header
 from socket import _GLOBAL_DEFAULT_TIMEOUT
 
 __all__ = ["NNTP",
-           "NNTPReplyError", "NNTPTemporaryError", "NNTPPermanentError",
-           "NNTPProtocolError", "NNTPDataError",
+           "NNTPError", "NNTPReplyError", "NNTPTemporaryError",
+           "NNTPPermanentError", "NNTPProtocolError", "NNTPDataError",
            "decode_header",
            ]
+
+# maximal line length when calling readline(). This is to prevent
+# reading arbitrary length lines. RFC 3977 limits NNTP line length to
+# 512 characters, including CRLF. We have selected 2048 just to be on
+# the safe side.
+_MAXLINE = 2048
+
 
 # Exceptions raised when an error or invalid response is received
 class NNTPError(Exception):
@@ -158,7 +165,7 @@ ArticleInfo = collections.namedtuple('ArticleInfo',
 
 # Helper function(s)
 def decode_header(header_str):
-    """Takes an unicode string representing a munged header value
+    """Takes a unicode string representing a munged header value
     and decodes it as a (possibly non-ASCII) readable value."""
     parts = []
     for v, enc in _email_decode_header(header_str):
@@ -166,7 +173,7 @@ def decode_header(header_str):
             parts.append(v.decode(enc or 'ascii'))
         else:
             parts.append(v)
-    return ' '.join(parts)
+    return ''.join(parts)
 
 def _parse_overview_fmt(lines):
     """Parse a list of string representing the response to LIST OVERVIEW.FMT
@@ -194,7 +201,7 @@ def _parse_overview_fmt(lines):
     return fmt
 
 def _parse_overview(lines, fmt, data_process_func=None):
-    """Parse the response to a OVER or XOVER command according to the
+    """Parse the response to an OVER or XOVER command according to the
     overview format `fmt`."""
     n_defaults = len(_DEFAULT_OVERVIEW_FMT)
     overview = []
@@ -272,7 +279,7 @@ def _unparse_datetime(dt, legacy=False):
 
 if _have_ssl:
 
-    def _encrypt_on(sock, context):
+    def _encrypt_on(sock, context, hostname):
         """Wrap a socket in SSL/TLS. Arguments:
         - sock: Socket to wrap
         - context: SSL context to use for the encrypted connection
@@ -281,14 +288,12 @@ if _have_ssl:
         """
         # Generate a default SSL context if none was passed.
         if context is None:
-            context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-            # SSLv2 considered harmful.
-            context.options |= ssl.OP_NO_SSLv2
-        return context.wrap_socket(sock)
+            context = ssl._create_stdlib_context()
+        return context.wrap_socket(sock, server_hostname=hostname)
 
 
 # The classes themselves
-class _NNTPBase:
+class NNTP:
     # UTF-8 is the character set for all NNTP commands and responses: they
     # are automatically encoded (when sending) and decoded (and receiving)
     # by this class.
@@ -304,13 +309,18 @@ class _NNTPBase:
     encoding = 'utf-8'
     errors = 'surrogateescape'
 
-    def __init__(self, file, host,
-                 readermode=None, timeout=_GLOBAL_DEFAULT_TIMEOUT):
+    def __init__(self, host, port=NNTP_PORT, user=None, password=None,
+                 readermode=None, usenetrc=False,
+                 timeout=_GLOBAL_DEFAULT_TIMEOUT):
         """Initialize an instance.  Arguments:
-        - file: file-like object (open for read/write in binary mode)
-        - host: hostname of the server
+        - host: hostname to connect to
+        - port: port to connect to (default the standard NNTP port)
+        - user: username to authenticate with
+        - password: password to use with username
         - readermode: if true, send 'mode reader' command after
                       connecting.
+        - usenetrc: allow loading username and password from ~/.netrc file
+                    if not specified explicitly
         - timeout: timeout (in seconds) used for socket connections
 
         readermode is sometimes necessary if you are connecting to an
@@ -320,7 +330,24 @@ class _NNTPBase:
         readermode.
         """
         self.host = host
-        self.file = file
+        self.port = port
+        self.sock = self._create_socket(timeout)
+        self.file = None
+        try:
+            self.file = self.sock.makefile("rwb")
+            self._base_init(readermode)
+            if user or usenetrc:
+                self.login(user, password, usenetrc)
+        except:
+            if self.file:
+                self.file.close()
+            self.sock.close()
+            raise
+
+    def _base_init(self, readermode):
+        """Partial initialization for the NNTP protocol.
+        This instance method is extracted for supporting the test code.
+        """
         self.debugging = 0
         self.welcome = self._getresp()
 
@@ -350,6 +377,26 @@ class _NNTPBase:
 
         # Log in and encryption setup order is left to subclasses.
         self.authenticated = False
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        is_connected = lambda: hasattr(self, "file")
+        if is_connected():
+            try:
+                self.quit()
+            except (OSError, EOFError):
+                pass
+            finally:
+                if is_connected():
+                    self._close()
+
+    def _create_socket(self, timeout):
+        if timeout is not None and not timeout:
+            raise ValueError('Non-blocking socket (timeout=0) is not supported')
+        sys.audit("nntplib.connect", self, self.host, self.port)
+        return socket.create_connection((self.host, self.port), timeout)
 
     def getwelcome(self):
         """Get the welcome message from the server
@@ -394,6 +441,7 @@ class _NNTPBase:
     def _putline(self, line):
         """Internal: send one line to the server, appending CRLF.
         The `line` must be a bytes-like object."""
+        sys.audit("nntplib.putline", self, line)
         line = line + _CRLF
         if self.debugging > 1: print('*put*', repr(line))
         self.file.write(line)
@@ -401,7 +449,7 @@ class _NNTPBase:
 
     def _putcmd(self, line):
         """Internal: send one command to the server (through _putline()).
-        The `line` must be an unicode string."""
+        The `line` must be a unicode string."""
         if self.debugging: print('*cmd*', repr(line))
         line = line.encode(self.encoding, self.errors)
         self._putline(line)
@@ -410,7 +458,9 @@ class _NNTPBase:
         """Internal: return one line from the server, stripping _CRLF.
         Raise EOFError if the connection is closed.
         Returns a bytes object."""
-        line = self.file.readline()
+        line = self.file.readline(_MAXLINE +1)
+        if len(line) > _MAXLINE:
+            raise NNTPDataError('line too long')
         if self.debugging > 1:
             print('*get*', repr(line))
         if not line: raise EOFError
@@ -424,7 +474,7 @@ class _NNTPBase:
     def _getresp(self):
         """Internal: get a response from the server.
         Raise various errors if the response indicates an error.
-        Returns an unicode string."""
+        Returns a unicode string."""
         resp = self._getline()
         if self.debugging: print('*resp*', repr(resp))
         resp = resp.decode(self.encoding, self.errors)
@@ -441,7 +491,7 @@ class _NNTPBase:
         """Internal: get a response plus following text from the server.
         Raise various errors if the response indicates an error.
 
-        Returns a (response, lines) tuple where `response` is an unicode
+        Returns a (response, lines) tuple where `response` is a unicode
         string and `lines` is a list of bytes objects.
         If `file` is a file-like object, it must be open in binary mode.
         """
@@ -811,44 +861,6 @@ class _NNTPBase:
         fmt = self._getoverviewfmt()
         return resp, _parse_overview(lines, fmt)
 
-    def xgtitle(self, group, *, file=None):
-        """Process an XGTITLE command (optional server extension) Arguments:
-        - group: group name wildcard (i.e. news.*)
-        Returns:
-        - resp: server response if successful
-        - list: list of (name,title) strings"""
-        warnings.warn("The XGTITLE extension is not actively used, "
-                      "use descriptions() instead",
-                      PendingDeprecationWarning, 2)
-        line_pat = re.compile('^([^ \t]+)[ \t]+(.*)$')
-        resp, raw_lines = self._longcmdstring('XGTITLE ' + group, file)
-        lines = []
-        for raw_line in raw_lines:
-            match = line_pat.search(raw_line.strip())
-            if match:
-                lines.append(match.group(1, 2))
-        return resp, lines
-
-    def xpath(self, id):
-        """Process an XPATH command (optional server extension) Arguments:
-        - id: Message id of article
-        Returns:
-        resp: server response if successful
-        path: directory path to article
-        """
-        warnings.warn("The XPATH extension is not actively used",
-                      PendingDeprecationWarning, 2)
-
-        resp = self._shortcmd('XPATH {0}'.format(id))
-        if not resp.startswith('223'):
-            raise NNTPReplyError(resp)
-        try:
-            [resp_num, path] = resp.split()
-        except ValueError:
-            raise NNTPReplyError(resp)
-        else:
-            return resp, path
-
     def date(self):
         """Process the DATE command.
         Returns:
@@ -904,8 +916,12 @@ class _NNTPBase:
         return self._post('IHAVE {0}'.format(message_id), data)
 
     def _close(self):
-        self.file.close()
-        del self.file
+        try:
+            if self.file:
+                self.file.close()
+                del self.file
+        finally:
+            self.sock.close()
 
     def quit(self):
         """Process a QUIT command and close the socket.  Returns:
@@ -933,7 +949,7 @@ class _NNTPBase:
                 if auth:
                     user = auth[0]
                     password = auth[2]
-        except IOError:
+        except OSError:
             pass
         # Perform NNTP authentication if needed.
         if not user:
@@ -984,7 +1000,7 @@ class _NNTPBase:
             resp = self._shortcmd('STARTTLS')
             if resp.startswith('382'):
                 self.file.close()
-                self.sock = _encrypt_on(self.sock, context)
+                self.sock = _encrypt_on(self.sock, context, self.host)
                 self.file = self.sock.makefile("rwb")
                 self.tls_on = True
                 # Capabilities may change after TLS starts up, so ask for them
@@ -995,46 +1011,8 @@ class _NNTPBase:
                 raise NNTPError("TLS failed to start.")
 
 
-class NNTP(_NNTPBase):
-
-    def __init__(self, host, port=NNTP_PORT, user=None, password=None,
-                 readermode=None, usenetrc=False,
-                 timeout=_GLOBAL_DEFAULT_TIMEOUT):
-        """Initialize an instance.  Arguments:
-        - host: hostname to connect to
-        - port: port to connect to (default the standard NNTP port)
-        - user: username to authenticate with
-        - password: password to use with username
-        - readermode: if true, send 'mode reader' command after
-                      connecting.
-        - usenetrc: allow loading username and password from ~/.netrc file
-                    if not specified explicitly
-        - timeout: timeout (in seconds) used for socket connections
-
-        readermode is sometimes necessary if you are connecting to an
-        NNTP server on the local machine and intend to call
-        reader-specific commands, such as `group'.  If you get
-        unexpected NNTPPermanentErrors, you might need to set
-        readermode.
-        """
-        self.host = host
-        self.port = port
-        self.sock = socket.create_connection((host, port), timeout)
-        file = self.sock.makefile("rwb")
-        _NNTPBase.__init__(self, file, host,
-                           readermode, timeout)
-        if user or usenetrc:
-            self.login(user, password, usenetrc)
-
-    def _close(self):
-        try:
-            _NNTPBase._close(self)
-        finally:
-            self.sock.close()
-
-
 if _have_ssl:
-    class NNTP_SSL(_NNTPBase):
+    class NNTP_SSL(NNTP):
 
         def __init__(self, host, port=NNTP_SSL_PORT,
                     user=None, password=None, ssl_context=None,
@@ -1043,19 +1021,19 @@ if _have_ssl:
             """This works identically to NNTP.__init__, except for the change
             in default port and the `ssl_context` argument for SSL connections.
             """
-            self.sock = socket.create_connection((host, port), timeout)
-            self.sock = _encrypt_on(self.sock, ssl_context)
-            file = self.sock.makefile("rwb")
-            _NNTPBase.__init__(self, file, host,
-                               readermode=readermode, timeout=timeout)
-            if user or usenetrc:
-                self.login(user, password, usenetrc)
+            self.ssl_context = ssl_context
+            super().__init__(host, port, user, password, readermode,
+                             usenetrc, timeout)
 
-        def _close(self):
+        def _create_socket(self, timeout):
+            sock = super()._create_socket(timeout)
             try:
-                _NNTPBase._close(self)
-            finally:
-                self.sock.close()
+                sock = _encrypt_on(sock, self.ssl_context, self.host)
+            except:
+                sock.close()
+                raise
+            else:
+                return sock
 
     __all__.append("NNTP_SSL")
 
@@ -1063,13 +1041,12 @@ if _have_ssl:
 # Test retrieval when run as a script.
 if __name__ == '__main__':
     import argparse
-    from email.utils import parsedate
 
     parser = argparse.ArgumentParser(description="""\
         nntplib built-in demo - display the latest articles in a newsgroup""")
     parser.add_argument('-g', '--group', default='gmane.comp.python.general',
                         help='group to fetch messages from (default: %(default)s)')
-    parser.add_argument('-s', '--server', default='news.gmane.org',
+    parser.add_argument('-s', '--server', default='news.gmane.io',
                         help='NNTP server hostname (default: %(default)s)')
     parser.add_argument('-p', '--port', default=-1, type=int,
                         help='NNTP port number (default: %s / %s)' % (NNTP_PORT, NNTP_SSL_PORT))

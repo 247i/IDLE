@@ -1,3 +1,8 @@
+import sys
+import doctest
+import unittest
+
+
 doctests = """
 
 Test simple loop with conditional
@@ -14,6 +19,22 @@ Test nesting with the inner expression dependent on the outer
 
     >>> list((i,j) for i in range(4) for j in range(i) )
     [(1, 0), (2, 0), (2, 1), (3, 0), (3, 1), (3, 2)]
+
+Test the idiom for temporary variable assignment in comprehensions.
+
+    >>> list((j*j for i in range(4) for j in [i+1]))
+    [1, 4, 9, 16]
+    >>> list((j*k for i in range(4) for j in [i+1] for k in [j+1]))
+    [2, 6, 12, 20]
+    >>> list((j*k for i in range(4) for j, k in [(i+1, i+2)]))
+    [2, 6, 12, 20]
+
+Not assignment
+
+    >>> list((i*i for i in [*range(4)]))
+    [0, 1, 4, 9]
+    >>> list((i*i for i in (*range(4),)))
+    [0, 1, 4, 9]
 
 Make sure the induction variable is not exposed
 
@@ -87,7 +108,7 @@ Verify that parenthesis are required when used as a keyword argument value
     >>> dict(a = i for i in range(10))
     Traceback (most recent call last):
        ...
-    SyntaxError: invalid syntax
+    SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?
 
 Verify that parenthesis are required when used as a keyword argument value
 
@@ -102,15 +123,6 @@ Verify early binding for the outermost for-expression
     >>> list(g)
     [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
 
-Verify that the outermost for-expression makes an immediate check
-for iterability
-
-    >>> (i for i in 6)
-    Traceback (most recent call last):
-      File "<pyshell#4>", line 1, in -toplevel-
-        (i for i in 6)
-    TypeError: 'int' object is not iterable
-
 Verify late binding for the outermost if-expression
 
     >>> include = (2,4,6,8)
@@ -118,6 +130,14 @@ Verify late binding for the outermost if-expression
     >>> include = (1,3,5,7,9)
     >>> list(g)
     [1, 9, 25, 49, 81]
+
+Verify that the outermost for-expression makes an immediate check
+for iterability
+    >>> (i for i in 6)
+    Traceback (most recent call last):
+      File "<pyshell#4>", line 1, in -toplevel-
+        (i for i in 6)
+    TypeError: 'int' object is not iterable
 
 Verify late binding for the innermost for-expression
 
@@ -137,12 +157,12 @@ Verify that syntax error's are raised for genexps used as lvalues
     >>> (y for y in (1,2)) = 10
     Traceback (most recent call last):
        ...
-    SyntaxError: can't assign to generator expression
+    SyntaxError: cannot assign to generator expression
 
     >>> (y for y in (1,2)) += 10
     Traceback (most recent call last):
        ...
-    SyntaxError: can't assign to generator expression
+    SyntaxError: 'generator expression' is an illegal expression for augmented assignment
 
 
 ########### Tests borrowed from or inspired by test_generators.py ############
@@ -202,7 +222,7 @@ Verify exception propagation
         next(g)
       File "<pyshell#35>", line 1, in <generator expression>
         g = (10 // i for i in (5, 0, 2))
-    ZeroDivisionError: integer division or modulo by zero
+    ZeroDivisionError: division by zero
     >>> next(g)
     Traceback (most recent call last):
       File "<pyshell#38>", line 1, in -toplevel-
@@ -222,8 +242,8 @@ Check that generator attributes are present
     True
 
     >>> from test.support import HAVE_DOCSTRINGS
-    >>> print(g.__next__.__doc__ if HAVE_DOCSTRINGS else 'x.__next__() <==> next(x)')
-    x.__next__() <==> next(x)
+    >>> print(g.__next__.__doc__ if HAVE_DOCSTRINGS else 'Implement next(self).')
+    Implement next(self).
     >>> import types
     >>> isinstance(g, types.GeneratorType)
     True
@@ -258,24 +278,16 @@ Verify that genexps are weakly referencable
 
 """
 
+# Trace function can throw off the tuple reuse test.
+if hasattr(sys, 'gettrace') and sys.gettrace():
+    __test__ = {}
+else:
+    __test__ = {'doctests' : doctests}
 
-__test__ = {'doctests' : doctests}
+def load_tests(loader, tests, pattern):
+    tests.addTest(doctest.DocTestSuite())
+    return tests
 
-def test_main(verbose=None):
-    import sys
-    from test import support
-    from test import test_genexps
-    support.run_doctest(test_genexps, verbose)
-
-    # verify reference counting
-    if verbose and hasattr(sys, "gettotalrefcount"):
-        import gc
-        counts = [None] * 5
-        for i in range(len(counts)):
-            support.run_doctest(test_genexps, verbose)
-            gc.collect()
-            counts[i] = sys.gettotalrefcount()
-        print(counts)
 
 if __name__ == "__main__":
-    test_main(verbose=True)
+    unittest.main()

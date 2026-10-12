@@ -10,9 +10,9 @@ cygwin in no-cygwin mode).
 #
 # * if you use a msvc compiled python version (1.5.2)
 #   1. you have to insert a __GNUC__ section in its config.h
-#   2. you have to generate a import library for its dll
+#   2. you have to generate an import library for its dll
 #      - create a def-file for python??.dll
-#      - create a import library using
+#      - create an import library using
 #             dlltool --dllname python15.dll --def python15.def \
 #                       --output-lib libpython15.a
 #
@@ -48,14 +48,13 @@ cygwin in no-cygwin mode).
 import os
 import sys
 import copy
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, check_output
 import re
 
-from distutils.ccompiler import gen_preprocess_options, gen_lib_options
 from distutils.unixccompiler import UnixCCompiler
 from distutils.file_util import write_file
-from distutils.errors import DistutilsExecError, CompileError, UnknownFileError
-from distutils import log
+from distutils.errors import (DistutilsExecError, CCompilerError,
+        CompileError, UnknownFileError)
 from distutils.version import LooseVersion
 from distutils.spawn import find_executable
 
@@ -78,6 +77,9 @@ def get_msvcr():
         elif msc_ver == '1500':
             # VS2008 / MSVC 9.0
             return ['msvcr90']
+        elif msc_ver == '1600':
+            # VS2010 / MSVC 10.0
+            return ['msvcr100']
         else:
             raise ValueError("Unknown MS Compiler version %s " % msc_ver)
 
@@ -230,8 +232,8 @@ class CygwinCCompiler(UnixCCompiler):
         # who wants symbols and a many times larger output file
         # should explicitly switch the debug mode on
         # otherwise we let dllwrap/ld strip the output file
-        # (On my machine: 10KB < stripped_file < ??100KB
-        #   unstripped_file = stripped_file + XXX KB
+        # (On my machine: 10KiB < stripped_file < ??100KiB
+        #   unstripped_file = stripped_file + XXX KiB
         #  ( XXX=254 for a typical python extension))
         if not debug:
             extra_preargs.append("-s")
@@ -291,11 +293,15 @@ class Mingw32CCompiler(CygwinCCompiler):
         else:
             entry_point = ''
 
-        self.set_executables(compiler='gcc -mno-cygwin -O -Wall',
-                             compiler_so='gcc -mno-cygwin -mdll -O -Wall',
-                             compiler_cxx='g++ -mno-cygwin -O -Wall',
-                             linker_exe='gcc -mno-cygwin',
-                             linker_so='%s -mno-cygwin %s %s'
+        if is_cygwingcc():
+            raise CCompilerError(
+                'Cygwin gcc cannot be used with --compiler=mingw32')
+
+        self.set_executables(compiler='gcc -O -Wall',
+                             compiler_so='gcc -mdll -O -Wall',
+                             compiler_cxx='g++ -O -Wall',
+                             linker_exe='gcc',
+                             linker_so='%s %s %s'
                                         % (self.linker_dll, shared_option,
                                            entry_point))
         # Maybe we should also append -mthreads, but then the finished
@@ -310,7 +316,7 @@ class Mingw32CCompiler(CygwinCCompiler):
         self.dll_libraries = get_msvcr()
 
 # Because these compilers aren't configured in Python's pyconfig.h file by
-# default, we should at least warn the user if he is using a unmodified
+# default, we should at least warn the user if he is using an unmodified
 # version.
 
 CONFIG_H_OK = "ok"
@@ -356,11 +362,11 @@ def check_config_h():
                 return CONFIG_H_NOTOK, "'%s' does not mention '__GNUC__'" % fn
         finally:
             config_h.close()
-    except IOError as exc:
+    except OSError as exc:
         return (CONFIG_H_UNCERTAIN,
                 "couldn't read '%s': %s" % (fn, exc.strerror))
 
-RE_VERSION = re.compile(b'(\d+\.\d+(\.\d+)*)')
+RE_VERSION = re.compile(br'(\d+\.\d+(\.\d+)*)')
 
 def _find_exe_version(cmd):
     """Find the version of an executable by running `cmd` in the shell.
@@ -390,3 +396,8 @@ def get_versions():
     """
     commands = ['gcc -dumpversion', 'ld -v', 'dllwrap --version']
     return tuple([_find_exe_version(cmd) for cmd in commands])
+
+def is_cygwingcc():
+    '''Try to determine if the gcc that would be used is from cygwin.'''
+    out_string = check_output(['gcc', '-dumpmachine'])
+    return out_string.strip().endswith(b'cygwin')

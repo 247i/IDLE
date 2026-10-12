@@ -1,4 +1,3 @@
-#! /usr/bin/env python3
 """Basic tests for os.popen()
 
   Particularly useful for platforms that fake popen.
@@ -7,6 +6,9 @@
 import unittest
 from test import support
 import os, sys
+
+if not hasattr(os, 'popen'):
+    raise unittest.SkipTest("need os.popen()")
 
 # Test that command-lines get down as we expect.
 # To do this we execute:
@@ -17,6 +19,7 @@ python = sys.executable
 if ' ' in python:
     python = '"' + python + '"'     # quote embedded space for cmdline
 
+@support.requires_subprocess()
 class PopenTest(unittest.TestCase):
 
     def _do_test_commandline(self, cmdline, expected):
@@ -45,21 +48,30 @@ class PopenTest(unittest.TestCase):
 
     def test_return_code(self):
         self.assertEqual(os.popen("exit 0").close(), None)
+        status = os.popen("exit 42").close()
         if os.name == 'nt':
-            self.assertEqual(os.popen("exit 42").close(), 42)
+            self.assertEqual(status, 42)
         else:
-            self.assertEqual(os.popen("exit 42").close(), 42 << 8)
+            self.assertEqual(os.waitstatus_to_exitcode(status), 42)
 
     def test_contextmanager(self):
         with os.popen("echo hello") as f:
             self.assertEqual(f.read(), "hello\n")
+            self.assertFalse(f.closed)
+        self.assertTrue(f.closed)
 
     def test_iterating(self):
         with os.popen("echo hello") as f:
             self.assertEqual(list(f), ["hello\n"])
+            self.assertFalse(f.closed)
+        self.assertTrue(f.closed)
 
-def test_main():
-    support.run_unittest(PopenTest)
+    def test_keywords(self):
+        with os.popen(cmd="echo hello", mode="r", buffering=-1) as f:
+            self.assertEqual(f.read(), "hello\n")
+            self.assertFalse(f.closed)
+        self.assertTrue(f.closed)
+
 
 if __name__ == "__main__":
-    test_main()
+    unittest.main()

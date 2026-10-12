@@ -9,9 +9,8 @@
 #
 
 import unittest
-from test import support
 
-from textwrap import TextWrapper, wrap, fill, dedent
+from textwrap import TextWrapper, wrap, fill, dedent, indent, shorten
 
 
 class BaseTestCase(unittest.TestCase):
@@ -100,6 +99,14 @@ What a mess!
         result = wrapper.fill(text)
         self.check(result, '\n'.join(expect))
 
+        text = "\tTest\tdefault\t\ttabsize."
+        expect = ["        Test    default         tabsize."]
+        self.check_wrap(text, 80, expect)
+
+        text = "\tTest\tcustom\t\ttabsize."
+        expect = ["    Test    custom      tabsize."]
+        self.check_wrap(text, 80, expect, tabsize=4)
+
     def test_fix_sentence_endings(self):
         wrapper = TextWrapper(60, fix_sentence_endings=True)
 
@@ -177,6 +184,16 @@ What a mess!
         self.check_wrap(text, 42,
                         ["this-is-a-useful-feature-for-reformatting-",
                          "posts-from-tim-peters'ly"])
+        # The test tests current behavior but is not testing parts of the API.
+        expect = ("this-|is-|a-|useful-|feature-|for-|"
+                  "reformatting-|posts-|from-|tim-|peters'ly").split('|')
+        self.check_wrap(text, 1, expect, break_long_words=False)
+        self.check_split(text, expect)
+
+        self.check_split('e-mail', ['e-mail'])
+        self.check_split('Jelly-O', ['Jelly-O'])
+        # The test tests current behavior but is not testing parts of the API.
+        self.check_split('half-a-crown', 'half-|a-|crown'.split('|'))
 
     def test_hyphenated_numbers(self):
         # Test that hyphenated numbers (eg. dates) are not broken like words.
@@ -188,6 +205,7 @@ What a mess!
                                    'released on 1994-02-15.'])
         self.check_wrap(text, 40, ['Python 1.0.0 was released on 1994-01-26.',
                                    'Python 1.0.1 was released on 1994-02-15.'])
+        self.check_wrap(text, 1, text.split(), break_long_words=False)
 
         text = "I do all my shopping at 7-11."
         self.check_wrap(text, 25, ["I do all my shopping at",
@@ -195,6 +213,7 @@ What a mess!
         self.check_wrap(text, 27, ["I do all my shopping at",
                                    "7-11."])
         self.check_wrap(text, 29, ["I do all my shopping at 7-11."])
+        self.check_wrap(text, 1, text.split(), break_long_words=False)
 
     def test_em_dash(self):
         # Test text with em-dashes
@@ -319,6 +338,10 @@ What a mess!
         self.check_split("the ['wibble-wobble'] widget",
                          ['the', ' ', "['wibble-", "wobble']", ' ', 'widget'])
 
+        # The test tests current behavior but is not testing parts of the API.
+        self.check_split("what-d'you-call-it.",
+                         "what-d'you-|call-|it.".split('|'))
+
     def test_funky_parens (self):
         # Second part of SF bug #596434: long option strings inside
         # parentheses.
@@ -421,6 +444,132 @@ What a mess!
         text = "aa \xe4\xe4-\xe4\xe4"
         self.check_wrap(text, 7, ["aa \xe4\xe4-", "\xe4\xe4"])
 
+    def test_non_breaking_space(self):
+        text = 'This is a sentence with non-breaking\N{NO-BREAK SPACE}space.'
+
+        self.check_wrap(text, 20,
+                        ['This is a sentence',
+                         'with non-',
+                         'breaking\N{NO-BREAK SPACE}space.'],
+                        break_on_hyphens=True)
+
+        self.check_wrap(text, 20,
+                        ['This is a sentence',
+                         'with',
+                         'non-breaking\N{NO-BREAK SPACE}space.'],
+                        break_on_hyphens=False)
+
+    def test_narrow_non_breaking_space(self):
+        text = ('This is a sentence with non-breaking'
+                '\N{NARROW NO-BREAK SPACE}space.')
+
+        self.check_wrap(text, 20,
+                        ['This is a sentence',
+                         'with non-',
+                         'breaking\N{NARROW NO-BREAK SPACE}space.'],
+                        break_on_hyphens=True)
+
+        self.check_wrap(text, 20,
+                        ['This is a sentence',
+                         'with',
+                         'non-breaking\N{NARROW NO-BREAK SPACE}space.'],
+                        break_on_hyphens=False)
+
+
+class MaxLinesTestCase(BaseTestCase):
+    text = "Hello there, how are you this fine day?  I'm glad to hear it!"
+
+    def test_simple(self):
+        self.check_wrap(self.text, 12,
+                        ["Hello [...]"],
+                        max_lines=0)
+        self.check_wrap(self.text, 12,
+                        ["Hello [...]"],
+                        max_lines=1)
+        self.check_wrap(self.text, 12,
+                        ["Hello there,",
+                         "how [...]"],
+                        max_lines=2)
+        self.check_wrap(self.text, 13,
+                        ["Hello there,",
+                         "how are [...]"],
+                        max_lines=2)
+        self.check_wrap(self.text, 80, [self.text], max_lines=1)
+        self.check_wrap(self.text, 12,
+                        ["Hello there,",
+                         "how are you",
+                         "this fine",
+                         "day?  I'm",
+                         "glad to hear",
+                         "it!"],
+                        max_lines=6)
+
+    def test_spaces(self):
+        # strip spaces before placeholder
+        self.check_wrap(self.text, 12,
+                        ["Hello there,",
+                         "how are you",
+                         "this fine",
+                         "day? [...]"],
+                        max_lines=4)
+        # placeholder at the start of line
+        self.check_wrap(self.text, 6,
+                        ["Hello",
+                         "[...]"],
+                        max_lines=2)
+        # final spaces
+        self.check_wrap(self.text + ' ' * 10, 12,
+                        ["Hello there,",
+                         "how are you",
+                         "this fine",
+                         "day?  I'm",
+                         "glad to hear",
+                         "it!"],
+                        max_lines=6)
+
+    def test_placeholder(self):
+        self.check_wrap(self.text, 12,
+                        ["Hello..."],
+                        max_lines=1,
+                        placeholder='...')
+        self.check_wrap(self.text, 12,
+                        ["Hello there,",
+                         "how are..."],
+                        max_lines=2,
+                        placeholder='...')
+        # long placeholder and indentation
+        with self.assertRaises(ValueError):
+            wrap(self.text, 16, initial_indent='    ',
+                 max_lines=1, placeholder=' [truncated]...')
+        with self.assertRaises(ValueError):
+            wrap(self.text, 16, subsequent_indent='    ',
+                 max_lines=2, placeholder=' [truncated]...')
+        self.check_wrap(self.text, 16,
+                        ["    Hello there,",
+                         "  [truncated]..."],
+                        max_lines=2,
+                        initial_indent='    ',
+                        subsequent_indent='  ',
+                        placeholder=' [truncated]...')
+        self.check_wrap(self.text, 16,
+                        ["  [truncated]..."],
+                        max_lines=1,
+                        initial_indent='  ',
+                        subsequent_indent='    ',
+                        placeholder=' [truncated]...')
+        self.check_wrap(self.text, 80, [self.text], placeholder='.' * 1000)
+
+    def test_placeholder_backtrack(self):
+        # Test special case when max_lines insufficient, but what
+        # would be last wrapped line so long the placeholder cannot
+        # be added there without violence. So, textwrap backtracks,
+        # adding placeholder to the penultimate line.
+        text = 'Good grief Python features are advancing quickly!'
+        self.check_wrap(text, 12,
+                        ['Good grief', 'Python*****'],
+                        max_lines=3,
+                        placeholder='*****')
+
 
 class LongWordTestCase (BaseTestCase):
     def setUp(self):
@@ -456,7 +605,7 @@ How *do* you spell that odd word, anyways?
         # bug 1146.  Prevent a long word to be wrongly wrapped when the
         # preceding word is exactly one character shorter than the width
         self.check_wrap(self.text, 12,
-                        ['Did you say ',
+                        ['Did you say',
                          '"supercalifr',
                          'agilisticexp',
                          'ialidocious?',
@@ -482,6 +631,86 @@ How *do* you spell that odd word, anyways?
         result = wrap(self.text, width=30, break_long_words=0)
         self.check(result, expect)
 
+    def test_max_lines_long(self):
+        self.check_wrap(self.text, 12,
+                        ['Did you say',
+                         '"supercalifr',
+                         'agilisticexp',
+                         '[...]'],
+                        max_lines=4)
+
+
+class LongWordWithHyphensTestCase(BaseTestCase):
+    def setUp(self):
+        self.wrapper = TextWrapper()
+        self.text1 = '''\
+We used enyzme 2-succinyl-6-hydroxy-2,4-cyclohexadiene-1-carboxylate synthase.
+'''
+        self.text2 = '''\
+1234567890-1234567890--this_is_a_very_long_option_indeed-good-bye"
+'''
+
+    def test_break_long_words_on_hyphen(self):
+        expected = ['We used enyzme 2-succinyl-6-hydroxy-2,4-',
+                    'cyclohexadiene-1-carboxylate synthase.']
+        self.check_wrap(self.text1, 50, expected)
+
+        expected = ['We used', 'enyzme 2-', 'succinyl-', '6-hydroxy-', '2,4-',
+                    'cyclohexad', 'iene-1-', 'carboxylat', 'e', 'synthase.']
+        self.check_wrap(self.text1, 10, expected)
+
+        expected = ['1234567890',  '-123456789', '0--this_is', '_a_very_lo',
+                    'ng_option_', 'indeed-', 'good-bye"']
+        self.check_wrap(self.text2, 10, expected)
+
+    def test_break_long_words_not_on_hyphen(self):
+        expected = ['We used enyzme 2-succinyl-6-hydroxy-2,4-cyclohexad',
+                    'iene-1-carboxylate synthase.']
+        self.check_wrap(self.text1, 50, expected, break_on_hyphens=False)
+
+        expected = ['We used', 'enyzme 2-s', 'uccinyl-6-', 'hydroxy-2,',
+                    '4-cyclohex', 'adiene-1-c', 'arboxylate', 'synthase.']
+        self.check_wrap(self.text1, 10, expected, break_on_hyphens=False)
+
+        expected = ['1234567890',  '-123456789', '0--this_is', '_a_very_lo',
+                    'ng_option_', 'indeed-', 'good-bye"']
+        self.check_wrap(self.text2, 10, expected)
+
+    def test_break_on_hyphen_but_not_long_words(self):
+        expected = ['We used enyzme',
+                    '2-succinyl-6-hydroxy-2,4-cyclohexadiene-1-carboxylate',
+                    'synthase.']
+
+        self.check_wrap(self.text1, 50, expected, break_long_words=False)
+
+        expected = ['We used', 'enyzme',
+                    '2-succinyl-6-hydroxy-2,4-cyclohexadiene-1-carboxylate',
+                    'synthase.']
+        self.check_wrap(self.text1, 10, expected, break_long_words=False)
+
+        expected = ['1234567890',  '-123456789', '0--this_is', '_a_very_lo',
+                    'ng_option_', 'indeed-', 'good-bye"']
+        self.check_wrap(self.text2, 10, expected)
+
+
+    def test_do_not_break_long_words_or_on_hyphens(self):
+        expected = ['We used enyzme',
+                    '2-succinyl-6-hydroxy-2,4-cyclohexadiene-1-carboxylate',
+                    'synthase.']
+        self.check_wrap(self.text1, 50, expected,
+                        break_long_words=False,
+                        break_on_hyphens=False)
+
+        expected = ['We used', 'enyzme',
+                    '2-succinyl-6-hydroxy-2,4-cyclohexadiene-1-carboxylate',
+                    'synthase.']
+        self.check_wrap(self.text1, 10, expected,
+                        break_long_words=False,
+                        break_on_hyphens=False)
+
+        expected = ['1234567890',  '-123456789', '0--this_is', '_a_very_lo',
+                    'ng_option_', 'indeed-', 'good-bye"']
+        self.check_wrap(self.text2, 10, expected)
 
 class IndentTestCases(BaseTestCase):
 
@@ -536,9 +765,66 @@ some (including a hanging indent).'''
 # of IndentTestCase!
 class DedentTestCase(unittest.TestCase):
 
+    def test_type_error(self):
+        with self.assertRaisesRegex(TypeError, "expected str object, not"):
+            dedent(0)
+
+        with self.assertRaisesRegex(TypeError, "expected str object, not"):
+            dedent(b'')
+
     def assertUnchanged(self, text):
         """assert that dedent() has no effect on 'text'"""
         self.assertEqual(text, dedent(text))
+
+    def test_dedent_whitespace(self):
+        # The empty string.
+        text = ""
+        self.assertUnchanged(text)
+
+        # Only spaces.
+        text = "    "
+        expect = ""
+        self.assertEqual(expect, dedent(text))
+
+        # Only tabs.
+        text = "\t\t\t\t"
+        expect = ""
+        self.assertEqual(expect, dedent(text))
+
+        # A mixture.
+        text = " \t  \t\t  \t "
+        expect = ""
+        self.assertEqual(expect, dedent(text))
+
+        # ASCII whitespace.
+        text = "\f\n\r\t\v "
+        expect = "\n"
+        self.assertEqual(expect, dedent(text))
+
+        # One newline.
+        text = "\n"
+        expect = "\n"
+        self.assertEqual(expect, dedent(text))
+
+        # Windows-style newlines.
+        text = "\r\n" * 5
+        expect = "\n" * 5
+        self.assertEqual(expect, dedent(text))
+
+        # Whitespace mixture.
+        text = "    \n\t\n  \n\t\t\n\n\n       "
+        expect = "\n\n\n\n\n\n"
+        self.assertEqual(expect, dedent(text))
+
+        # Lines consisting only of whitespace are always normalised
+        text = "a\n \n\t\n"
+        expect = "a\n\n\n"
+        self.assertEqual(expect, dedent(text))
+
+        # Whitespace characters on non-empty lines are retained
+        text = "a\r\n\r\n\r\n"
+        expect = "a\r\n\n\n"
+        self.assertEqual(expect, dedent(text))
 
     def test_dedent_nomargin(self):
         # No lines indented.
@@ -597,6 +883,22 @@ def foo():
         expect = "Foo\n  Bar\n\n Baz\n"
         self.assertEqual(expect, dedent(text))
 
+    def test_dedent_declining(self):
+        # Uneven indentation with declining indent level.
+        text = "     Foo\n    Bar\n"  # 5 spaces, then 4
+        expect = " Foo\nBar\n"
+        self.assertEqual(expect, dedent(text))
+
+        # Declining indent level with blank line.
+        text = "     Foo\n\n    Bar\n"  # 5 spaces, blank, then 4
+        expect = " Foo\n\nBar\n"
+        self.assertEqual(expect, dedent(text))
+
+        # Declining indent level with whitespace only line.
+        text = "     Foo\n    \n    Bar\n"  # 5 spaces, then 4, then 4
+        expect = " Foo\n\nBar\n"
+        self.assertEqual(expect, dedent(text))
+
     # dedent() should not mangle internal tabs
     def test_dedent_preserve_internal_tabs(self):
         text = "  hello\tthere\n  how are\tyou?"
@@ -633,12 +935,203 @@ def foo():
         expect = "hello there\n  how are you?"
         self.assertEqual(expect, dedent(text))
 
+        # test margin is smaller than smallest indent
+        text = "  \thello there\n   \thow are you?\n \tI'm fine, thanks"
+        expect = " \thello there\n  \thow are you?\n\tI'm fine, thanks"
+        self.assertEqual(expect, dedent(text))
 
-def test_main():
-    support.run_unittest(WrapTestCase,
-                              LongWordTestCase,
-                              IndentTestCases,
-                              DedentTestCase)
+
+# Test textwrap.indent
+class IndentTestCase(unittest.TestCase):
+    # The examples used for tests. If any of these change, the expected
+    # results in the various test cases must also be updated.
+    # The roundtrip cases are separate, because textwrap.dedent doesn't
+    # handle Windows line endings
+    ROUNDTRIP_CASES = (
+      # Basic test case
+      "Hi.\nThis is a test.\nTesting.",
+      # Include a blank line
+      "Hi.\nThis is a test.\n\nTesting.",
+      # Include leading and trailing blank lines
+      "\nHi.\nThis is a test.\nTesting.\n",
+    )
+    CASES = ROUNDTRIP_CASES + (
+      # Use Windows line endings
+      "Hi.\r\nThis is a test.\r\nTesting.\r\n",
+      # Pathological case
+      "\nHi.\r\nThis is a test.\n\r\nTesting.\r\n\n",
+    )
+
+    def test_indent_nomargin_default(self):
+        # indent should do nothing if 'prefix' is empty.
+        for text in self.CASES:
+            self.assertEqual(indent(text, ''), text)
+
+    def test_indent_nomargin_explicit_default(self):
+        # The same as test_indent_nomargin, but explicitly requesting
+        # the default behaviour by passing None as the predicate
+        for text in self.CASES:
+            self.assertEqual(indent(text, '', None), text)
+
+    def test_indent_nomargin_all_lines(self):
+        # The same as test_indent_nomargin, but using the optional
+        # predicate argument
+        predicate = lambda line: True
+        for text in self.CASES:
+            self.assertEqual(indent(text, '', predicate), text)
+
+    def test_indent_no_lines(self):
+        # Explicitly skip indenting any lines
+        predicate = lambda line: False
+        for text in self.CASES:
+            self.assertEqual(indent(text, '    ', predicate), text)
+
+    def test_roundtrip_spaces(self):
+        # A whitespace prefix should roundtrip with dedent
+        for text in self.ROUNDTRIP_CASES:
+            self.assertEqual(dedent(indent(text, '    ')), text)
+
+    def test_roundtrip_tabs(self):
+        # A whitespace prefix should roundtrip with dedent
+        for text in self.ROUNDTRIP_CASES:
+            self.assertEqual(dedent(indent(text, '\t\t')), text)
+
+    def test_roundtrip_mixed(self):
+        # A whitespace prefix should roundtrip with dedent
+        for text in self.ROUNDTRIP_CASES:
+            self.assertEqual(dedent(indent(text, ' \t  \t ')), text)
+
+    def test_indent_default(self):
+        # Test default indenting of lines that are not whitespace only
+        prefix = '  '
+        expected = (
+          # Basic test case
+          "  Hi.\n  This is a test.\n  Testing.",
+          # Include a blank line
+          "  Hi.\n  This is a test.\n\n  Testing.",
+          # Include leading and trailing blank lines
+          "\n  Hi.\n  This is a test.\n  Testing.\n",
+          # Use Windows line endings
+          "  Hi.\r\n  This is a test.\r\n  Testing.\r\n",
+          # Pathological case
+          "\n  Hi.\r\n  This is a test.\n\r\n  Testing.\r\n\n",
+        )
+        for text, expect in zip(self.CASES, expected):
+            self.assertEqual(indent(text, prefix), expect)
+
+    def test_indent_explicit_default(self):
+        # Test default indenting of lines that are not whitespace only
+        prefix = '  '
+        expected = (
+          # Basic test case
+          "  Hi.\n  This is a test.\n  Testing.",
+          # Include a blank line
+          "  Hi.\n  This is a test.\n\n  Testing.",
+          # Include leading and trailing blank lines
+          "\n  Hi.\n  This is a test.\n  Testing.\n",
+          # Use Windows line endings
+          "  Hi.\r\n  This is a test.\r\n  Testing.\r\n",
+          # Pathological case
+          "\n  Hi.\r\n  This is a test.\n\r\n  Testing.\r\n\n",
+        )
+        for text, expect in zip(self.CASES, expected):
+            self.assertEqual(indent(text, prefix, None), expect)
+
+    def test_indent_all_lines(self):
+        # Add 'prefix' to all lines, including whitespace-only ones.
+        prefix = '  '
+        expected = (
+          # Basic test case
+          "  Hi.\n  This is a test.\n  Testing.",
+          # Include a blank line
+          "  Hi.\n  This is a test.\n  \n  Testing.",
+          # Include leading and trailing blank lines
+          "  \n  Hi.\n  This is a test.\n  Testing.\n",
+          # Use Windows line endings
+          "  Hi.\r\n  This is a test.\r\n  Testing.\r\n",
+          # Pathological case
+          "  \n  Hi.\r\n  This is a test.\n  \r\n  Testing.\r\n  \n",
+        )
+        predicate = lambda line: True
+        for text, expect in zip(self.CASES, expected):
+            self.assertEqual(indent(text, prefix, predicate), expect)
+
+    def test_indent_empty_lines(self):
+        # Add 'prefix' solely to whitespace-only lines.
+        prefix = '  '
+        expected = (
+          # Basic test case
+          "Hi.\nThis is a test.\nTesting.",
+          # Include a blank line
+          "Hi.\nThis is a test.\n  \nTesting.",
+          # Include leading and trailing blank lines
+          "  \nHi.\nThis is a test.\nTesting.\n",
+          # Use Windows line endings
+          "Hi.\r\nThis is a test.\r\nTesting.\r\n",
+          # Pathological case
+          "  \nHi.\r\nThis is a test.\n  \r\nTesting.\r\n  \n",
+        )
+        predicate = lambda line: not line.strip()
+        for text, expect in zip(self.CASES, expected):
+            self.assertEqual(indent(text, prefix, predicate), expect)
+
+
+class ShortenTestCase(BaseTestCase):
+
+    def check_shorten(self, text, width, expect, **kwargs):
+        result = shorten(text, width, **kwargs)
+        self.check(result, expect)
+
+    def test_simple(self):
+        # Simple case: just words, spaces, and a bit of punctuation
+        text = "Hello there, how are you this fine day? I'm glad to hear it!"
+
+        self.check_shorten(text, 18, "Hello there, [...]")
+        self.check_shorten(text, len(text), text)
+        self.check_shorten(text, len(text) - 1,
+            "Hello there, how are you this fine day? "
+            "I'm glad to [...]")
+
+    def test_placeholder(self):
+        text = "Hello there, how are you this fine day? I'm glad to hear it!"
+
+        self.check_shorten(text, 17, "Hello there,$$", placeholder='$$')
+        self.check_shorten(text, 18, "Hello there, how$$", placeholder='$$')
+        self.check_shorten(text, 18, "Hello there, $$", placeholder=' $$')
+        self.check_shorten(text, len(text), text, placeholder='$$')
+        self.check_shorten(text, len(text) - 1,
+            "Hello there, how are you this fine day? "
+            "I'm glad to hear$$", placeholder='$$')
+
+    def test_empty_string(self):
+        self.check_shorten("", 6, "")
+
+    def test_whitespace(self):
+        # Whitespace collapsing
+        text = """
+            This is a  paragraph that  already has
+            line breaks and \t tabs too."""
+        self.check_shorten(text, 62,
+                             "This is a paragraph that already has line "
+                             "breaks and tabs too.")
+        self.check_shorten(text, 61,
+                             "This is a paragraph that already has line "
+                             "breaks and [...]")
+
+        self.check_shorten("hello      world!  ", 12, "hello world!")
+        self.check_shorten("hello      world!  ", 11, "hello [...]")
+        # The leading space is trimmed from the placeholder
+        # (it would be ugly otherwise).
+        self.check_shorten("hello      world!  ", 10, "[...]")
+
+    def test_width_too_small_for_placeholder(self):
+        shorten("x" * 20, width=8, placeholder="(......)")
+        with self.assertRaises(ValueError):
+            shorten("x" * 20, width=8, placeholder="(.......)")
+
+    def test_first_word_too_long_but_placeholder_fits(self):
+        self.check_shorten("Helloo", 5, "[...]")
+
 
 if __name__ == '__main__':
-    test_main()
+    unittest.main()

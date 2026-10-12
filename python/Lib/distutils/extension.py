@@ -4,7 +4,7 @@ Provides the Extension class, used to describe C/C++ extension
 modules in setup scripts."""
 
 import os
-import sys
+import re
 import warnings
 
 # This class is really only used by the "build_ext" command, so it might
@@ -131,6 +131,14 @@ class Extension:
             msg = "Unknown Extension options: %s" % options
             warnings.warn(msg)
 
+    def __repr__(self):
+        return '<%s.%s(%r) at %#x>' % (
+            self.__class__.__module__,
+            self.__class__.__qualname__,
+            self.name,
+            id(self))
+
+
 def read_setup_file(filename):
     """Reads a Setup file and returns Extension instances."""
     from distutils.sysconfig import (parse_makefile, expand_makefile_vars,
@@ -154,7 +162,7 @@ def read_setup_file(filename):
             line = file.readline()
             if line is None:                # eof
                 break
-            if _variable_rx.match(line):    # VAR=VALUE, handled in first pass
+            if re.match(_variable_rx, line):    # VAR=VALUE, handled in first pass
                 continue
 
             if line[0] == line[-1] == "*":

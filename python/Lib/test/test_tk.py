@@ -1,25 +1,20 @@
+import unittest
 from test import support
-# Skip test if _tkinter wasn't built.
-support.import_module('_tkinter')
+from test.support import import_helper
+from test.support import check_sanitizer
 
-# Make sure tkinter._fix runs to set up the environment
-support.import_fresh_module('tkinter')
+if check_sanitizer(address=True, memory=True):
+    raise unittest.SkipTest("Tests involvin libX11 can SEGFAULT on ASAN/MSAN builds")
+
+# Skip test if _tkinter wasn't built.
+import_helper.import_module('_tkinter')
 
 # Skip test if tk cannot be initialized.
-from tkinter.test.support import check_tk_availability
-check_tk_availability()
+support.requires('gui')
 
-from tkinter.test import runtktests
+def load_tests(loader, tests, pattern):
+    return loader.discover('tkinter.test.test_tkinter')
 
-def test_main(enable_gui=False):
-    if enable_gui:
-        if support.use_resources is None:
-            support.use_resources = ['gui']
-        elif 'gui' not in support.use_resources:
-            support.use_resources.append('gui')
-
-    support.run_unittest(
-            *runtktests.get_tests(text=False, packages=['test_tkinter']))
 
 if __name__ == '__main__':
-    test_main(enable_gui=True)
+    unittest.main()

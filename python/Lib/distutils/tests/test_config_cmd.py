@@ -2,7 +2,8 @@
 import unittest
 import os
 import sys
-from test.support import run_unittest
+import sysconfig
+from test.support import run_unittest, missing_compiler_executable
 
 from distutils.command.config import dump_file, config
 from distutils.tests import support
@@ -21,9 +22,12 @@ class ConfigTestCase(support.LoggingSilencer,
         self._logs = []
         self.old_log = log.info
         log.info = self._info
+        self.old_config_vars = dict(sysconfig._CONFIG_VARS)
 
     def tearDown(self):
         log.info = self.old_log
+        sysconfig._CONFIG_VARS.clear()
+        sysconfig._CONFIG_VARS.update(self.old_config_vars)
         super(ConfigTestCase, self).tearDown()
 
     def test_dump_file(self):
@@ -37,11 +41,17 @@ class ConfigTestCase(support.LoggingSilencer,
         dump_file(this_file, 'I am the header')
         self.assertEqual(len(self._logs), numlines+1)
 
+    @unittest.skipIf(sys.platform == 'win32', "can't test on Windows")
     def test_search_cpp(self):
-        if sys.platform == 'win32':
-            return
+        cmd = missing_compiler_executable(['preprocessor'])
+        if cmd is not None:
+            self.skipTest('The %r command is not found' % cmd)
         pkg_dir, dist = self.create_dist()
         cmd = config(dist)
+        cmd._check_compiler()
+        compiler = cmd.compiler
+        if sys.platform[:3] == "aix" and "xlc" in compiler.preprocessor[0].lower():
+            self.skipTest('xlc: The -E option overrides the -P, -o, and -qsyntaxonly options')
 
         # simple pattern searches
         match = cmd.search_cpp(pattern='xxx', body='/* xxx */')
@@ -81,7 +91,7 @@ class ConfigTestCase(support.LoggingSilencer,
         cmd._clean(f1, f2)
 
         for f in (f1, f2):
-            self.assertTrue(not os.path.exists(f))
+            self.assertFalse(os.path.exists(f))
 
 def test_suite():
     return unittest.makeSuite(ConfigTestCase)

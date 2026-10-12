@@ -3,12 +3,24 @@ Test script for doctest.
 """
 
 from test import support
+from test.support import import_helper
+from test.support import os_helper
 import doctest
+import functools
 import os
-
+import sys
+import importlib
+import importlib.abc
+import importlib.util
+import unittest
+import tempfile
+import shutil
+import types
+import contextlib
 
 # NOTE: There are some additional tests relating to interaction with
 #       zipimport in the test_zipimport_support test module.
+# There are also related tests in `test_doctest2` module.
 
 ######################################################################
 ## Sample Objects (used by test cases)
@@ -84,6 +96,17 @@ class SampleClass:
         >>> print(SampleClass(22).a_property)
         22
         """)
+
+    a_class_attribute = 42
+
+    @classmethod
+    @property
+    def a_classmethod_property(cls):
+        """
+        >>> print(SampleClass.a_classmethod_property)
+        42
+        """
+        return cls.a_class_attribute
 
     class NestedClass:
         """
@@ -289,7 +312,7 @@ constructor:
     ...
     ... Non-example text.
     ...
-    ...     >>> print('another\example')
+    ...     >>> print('another\\example')
     ...     another
     ...     example
     ... '''
@@ -322,7 +345,7 @@ containing test:
     >>> test.lineno + e2.lineno
     26
 
-If the docstring contains inconsistant leading whitespace in the
+If the docstring contains inconsistent leading whitespace in the
 expected output of an example, then `DocTest` will raise a ValueError:
 
     >>> docstring = r'''
@@ -408,7 +431,8 @@ Compare `DocTestCase`:
 
 """
 
-def test_DocTestFinder(): r"""
+class test_DocTestFinder:
+    def basics(): r"""
 Unit tests for the `DocTestFinder` class.
 
 DocTestFinder is used to extract DocTests from an object's docstring
@@ -432,7 +456,7 @@ We'll simulate a __file__ attr that ends in pyc:
     >>> tests = finder.find(sample_func)
 
     >>> print(tests)  # doctest: +ELLIPSIS
-    [<DocTest sample_func from ...:17 (1 example)>]
+    [<DocTest sample_func from test_doctest.py:29 (1 example)>]
 
 The exact name depends on how test_doctest was invoked, so allow for
 leading path components.
@@ -489,6 +513,7 @@ methods, classmethods, staticmethods, properties, and nested classes.
      1  SampleClass.NestedClass.__init__
      1  SampleClass.__init__
      2  SampleClass.a_classmethod
+     1  SampleClass.a_classmethod_property
      1  SampleClass.a_property
      1  SampleClass.a_staticmethod
      1  SampleClass.double
@@ -544,6 +569,7 @@ functions, classes, and the `__test__` dictionary, if it exists:
      1  some_module.SampleClass.NestedClass.__init__
      1  some_module.SampleClass.__init__
      2  some_module.SampleClass.a_classmethod
+     1  some_module.SampleClass.a_classmethod_property
      1  some_module.SampleClass.a_property
      1  some_module.SampleClass.a_staticmethod
      1  some_module.SampleClass.double
@@ -585,6 +611,7 @@ By default, an object with no doctests doesn't create any tests:
      1  SampleClass.NestedClass.__init__
      1  SampleClass.__init__
      2  SampleClass.a_classmethod
+     1  SampleClass.a_classmethod_property
      1  SampleClass.a_property
      1  SampleClass.a_staticmethod
      1  SampleClass.double
@@ -605,10 +632,31 @@ displays.
      0  SampleClass.NestedClass.square
      1  SampleClass.__init__
      2  SampleClass.a_classmethod
+     1  SampleClass.a_classmethod_property
      1  SampleClass.a_property
      1  SampleClass.a_staticmethod
      1  SampleClass.double
      1  SampleClass.get
+
+When used with `exclude_empty=False` we are also interested in line numbers
+of doctests that are empty.
+It used to be broken for quite some time until `bpo-28249`.
+
+    >>> from test import doctest_lineno
+    >>> tests = doctest.DocTestFinder(exclude_empty=False).find(doctest_lineno)
+    >>> for t in tests:
+    ...     print('%5s  %s' % (t.lineno, t.name))
+     None  test.doctest_lineno
+       22  test.doctest_lineno.ClassWithDocstring
+       30  test.doctest_lineno.ClassWithDoctest
+     None  test.doctest_lineno.ClassWithoutDocstring
+     None  test.doctest_lineno.MethodWrapper
+       39  test.doctest_lineno.MethodWrapper.method_with_docstring
+       45  test.doctest_lineno.MethodWrapper.method_with_doctest
+     None  test.doctest_lineno.MethodWrapper.method_without_docstring
+        4  test.doctest_lineno.func_with_docstring
+       12  test.doctest_lineno.func_with_doctest
+     None  test.doctest_lineno.func_without_docstring
 
 Turning off Recursion
 ~~~~~~~~~~~~~~~~~~~~~
@@ -644,6 +692,78 @@ DocTestFinder finds the line number of each example:
     >>> [e.lineno for e in test.examples]
     [1, 9, 12]
 """
+
+    if int.__doc__: # simple check for --without-doc-strings, skip if lacking
+        def non_Python_modules(): r"""
+
+Finding Doctests in Modules Not Written in Python
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+DocTestFinder can also find doctests in most modules not written in Python.
+We'll use builtins as an example, since it almost certainly isn't written in
+plain ol' Python and is guaranteed to be available.
+
+    >>> import builtins
+    >>> tests = doctest.DocTestFinder().find(builtins)
+    >>> 816 < len(tests) < 836 # approximate number of objects with docstrings
+    True
+    >>> real_tests = [t for t in tests if len(t.examples) > 0]
+    >>> len(real_tests) # objects that actually have doctests
+    14
+    >>> for t in real_tests:
+    ...     print('{}  {}'.format(len(t.examples), t.name))
+    ...
+    1  builtins.bin
+    5  builtins.bytearray.hex
+    5  builtins.bytes.hex
+    3  builtins.float.as_integer_ratio
+    2  builtins.float.fromhex
+    2  builtins.float.hex
+    1  builtins.hex
+    1  builtins.int
+    3  builtins.int.as_integer_ratio
+    2  builtins.int.bit_count
+    2  builtins.int.bit_length
+    5  builtins.memoryview.hex
+    1  builtins.oct
+    1  builtins.zip
+
+Note here that 'bin', 'oct', and 'hex' are functions; 'float.as_integer_ratio',
+'float.hex', and 'int.bit_length' are methods; 'float.fromhex' is a classmethod,
+and 'int' is a type.
+"""
+
+
+class TestDocTestFinder(unittest.TestCase):
+
+    def test_issue35753(self):
+        # This import of `call` should trigger issue35753 when
+        # `support.run_doctest` is called due to unwrap failing,
+        # however with a patched doctest this should succeed.
+        from unittest.mock import call
+        dummy_module = types.ModuleType("dummy")
+        dummy_module.__dict__['inject_call'] = call
+        try:
+            support.run_doctest(dummy_module, verbosity=True)
+        except ValueError as e:
+            raise support.TestFailed("Doctest unwrap failed") from e
+
+    def test_empty_namespace_package(self):
+        pkg_name = 'doctest_empty_pkg'
+        with tempfile.TemporaryDirectory() as parent_dir:
+            pkg_dir = os.path.join(parent_dir, pkg_name)
+            os.mkdir(pkg_dir)
+            sys.path.append(parent_dir)
+            try:
+                mod = importlib.import_module(pkg_name)
+            finally:
+                import_helper.forget(pkg_name)
+                sys.path.pop()
+
+            include_empty_finder = doctest.DocTestFinder(exclude_empty=False)
+            exclude_empty_finder = doctest.DocTestFinder(exclude_empty=True)
+
+            self.assertEqual(len(include_empty_finder.find(mod)), 1)
+            self.assertEqual(len(exclude_empty_finder.find(mod)), 0)
 
 def test_DocTestParser(): r"""
 Unit tests for the `DocTestParser` class.
@@ -1018,6 +1138,33 @@ But IGNORE_EXCEPTION_DETAIL does not allow a mismatch in the exception type:
         ...
         ValueError: message
     TestResults(failed=1, attempted=1)
+
+If the exception does not have a message, you can still use
+IGNORE_EXCEPTION_DETAIL to normalize the modules between Python 2 and 3:
+
+    >>> def f(x):
+    ...     r'''
+    ...     >>> from http.client import HTTPException
+    ...     >>> raise HTTPException() #doctest: +IGNORE_EXCEPTION_DETAIL
+    ...     Traceback (most recent call last):
+    ...     foo.bar.HTTPException
+    ...     '''
+    >>> test = doctest.DocTestFinder().find(f)[0]
+    >>> doctest.DocTestRunner(verbose=False).run(test)
+    TestResults(failed=0, attempted=2)
+
+Note that a trailing colon doesn't matter either:
+
+    >>> def f(x):
+    ...     r'''
+    ...     >>> from http.client import HTTPException
+    ...     >>> raise HTTPException() #doctest: +IGNORE_EXCEPTION_DETAIL
+    ...     Traceback (most recent call last):
+    ...     foo.bar.HTTPException:
+    ...     '''
+    >>> test = doctest.DocTestFinder().find(f)[0]
+    >>> doctest.DocTestRunner(verbose=False).run(test)
+    TestResults(failed=0, attempted=2)
 
 If an exception is raised but not expected, then it is reported as an
 unexpected exception:
@@ -1408,8 +1555,40 @@ However, output from `report_start` is not suppressed:
         2
     TestResults(failed=3, attempted=5)
 
-For the purposes of REPORT_ONLY_FIRST_FAILURE, unexpected exceptions
-count as failures:
+The FAIL_FAST flag causes the runner to exit after the first failing example,
+so subsequent examples are not even attempted:
+
+    >>> flags = doctest.FAIL_FAST
+    >>> doctest.DocTestRunner(verbose=False, optionflags=flags).run(test)
+    ... # doctest: +ELLIPSIS
+    **********************************************************************
+    File ..., line 5, in f
+    Failed example:
+        print(2) # first failure
+    Expected:
+        200
+    Got:
+        2
+    TestResults(failed=1, attempted=2)
+
+Specifying both FAIL_FAST and REPORT_ONLY_FIRST_FAILURE is equivalent to
+FAIL_FAST only:
+
+    >>> flags = doctest.FAIL_FAST | doctest.REPORT_ONLY_FIRST_FAILURE
+    >>> doctest.DocTestRunner(verbose=False, optionflags=flags).run(test)
+    ... # doctest: +ELLIPSIS
+    **********************************************************************
+    File ..., line 5, in f
+    Failed example:
+        print(2) # first failure
+    Expected:
+        200
+    Got:
+        2
+    TestResults(failed=1, attempted=2)
+
+For the purposes of both REPORT_ONLY_FIRST_FAILURE and FAIL_FAST, unexpected
+exceptions count as failures:
 
     >>> def f(x):
     ...     r'''
@@ -1436,6 +1615,17 @@ count as failures:
         ...
         ValueError: 2
     TestResults(failed=3, attempted=5)
+    >>> flags = doctest.FAIL_FAST
+    >>> doctest.DocTestRunner(verbose=False, optionflags=flags).run(test)
+    ... # doctest: +ELLIPSIS
+    **********************************************************************
+    File ..., line 5, in f
+    Failed example:
+        raise ValueError(2) # first failure
+    Exception raised:
+        ...
+        ValueError: 2
+    TestResults(failed=1, attempted=2)
 
 New option flags can also be registered, via register_optionflag().  Here
 we reach into doctest's internals a bit.
@@ -1745,226 +1935,226 @@ Run the debugger on the docstring, and then restore sys.stdin.
 
 """
 
-def test_pdb_set_trace():
-    """Using pdb.set_trace from a doctest.
+if not hasattr(sys, 'gettrace') or not sys.gettrace():
+    def test_pdb_set_trace():
+        """Using pdb.set_trace from a doctest.
 
-    You can use pdb.set_trace from a doctest.  To do so, you must
-    retrieve the set_trace function from the pdb module at the time
-    you use it.  The doctest module changes sys.stdout so that it can
-    capture program output.  It also temporarily replaces pdb.set_trace
-    with a version that restores stdout.  This is necessary for you to
-    see debugger output.
+        You can use pdb.set_trace from a doctest.  To do so, you must
+        retrieve the set_trace function from the pdb module at the time
+        you use it.  The doctest module changes sys.stdout so that it can
+        capture program output.  It also temporarily replaces pdb.set_trace
+        with a version that restores stdout.  This is necessary for you to
+        see debugger output.
 
-      >>> doc = '''
-      ... >>> x = 42
-      ... >>> raise Exception('clé')
-      ... Traceback (most recent call last):
-      ... Exception: clé
-      ... >>> import pdb; pdb.set_trace()
-      ... '''
-      >>> parser = doctest.DocTestParser()
-      >>> test = parser.get_doctest(doc, {}, "foo-bar@baz", "foo-bar@baz.py", 0)
-      >>> runner = doctest.DocTestRunner(verbose=False)
+          >>> doc = '''
+          ... >>> x = 42
+          ... >>> raise Exception('clé')
+          ... Traceback (most recent call last):
+          ... Exception: clé
+          ... >>> import pdb; pdb.set_trace()
+          ... '''
+          >>> parser = doctest.DocTestParser()
+          >>> test = parser.get_doctest(doc, {}, "foo-bar@baz", "foo-bar@baz.py", 0)
+          >>> runner = doctest.DocTestRunner(verbose=False)
 
-    To demonstrate this, we'll create a fake standard input that
-    captures our debugger input:
+        To demonstrate this, we'll create a fake standard input that
+        captures our debugger input:
 
-      >>> import tempfile
-      >>> real_stdin = sys.stdin
-      >>> sys.stdin = _FakeInput([
-      ...    'print(x)',  # print data defined by the example
-      ...    'continue', # stop debugging
-      ...    ''])
+          >>> real_stdin = sys.stdin
+          >>> sys.stdin = _FakeInput([
+          ...    'print(x)',  # print data defined by the example
+          ...    'continue', # stop debugging
+          ...    ''])
 
-      >>> try: runner.run(test)
-      ... finally: sys.stdin = real_stdin
-      --Return--
-      > <doctest foo-bar@baz[2]>(1)<module>()->None
-      -> import pdb; pdb.set_trace()
-      (Pdb) print(x)
-      42
-      (Pdb) continue
-      TestResults(failed=0, attempted=3)
+          >>> try: runner.run(test)
+          ... finally: sys.stdin = real_stdin
+          --Return--
+          > <doctest foo-bar@baz[2]>(1)<module>()->None
+          -> import pdb; pdb.set_trace()
+          (Pdb) print(x)
+          42
+          (Pdb) continue
+          TestResults(failed=0, attempted=3)
 
-      You can also put pdb.set_trace in a function called from a test:
+          You can also put pdb.set_trace in a function called from a test:
 
-      >>> def calls_set_trace():
-      ...    y=2
-      ...    import pdb; pdb.set_trace()
+          >>> def calls_set_trace():
+          ...    y=2
+          ...    import pdb; pdb.set_trace()
 
-      >>> doc = '''
-      ... >>> x=1
-      ... >>> calls_set_trace()
-      ... '''
-      >>> test = parser.get_doctest(doc, globals(), "foo-bar@baz", "foo-bar@baz.py", 0)
-      >>> real_stdin = sys.stdin
-      >>> sys.stdin = _FakeInput([
-      ...    'print(y)',  # print data defined in the function
-      ...    'up',       # out of function
-      ...    'print(x)',  # print data defined by the example
-      ...    'continue', # stop debugging
-      ...    ''])
+          >>> doc = '''
+          ... >>> x=1
+          ... >>> calls_set_trace()
+          ... '''
+          >>> test = parser.get_doctest(doc, globals(), "foo-bar@baz", "foo-bar@baz.py", 0)
+          >>> real_stdin = sys.stdin
+          >>> sys.stdin = _FakeInput([
+          ...    'print(y)',  # print data defined in the function
+          ...    'up',       # out of function
+          ...    'print(x)',  # print data defined by the example
+          ...    'continue', # stop debugging
+          ...    ''])
 
-      >>> try:
-      ...     runner.run(test)
-      ... finally:
-      ...     sys.stdin = real_stdin
-      --Return--
-      > <doctest test.test_doctest.test_pdb_set_trace[8]>(3)calls_set_trace()->None
-      -> import pdb; pdb.set_trace()
-      (Pdb) print(y)
-      2
-      (Pdb) up
-      > <doctest foo-bar@baz[1]>(1)<module>()
-      -> calls_set_trace()
-      (Pdb) print(x)
-      1
-      (Pdb) continue
-      TestResults(failed=0, attempted=2)
+          >>> try:
+          ...     runner.run(test)
+          ... finally:
+          ...     sys.stdin = real_stdin
+          --Return--
+          > <doctest test.test_doctest.test_pdb_set_trace[7]>(3)calls_set_trace()->None
+          -> import pdb; pdb.set_trace()
+          (Pdb) print(y)
+          2
+          (Pdb) up
+          > <doctest foo-bar@baz[1]>(1)<module>()
+          -> calls_set_trace()
+          (Pdb) print(x)
+          1
+          (Pdb) continue
+          TestResults(failed=0, attempted=2)
 
-    During interactive debugging, source code is shown, even for
-    doctest examples:
+        During interactive debugging, source code is shown, even for
+        doctest examples:
 
-      >>> doc = '''
-      ... >>> def f(x):
-      ... ...     g(x*2)
-      ... >>> def g(x):
-      ... ...     print(x+3)
-      ... ...     import pdb; pdb.set_trace()
-      ... >>> f(3)
-      ... '''
-      >>> test = parser.get_doctest(doc, globals(), "foo-bar@baz", "foo-bar@baz.py", 0)
-      >>> real_stdin = sys.stdin
-      >>> sys.stdin = _FakeInput([
-      ...    'list',     # list source from example 2
-      ...    'next',     # return from g()
-      ...    'list',     # list source from example 1
-      ...    'next',     # return from f()
-      ...    'list',     # list source from example 3
-      ...    'continue', # stop debugging
-      ...    ''])
-      >>> try: runner.run(test)
-      ... finally: sys.stdin = real_stdin
-      ... # doctest: +NORMALIZE_WHITESPACE
-      --Return--
-      > <doctest foo-bar@baz[1]>(3)g()->None
-      -> import pdb; pdb.set_trace()
-      (Pdb) list
-        1     def g(x):
-        2         print(x+3)
-        3  ->     import pdb; pdb.set_trace()
-      [EOF]
-      (Pdb) next
-      --Return--
-      > <doctest foo-bar@baz[0]>(2)f()->None
-      -> g(x*2)
-      (Pdb) list
-        1     def f(x):
-        2  ->     g(x*2)
-      [EOF]
-      (Pdb) next
-      --Return--
-      > <doctest foo-bar@baz[2]>(1)<module>()->None
-      -> f(3)
-      (Pdb) list
-        1  -> f(3)
-      [EOF]
-      (Pdb) continue
-      **********************************************************************
-      File "foo-bar@baz.py", line 7, in foo-bar@baz
-      Failed example:
-          f(3)
-      Expected nothing
-      Got:
-          9
-      TestResults(failed=1, attempted=3)
-      """
+          >>> doc = '''
+          ... >>> def f(x):
+          ... ...     g(x*2)
+          ... >>> def g(x):
+          ... ...     print(x+3)
+          ... ...     import pdb; pdb.set_trace()
+          ... >>> f(3)
+          ... '''
+          >>> test = parser.get_doctest(doc, globals(), "foo-bar@baz", "foo-bar@baz.py", 0)
+          >>> real_stdin = sys.stdin
+          >>> sys.stdin = _FakeInput([
+          ...    'list',     # list source from example 2
+          ...    'next',     # return from g()
+          ...    'list',     # list source from example 1
+          ...    'next',     # return from f()
+          ...    'list',     # list source from example 3
+          ...    'continue', # stop debugging
+          ...    ''])
+          >>> try: runner.run(test)
+          ... finally: sys.stdin = real_stdin
+          ... # doctest: +NORMALIZE_WHITESPACE
+          --Return--
+          > <doctest foo-bar@baz[1]>(3)g()->None
+          -> import pdb; pdb.set_trace()
+          (Pdb) list
+            1     def g(x):
+            2         print(x+3)
+            3  ->     import pdb; pdb.set_trace()
+          [EOF]
+          (Pdb) next
+          --Return--
+          > <doctest foo-bar@baz[0]>(2)f()->None
+          -> g(x*2)
+          (Pdb) list
+            1     def f(x):
+            2  ->     g(x*2)
+          [EOF]
+          (Pdb) next
+          --Return--
+          > <doctest foo-bar@baz[2]>(1)<module>()->None
+          -> f(3)
+          (Pdb) list
+            1  -> f(3)
+          [EOF]
+          (Pdb) continue
+          **********************************************************************
+          File "foo-bar@baz.py", line 7, in foo-bar@baz
+          Failed example:
+              f(3)
+          Expected nothing
+          Got:
+              9
+          TestResults(failed=1, attempted=3)
+          """
 
-def test_pdb_set_trace_nested():
-    """This illustrates more-demanding use of set_trace with nested functions.
+    def test_pdb_set_trace_nested():
+        """This illustrates more-demanding use of set_trace with nested functions.
 
-    >>> class C(object):
-    ...     def calls_set_trace(self):
-    ...         y = 1
-    ...         import pdb; pdb.set_trace()
-    ...         self.f1()
-    ...         y = 2
-    ...     def f1(self):
-    ...         x = 1
-    ...         self.f2()
-    ...         x = 2
-    ...     def f2(self):
-    ...         z = 1
-    ...         z = 2
+        >>> class C(object):
+        ...     def calls_set_trace(self):
+        ...         y = 1
+        ...         import pdb; pdb.set_trace()
+        ...         self.f1()
+        ...         y = 2
+        ...     def f1(self):
+        ...         x = 1
+        ...         self.f2()
+        ...         x = 2
+        ...     def f2(self):
+        ...         z = 1
+        ...         z = 2
 
-    >>> calls_set_trace = C().calls_set_trace
+        >>> calls_set_trace = C().calls_set_trace
 
-    >>> doc = '''
-    ... >>> a = 1
-    ... >>> calls_set_trace()
-    ... '''
-    >>> parser = doctest.DocTestParser()
-    >>> runner = doctest.DocTestRunner(verbose=False)
-    >>> test = parser.get_doctest(doc, globals(), "foo-bar@baz", "foo-bar@baz.py", 0)
-    >>> real_stdin = sys.stdin
-    >>> sys.stdin = _FakeInput([
-    ...    'print(y)',  # print data defined in the function
-    ...    'step', 'step', 'step', 'step', 'step', 'step', 'print(z)',
-    ...    'up', 'print(x)',
-    ...    'up', 'print(y)',
-    ...    'up', 'print(foo)',
-    ...    'continue', # stop debugging
-    ...    ''])
+        >>> doc = '''
+        ... >>> a = 1
+        ... >>> calls_set_trace()
+        ... '''
+        >>> parser = doctest.DocTestParser()
+        >>> runner = doctest.DocTestRunner(verbose=False)
+        >>> test = parser.get_doctest(doc, globals(), "foo-bar@baz", "foo-bar@baz.py", 0)
+        >>> real_stdin = sys.stdin
+        >>> sys.stdin = _FakeInput([
+        ...    'print(y)',  # print data defined in the function
+        ...    'step', 'step', 'step', 'step', 'step', 'step', 'print(z)',
+        ...    'up', 'print(x)',
+        ...    'up', 'print(y)',
+        ...    'up', 'print(foo)',
+        ...    'continue', # stop debugging
+        ...    ''])
 
-    >>> try:
-    ...     runner.run(test)
-    ... finally:
-    ...     sys.stdin = real_stdin
-    ... # doctest: +REPORT_NDIFF
-    > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(5)calls_set_trace()
-    -> self.f1()
-    (Pdb) print(y)
-    1
-    (Pdb) step
-    --Call--
-    > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(7)f1()
-    -> def f1(self):
-    (Pdb) step
-    > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(8)f1()
-    -> x = 1
-    (Pdb) step
-    > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(9)f1()
-    -> self.f2()
-    (Pdb) step
-    --Call--
-    > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(11)f2()
-    -> def f2(self):
-    (Pdb) step
-    > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(12)f2()
-    -> z = 1
-    (Pdb) step
-    > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(13)f2()
-    -> z = 2
-    (Pdb) print(z)
-    1
-    (Pdb) up
-    > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(9)f1()
-    -> self.f2()
-    (Pdb) print(x)
-    1
-    (Pdb) up
-    > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(5)calls_set_trace()
-    -> self.f1()
-    (Pdb) print(y)
-    1
-    (Pdb) up
-    > <doctest foo-bar@baz[1]>(1)<module>()
-    -> calls_set_trace()
-    (Pdb) print(foo)
-    *** NameError: name 'foo' is not defined
-    (Pdb) continue
-    TestResults(failed=0, attempted=2)
-"""
+        >>> try:
+        ...     runner.run(test)
+        ... finally:
+        ...     sys.stdin = real_stdin
+        ... # doctest: +REPORT_NDIFF
+        > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(5)calls_set_trace()
+        -> self.f1()
+        (Pdb) print(y)
+        1
+        (Pdb) step
+        --Call--
+        > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(7)f1()
+        -> def f1(self):
+        (Pdb) step
+        > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(8)f1()
+        -> x = 1
+        (Pdb) step
+        > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(9)f1()
+        -> self.f2()
+        (Pdb) step
+        --Call--
+        > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(11)f2()
+        -> def f2(self):
+        (Pdb) step
+        > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(12)f2()
+        -> z = 1
+        (Pdb) step
+        > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(13)f2()
+        -> z = 2
+        (Pdb) print(z)
+        1
+        (Pdb) up
+        > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(9)f1()
+        -> self.f2()
+        (Pdb) print(x)
+        1
+        (Pdb) up
+        > <doctest test.test_doctest.test_pdb_set_trace_nested[0]>(5)calls_set_trace()
+        -> self.f1()
+        (Pdb) print(y)
+        1
+        (Pdb) up
+        > <doctest foo-bar@baz[1]>(1)<module>()
+        -> calls_set_trace()
+        (Pdb) print(foo)
+        *** NameError: name 'foo' is not defined
+        (Pdb) continue
+        TestResults(failed=0, attempted=2)
+    """
 
 def test_DocTestSuite():
     """DocTestSuite creates a unittest test suite from a doctest.
@@ -1990,22 +2180,9 @@ def test_DocTestSuite():
          >>> suite.run(unittest.TestResult())
          <unittest.result.TestResult run=0 errors=0 failures=0>
 
-       However, if DocTestSuite finds no docstrings, it raises an error:
+       The module need not contain any docstrings either:
 
-         >>> try:
-         ...     doctest.DocTestSuite('test.sample_doctest_no_docstrings')
-         ... except ValueError as e:
-         ...     error = e
-
-         >>> print(error.args[1])
-         has no docstrings
-
-       You can prevent this error by passing a DocTestFinder instance with
-       the `exclude_empty` keyword argument set to False:
-
-         >>> finder = doctest.DocTestFinder(exclude_empty=False)
-         >>> suite = doctest.DocTestSuite('test.sample_doctest_no_docstrings',
-         ...                              test_finder=finder)
+         >>> suite = doctest.DocTestSuite('test.sample_doctest_no_docstrings')
          >>> suite.run(unittest.TestResult())
          <unittest.result.TestResult run=0 errors=0 failures=0>
 
@@ -2014,6 +2191,22 @@ def test_DocTestSuite():
          >>> suite = test.sample_doctest.test_suite()
          >>> suite.run(unittest.TestResult())
          <unittest.result.TestResult run=9 errors=0 failures=4>
+
+       We can also provide a DocTestFinder:
+
+         >>> finder = doctest.DocTestFinder()
+         >>> suite = doctest.DocTestSuite('test.sample_doctest',
+         ...                          test_finder=finder)
+         >>> suite.run(unittest.TestResult())
+         <unittest.result.TestResult run=9 errors=0 failures=4>
+
+       The DocTestFinder need not return any tests:
+
+         >>> finder = doctest.DocTestFinder()
+         >>> suite = doctest.DocTestSuite('test.sample_doctest_no_docstrings',
+         ...                          test_finder=finder)
+         >>> suite.run(unittest.TestResult())
+         <unittest.result.TestResult run=0 errors=0 failures=0>
 
        We can supply global variables.  If we pass globs, they will be
        used instead of the module globals.  Here we'll pass an empty
@@ -2062,9 +2255,9 @@ def test_DocTestSuite():
          >>> test.test_doctest.sillySetup
          Traceback (most recent call last):
          ...
-         AttributeError: 'module' object has no attribute 'sillySetup'
+         AttributeError: module 'test.test_doctest' has no attribute 'sillySetup'
 
-       The setUp and tearDown funtions are passed test objects. Here
+       The setUp and tearDown functions are passed test objects. Here
        we'll use the setUp function to supply the missing variable y:
 
          >>> def setUp(test):
@@ -2208,9 +2401,9 @@ def test_DocFileSuite():
          >>> test.test_doctest.sillySetup
          Traceback (most recent call last):
          ...
-         AttributeError: 'module' object has no attribute 'sillySetup'
+         AttributeError: module 'test.test_doctest' has no attribute 'sillySetup'
 
-       The setUp and tearDown funtions are passed test objects.
+       The setUp and tearDown functions are passed test objects.
        Here, we'll use a setUp function to set the favorite color in
        test_doctest.txt:
 
@@ -2255,6 +2448,22 @@ def test_trailing_space_in_test():
       foo \n
     """
 
+class Wrapper:
+    def __init__(self, func):
+        self.func = func
+        functools.update_wrapper(self, func)
+
+    def __call__(self, *args, **kwargs):
+        self.func(*args, **kwargs)
+
+@Wrapper
+def test_look_in_unwrapped():
+    """
+    Docstrings in wrapped functions must be detected as well.
+
+    >>> 'one other test'
+    'one other test'
+    """
 
 def test_unittest_reportflags():
     """Default unittest reporting flags can be set to control reporting
@@ -2306,6 +2515,10 @@ def test_unittest_reportflags():
     Then the default eporting options are ignored:
 
       >>> result = suite.run(unittest.TestResult())
+
+    *NOTE*: These doctest are intentionally not placed in raw string to depict
+    the trailing whitespace using `\x20` in the diff below.
+
       >>> print(result.failures[0][1]) # doctest: +ELLIPSIS
       Traceback ...
       Failed example:
@@ -2319,7 +2532,7 @@ def test_unittest_reportflags():
       Differences (ndiff with -expected +actual):
             a
           - <BLANKLINE>
-          +
+          +\x20
             b
       <BLANKLINE>
       <BLANKLINE>
@@ -2333,7 +2546,7 @@ def test_unittest_reportflags():
 
 def test_testfile(): r"""
 Tests for the `testfile()` function.  This function runs all the
-doctest examples in a given file.  In its simple invokation, it is
+doctest examples in a given file.  In its simple invocation, it is
 called with the name of a file, which is taken to be relative to the
 calling module.  The return value is (#failures, #tests).
 
@@ -2507,6 +2720,117 @@ Test the verbose output:
     >>> sys.argv = save_argv
 """
 
+class TestImporter(importlib.abc.MetaPathFinder, importlib.abc.ResourceLoader):
+
+    def find_spec(self, fullname, path, target=None):
+        return importlib.util.spec_from_file_location(fullname, path, loader=self)
+
+    def get_data(self, path):
+        with open(path, mode='rb') as f:
+            return f.read()
+
+class TestHook:
+
+    def __init__(self, pathdir):
+        self.sys_path = sys.path[:]
+        self.meta_path = sys.meta_path[:]
+        self.path_hooks = sys.path_hooks[:]
+        sys.path.append(pathdir)
+        sys.path_importer_cache.clear()
+        self.modules_before = sys.modules.copy()
+        self.importer = TestImporter()
+        sys.meta_path.append(self.importer)
+
+    def remove(self):
+        sys.path[:] = self.sys_path
+        sys.meta_path[:] = self.meta_path
+        sys.path_hooks[:] = self.path_hooks
+        sys.path_importer_cache.clear()
+        sys.modules.clear()
+        sys.modules.update(self.modules_before)
+
+
+@contextlib.contextmanager
+def test_hook(pathdir):
+    hook = TestHook(pathdir)
+    try:
+        yield hook
+    finally:
+        hook.remove()
+
+
+def test_lineendings(): r"""
+*nix systems use \n line endings, while Windows systems use \r\n, and
+old Mac systems used \r, which Python still recognizes as a line ending.  Python
+handles this using universal newline mode for reading files.  Let's make
+sure doctest does so (issue 8473) by creating temporary test files using each
+of the three line disciplines.  At least one will not match either the universal
+newline \n or os.linesep for the platform the test is run on.
+
+Windows line endings first:
+
+    >>> import tempfile, os
+    >>> fn = tempfile.mktemp()
+    >>> with open(fn, 'wb') as f:
+    ...    f.write(b'Test:\r\n\r\n  >>> x = 1 + 1\r\n\r\nDone.\r\n')
+    35
+    >>> doctest.testfile(fn, module_relative=False, verbose=False)
+    TestResults(failed=0, attempted=1)
+    >>> os.remove(fn)
+
+And now *nix line endings:
+
+    >>> fn = tempfile.mktemp()
+    >>> with open(fn, 'wb') as f:
+    ...     f.write(b'Test:\n\n  >>> x = 1 + 1\n\nDone.\n')
+    30
+    >>> doctest.testfile(fn, module_relative=False, verbose=False)
+    TestResults(failed=0, attempted=1)
+    >>> os.remove(fn)
+
+And finally old Mac line endings:
+
+    >>> fn = tempfile.mktemp()
+    >>> with open(fn, 'wb') as f:
+    ...     f.write(b'Test:\r\r  >>> x = 1 + 1\r\rDone.\r')
+    30
+    >>> doctest.testfile(fn, module_relative=False, verbose=False)
+    TestResults(failed=0, attempted=1)
+    >>> os.remove(fn)
+
+Now we test with a package loader that has a get_data method, since that
+bypasses the standard universal newline handling so doctest has to do the
+newline conversion itself; let's make sure it does so correctly (issue 1812).
+We'll write a file inside the package that has all three kinds of line endings
+in it, and use a package hook to install a custom loader; on any platform,
+at least one of the line endings will raise a ValueError for inconsistent
+whitespace if doctest does not correctly do the newline conversion.
+
+    >>> dn = tempfile.mkdtemp()
+    >>> pkg = os.path.join(dn, "doctest_testpkg")
+    >>> os.mkdir(pkg)
+    >>> os_helper.create_empty_file(os.path.join(pkg, "__init__.py"))
+    >>> fn = os.path.join(pkg, "doctest_testfile.txt")
+    >>> with open(fn, 'wb') as f:
+    ...     f.write(
+    ...         b'Test:\r\n\r\n'
+    ...         b'  >>> x = 1 + 1\r\n\r\n'
+    ...         b'Done.\r\n'
+    ...         b'Test:\n\n'
+    ...         b'  >>> x = 1 + 1\n\n'
+    ...         b'Done.\n'
+    ...         b'Test:\r\r'
+    ...         b'  >>> x = 1 + 1\r\r'
+    ...         b'Done.\r'
+    ...     )
+    95
+    >>> with test_hook(dn):
+    ...     doctest.testfile("doctest_testfile.txt", package="doctest_testpkg", verbose=False)
+    TestResults(failed=0, attempted=3)
+    >>> shutil.rmtree(dn)
+
+"""
+
 def test_testmod(): r"""
 Tests for the testmod function.  More might be useful, but for now we're just
 testing the case raised by Issue 6195, where trying to doctest a C module would
@@ -2544,29 +2868,310 @@ Check doctest with a non-ascii filename:
     Exception raised:
         Traceback (most recent call last):
           File ...
-            compileflags, 1), test.globs)
+            exec(compile(example.source, filename, "single",
           File "<doctest foo-bär@baz[0]>", line 1, in <module>
             raise Exception('clé')
         Exception: clé
     TestResults(failed=1, attempted=1)
     """
 
-######################################################################
-## Main
-######################################################################
+def test_CLI(): r"""
+The doctest module can be used to run doctests against an arbitrary file.
+These tests test this CLI functionality.
 
-def test_main():
-    # Check the doctest cases in doctest itself:
-    support.run_doctest(doctest, verbosity=True)
-    # Check the doctest cases defined here:
-    from test import test_doctest
-    support.run_doctest(test_doctest, verbosity=True)
+We'll use the support module's script_helpers for this, and write a test files
+to a temp dir to run the command against.  Due to a current limitation in
+script_helpers, though, we need a little utility function to turn the returned
+output into something we can doctest against:
 
-import sys, re, io
+    >>> def normalize(s):
+    ...     return '\n'.join(s.decode().splitlines())
+
+With those preliminaries out of the way, we'll start with a file with two
+simple tests and no errors.  We'll run both the unadorned doctest command, and
+the verbose version, and then check the output:
+
+    >>> from test.support import script_helper
+    >>> from test.support.os_helper import temp_dir
+    >>> with temp_dir() as tmpdir:
+    ...     fn = os.path.join(tmpdir, 'myfile.doc')
+    ...     with open(fn, 'w', encoding='utf-8') as f:
+    ...         _ = f.write('This is a very simple test file.\n')
+    ...         _ = f.write('   >>> 1 + 1\n')
+    ...         _ = f.write('   2\n')
+    ...         _ = f.write('   >>> "a"\n')
+    ...         _ = f.write("   'a'\n")
+    ...         _ = f.write('\n')
+    ...         _ = f.write('And that is it.\n')
+    ...     rc1, out1, err1 = script_helper.assert_python_ok(
+    ...             '-m', 'doctest', fn)
+    ...     rc2, out2, err2 = script_helper.assert_python_ok(
+    ...             '-m', 'doctest', '-v', fn)
+
+With no arguments and passing tests, we should get no output:
+
+    >>> rc1, out1, err1
+    (0, b'', b'')
+
+With the verbose flag, we should see the test output, but no error output:
+
+    >>> rc2, err2
+    (0, b'')
+    >>> print(normalize(out2))
+    Trying:
+        1 + 1
+    Expecting:
+        2
+    ok
+    Trying:
+        "a"
+    Expecting:
+        'a'
+    ok
+    1 items passed all tests:
+       2 tests in myfile.doc
+    2 tests in 1 items.
+    2 passed and 0 failed.
+    Test passed.
+
+Now we'll write a couple files, one with three tests, the other a python module
+with two tests, both of the files having "errors" in the tests that can be made
+non-errors by applying the appropriate doctest options to the run (ELLIPSIS in
+the first file, NORMALIZE_WHITESPACE in the second).  This combination will
+allow thoroughly testing the -f and -o flags, as well as the doctest command's
+ability to process more than one file on the command line and, since the second
+file ends in '.py', its handling of python module files (as opposed to straight
+text files).
+
+    >>> from test.support import script_helper
+    >>> from test.support.os_helper import temp_dir
+    >>> with temp_dir() as tmpdir:
+    ...     fn = os.path.join(tmpdir, 'myfile.doc')
+    ...     with open(fn, 'w', encoding="utf-8") as f:
+    ...         _ = f.write('This is another simple test file.\n')
+    ...         _ = f.write('   >>> 1 + 1\n')
+    ...         _ = f.write('   2\n')
+    ...         _ = f.write('   >>> "abcdef"\n')
+    ...         _ = f.write("   'a...f'\n")
+    ...         _ = f.write('   >>> "ajkml"\n')
+    ...         _ = f.write("   'a...l'\n")
+    ...         _ = f.write('\n')
+    ...         _ = f.write('And that is it.\n')
+    ...     fn2 = os.path.join(tmpdir, 'myfile2.py')
+    ...     with open(fn2, 'w', encoding='utf-8') as f:
+    ...         _ = f.write('def test_func():\n')
+    ...         _ = f.write('   \"\"\"\n')
+    ...         _ = f.write('   This is simple python test function.\n')
+    ...         _ = f.write('       >>> 1 + 1\n')
+    ...         _ = f.write('       2\n')
+    ...         _ = f.write('       >>> "abc   def"\n')
+    ...         _ = f.write("       'abc def'\n")
+    ...         _ = f.write("\n")
+    ...         _ = f.write('   \"\"\"\n')
+    ...     rc1, out1, err1 = script_helper.assert_python_failure(
+    ...             '-m', 'doctest', fn, fn2)
+    ...     rc2, out2, err2 = script_helper.assert_python_ok(
+    ...             '-m', 'doctest', '-o', 'ELLIPSIS', fn)
+    ...     rc3, out3, err3 = script_helper.assert_python_ok(
+    ...             '-m', 'doctest', '-o', 'ELLIPSIS',
+    ...             '-o', 'NORMALIZE_WHITESPACE', fn, fn2)
+    ...     rc4, out4, err4 = script_helper.assert_python_failure(
+    ...             '-m', 'doctest', '-f', fn, fn2)
+    ...     rc5, out5, err5 = script_helper.assert_python_ok(
+    ...             '-m', 'doctest', '-v', '-o', 'ELLIPSIS',
+    ...             '-o', 'NORMALIZE_WHITESPACE', fn, fn2)
+
+Our first test run will show the errors from the first file (doctest stops if a
+file has errors).  Note that doctest test-run error output appears on stdout,
+not stderr:
+
+    >>> rc1, err1
+    (1, b'')
+    >>> print(normalize(out1))                # doctest: +ELLIPSIS
+    **********************************************************************
+    File "...myfile.doc", line 4, in myfile.doc
+    Failed example:
+        "abcdef"
+    Expected:
+        'a...f'
+    Got:
+        'abcdef'
+    **********************************************************************
+    File "...myfile.doc", line 6, in myfile.doc
+    Failed example:
+        "ajkml"
+    Expected:
+        'a...l'
+    Got:
+        'ajkml'
+    **********************************************************************
+    1 items had failures:
+       2 of   3 in myfile.doc
+    ***Test Failed*** 2 failures.
+
+With -o ELLIPSIS specified, the second run, against just the first file, should
+produce no errors, and with -o NORMALIZE_WHITESPACE also specified, neither
+should the third, which ran against both files:
+
+    >>> rc2, out2, err2
+    (0, b'', b'')
+    >>> rc3, out3, err3
+    (0, b'', b'')
+
+The fourth run uses FAIL_FAST, so we should see only one error:
+
+    >>> rc4, err4
+    (1, b'')
+    >>> print(normalize(out4))                # doctest: +ELLIPSIS
+    **********************************************************************
+    File "...myfile.doc", line 4, in myfile.doc
+    Failed example:
+        "abcdef"
+    Expected:
+        'a...f'
+    Got:
+        'abcdef'
+    **********************************************************************
+    1 items had failures:
+       1 of   2 in myfile.doc
+    ***Test Failed*** 1 failures.
+
+The fifth test uses verbose with the two options, so we should get verbose
+success output for the tests in both files:
+
+    >>> rc5, err5
+    (0, b'')
+    >>> print(normalize(out5))
+    Trying:
+        1 + 1
+    Expecting:
+        2
+    ok
+    Trying:
+        "abcdef"
+    Expecting:
+        'a...f'
+    ok
+    Trying:
+        "ajkml"
+    Expecting:
+        'a...l'
+    ok
+    1 items passed all tests:
+       3 tests in myfile.doc
+    3 tests in 1 items.
+    3 passed and 0 failed.
+    Test passed.
+    Trying:
+        1 + 1
+    Expecting:
+        2
+    ok
+    Trying:
+        "abc   def"
+    Expecting:
+        'abc def'
+    ok
+    1 items had no tests:
+        myfile2
+    1 items passed all tests:
+       2 tests in myfile2.test_func
+    2 tests in 2 items.
+    2 passed and 0 failed.
+    Test passed.
+
+We should also check some typical error cases.
+
+Invalid file name:
+
+    >>> rc, out, err = script_helper.assert_python_failure(
+    ...         '-m', 'doctest', 'nosuchfile')
+    >>> rc, out
+    (1, b'')
+    >>> # The exact error message changes depending on the platform.
+    >>> print(normalize(err))                    # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    FileNotFoundError: [Errno ...] ...nosuchfile...
+
+Invalid doctest option:
+
+    >>> rc, out, err = script_helper.assert_python_failure(
+    ...         '-m', 'doctest', '-o', 'nosuchoption')
+    >>> rc, out
+    (2, b'')
+    >>> print(normalize(err))                    # doctest: +ELLIPSIS
+    usage...invalid...nosuchoption...
+
+"""
+
+def test_no_trailing_whitespace_stripping():
+    r"""
+    The fancy reports had a bug for a long time where any trailing whitespace on
+    the reported diff lines was stripped, making it impossible to see the
+    differences in line reported as different that differed only in the amount of
+    trailing whitespace.  The whitespace still isn't particularly visible unless
+    you use NDIFF, but at least it is now there to be found.
+
+    *NOTE*: This snippet was intentionally put inside a raw string to get rid of
+    leading whitespace error in executing the example below
+
+    >>> def f(x):
+    ...     r'''
+    ...     >>> print('\n'.join(['a    ', 'b']))
+    ...     a
+    ...     b
+    ...     '''
+    """
+    """
+    *NOTE*: These doctest are not placed in raw string to depict the trailing whitespace
+    using `\x20`
+
+    >>> test = doctest.DocTestFinder().find(f)[0]
+    >>> flags = doctest.REPORT_NDIFF
+    >>> doctest.DocTestRunner(verbose=False, optionflags=flags).run(test)
+    ... # doctest: +ELLIPSIS
+    **********************************************************************
+    File ..., line 3, in f
+    Failed example:
+        print('\n'.join(['a    ', 'b']))
+    Differences (ndiff with -expected +actual):
+        - a
+        + a
+          b
+    TestResults(failed=1, attempted=1)
+
+    *NOTE*: `\x20` is for checking the trailing whitespace on the +a line above.
+    We cannot use actual spaces there, as a commit hook prevents from committing
+    patches that contain trailing whitespace. More info on Issue 24746.
+    """
+
+
+def test_run_doctestsuite_multiple_times():
+    """
+    It was not possible to run the same DocTestSuite multiple times
+    http://bugs.python.org/issue2604
+    http://bugs.python.org/issue9736
+
+    >>> import unittest
+    >>> import test.sample_doctest
+    >>> suite = doctest.DocTestSuite(test.sample_doctest)
+    >>> suite.run(unittest.TestResult())
+    <unittest.result.TestResult run=9 errors=0 failures=4>
+    >>> suite.run(unittest.TestResult())
+    <unittest.result.TestResult run=9 errors=0 failures=4>
+    """
+
+
+def load_tests(loader, tests, pattern):
+    tests.addTest(doctest.DocTestSuite(doctest))
+    tests.addTest(doctest.DocTestSuite())
+    return tests
+
 
 def test_coverage(coverdir):
-    trace = support.import_module('trace')
-    tracer = trace.Trace(ignoredirs=[sys.prefix, sys.exec_prefix,],
+    trace = import_helper.import_module('trace')
+    tracer = trace.Trace(ignoredirs=[sys.base_prefix, sys.base_exec_prefix,],
                          trace=0, count=1)
     tracer.run('test_main()')
     r = tracer.results()
@@ -2574,8 +3179,9 @@ def test_coverage(coverdir):
     r.write_results(show_missing=True, summary=True,
                     coverdir=coverdir)
 
+
 if __name__ == '__main__':
     if '-c' in sys.argv:
         test_coverage('/tmp/doctest.cover')
     else:
-        test_main()
+        unittest.main()

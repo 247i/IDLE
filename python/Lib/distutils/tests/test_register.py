@@ -5,13 +5,15 @@ import getpass
 import urllib
 import warnings
 
-from test.support import check_warnings, run_unittest
+from test.support import run_unittest
+from test.support.warnings_helper import check_warnings
 
 from distutils.command import register as register_module
 from distutils.command.register import register
 from distutils.errors import DistutilsSetupError
+from distutils.log import INFO
 
-from distutils.tests.test_config import PyPIRCCommandTestCase
+from distutils.tests.test_config import BasePyPIRCCommandTestCase
 
 try:
     import docutils
@@ -58,14 +60,20 @@ class FakeOpener(object):
     def __call__(self, *args):
         return self
 
-    def open(self, req):
+    def open(self, req, data=None, timeout=None):
         self.reqs.append(req)
         return self
 
     def read(self):
-        return 'xxx'
+        return b'xxx'
 
-class RegisterTestCase(PyPIRCCommandTestCase):
+    def getheader(self, name, default=None):
+        return {
+            'content-type': 'text/plain; charset=utf-8',
+            }.get(name.lower(), default)
+
+
+class RegisterTestCase(BasePyPIRCCommandTestCase):
 
     def setUp(self):
         super(RegisterTestCase, self).setUp()
@@ -74,11 +82,13 @@ class RegisterTestCase(PyPIRCCommandTestCase):
         def _getpass(prompt):
             return 'password'
         getpass.getpass = _getpass
+        urllib.request._opener = None
         self.old_opener = urllib.request.build_opener
         self.conn = urllib.request.build_opener = FakeOpener()
 
     def tearDown(self):
         getpass.getpass = self._old_getpass
+        urllib.request._opener = None
         urllib.request.build_opener = self.old_opener
         super(RegisterTestCase, self).tearDown()
 
@@ -98,7 +108,7 @@ class RegisterTestCase(PyPIRCCommandTestCase):
         cmd = self._get_cmd()
 
         # we shouldn't have a .pypirc file yet
-        self.assertTrue(not os.path.exists(self.rc))
+        self.assertFalse(os.path.exists(self.rc))
 
         # patching input and getpass.getpass
         # so register gets happy
@@ -145,7 +155,7 @@ class RegisterTestCase(PyPIRCCommandTestCase):
 
         self.assertEqual(req1['Content-length'], '1374')
         self.assertEqual(req2['Content-length'], '1374')
-        self.assertTrue((b'xxx') in self.conn.reqs[1].data)
+        self.assertIn(b'xxx', self.conn.reqs[1].data)
 
     def test_password_not_in_file(self):
 
@@ -175,7 +185,7 @@ class RegisterTestCase(PyPIRCCommandTestCase):
         req = self.conn.reqs[0]
         headers = dict(req.headers)
         self.assertEqual(headers['Content-length'], '608')
-        self.assertTrue((b'tarek') in req.data)
+        self.assertIn(b'tarek', req.data)
 
     def test_password_reset(self):
         # this test runs choice 3
@@ -193,7 +203,7 @@ class RegisterTestCase(PyPIRCCommandTestCase):
         req = self.conn.reqs[0]
         headers = dict(req.headers)
         self.assertEqual(headers['Content-length'], '290')
-        self.assertTrue((b'tarek') in req.data)
+        self.assertIn(b'tarek', req.data)
 
     @unittest.skipUnless(docutils is not None, 'needs docutils')
     def test_strict(self):
@@ -284,6 +294,28 @@ class RegisterTestCase(PyPIRCCommandTestCase):
             warnings.simplefilter("always")
             cmd.check_metadata()
             self.assertEqual(len(w.warnings), 1)
+
+    def test_list_classifiers(self):
+        cmd = self._get_cmd()
+        cmd.list_classifiers = 1
+        cmd.run()
+        results = self.get_logs(INFO)
+        self.assertEqual(results, ['running check', 'xxx'])
+
+    def test_show_response(self):
+        # test that the --show-response option return a well formatted response
+        cmd = self._get_cmd()
+        inputs = Inputs('1', 'tarek', 'y')
+        register_module.input = inputs.__call__
+        cmd.show_response = 1
+        try:
+            cmd.run()
+        finally:
+            del register_module.input
+
+        results = self.get_logs(INFO)
+        self.assertEqual(results[3], 75 * '-' + '\nxxx\n' + 75 * '-')
+
 
 def test_suite():
     return unittest.makeSuite(RegisterTestCase)

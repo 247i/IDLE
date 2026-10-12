@@ -1,16 +1,15 @@
 from xmlrpc.server import DocXMLRPCServer
 import http.client
+import re
 import sys
-from test import support
-threading = support.import_module('threading')
-import time
-import socket
+import threading
 import unittest
+from test import support
 
-PORT = None
+support.requires_working_socket(module=True)
 
 def make_request_and_skipIf(condition, reason):
-    # If we skip the test, we have to make a request because the
+    # If we skip the test, we have to make a request because
     # the server created in setUp blocks expecting one to come in.
     if not condition:
         return lambda func: func
@@ -23,13 +22,10 @@ def make_request_and_skipIf(condition, reason):
     return decorator
 
 
-def server(evt, numrequests):
+def make_server():
     serv = DocXMLRPCServer(("localhost", 0), logRequests=False)
 
     try:
-        global PORT
-        PORT = serv.socket.getsockname()[1]
-
         # Add some documentation
         serv.set_server_title("DocXMLRPCServer Test Documentation")
         serv.set_server_name("DocXMLRPCServer Test Docs")
@@ -54,51 +50,60 @@ def server(evt, numrequests):
             """
             return x + y
 
+        def annotation(x: int):
+            """ Use function annotations. """
+            return x
+
+        class ClassWithAnnotation:
+            def method_annotation(self, x: bytes):
+                return x.decode()
+
         serv.register_function(add)
         serv.register_function(lambda x, y: x-y)
-
-        while numrequests > 0:
-            serv.handle_request()
-            numrequests -= 1
-    except socket.timeout:
-        pass
-    finally:
+        serv.register_function(annotation)
+        serv.register_instance(ClassWithAnnotation())
+        return serv
+    except:
         serv.server_close()
-        PORT = None
-        evt.set()
+        raise
 
 class DocXMLRPCHTTPGETServer(unittest.TestCase):
     def setUp(self):
-        self._threads = support.threading_setup()
         # Enable server feedback
         DocXMLRPCServer._send_traceback_header = True
 
-        self.evt = threading.Event()
-        threading.Thread(target=server, args=(self.evt, 1)).start()
+        self.serv = make_server()
+        self.thread = threading.Thread(target=self.serv.serve_forever)
+        self.thread.start()
 
-        # wait for port to be assigned
-        n = 1000
-        while n > 0 and PORT is None:
-            time.sleep(0.001)
-            n -= 1
-
+        PORT = self.serv.server_address[1]
         self.client = http.client.HTTPConnection("localhost:%d" % PORT)
 
     def tearDown(self):
         self.client.close()
 
-        self.evt.wait()
-
         # Disable server feedback
         DocXMLRPCServer._send_traceback_header = False
-        support.threading_cleanup(*self._threads)
+        self.serv.shutdown()
+        self.thread.join()
+        self.serv.server_close()
 
     def test_valid_get_response(self):
         self.client.request("GET", "/")
         response = self.client.getresponse()
 
         self.assertEqual(response.status, 200)
-        self.assertEqual(response.getheader("Content-type"), "text/html")
+        self.assertEqual(response.getheader("Content-type"), "text/html; charset=UTF-8")
+
+        # Server raises an exception if we don't start to read the data
+        response.read()
+
+    def test_get_css(self):
+        self.client.request("GET", "/pydoc.css")
+        response = self.client.getresponse()
+
+        self.assertEqual(response.status, 200)
+        self.assertEqual(response.getheader("Content-type"), "text/css; charset=UTF-8")
 
         # Server raises an exception if we don't start to read the data
         response.read()
@@ -141,9 +146,9 @@ class DocXMLRPCHTTPGETServer(unittest.TestCase):
         self.assertIn(
             (b'<dl><dt><a name="-add"><strong>add</strong></a>(x, y)</dt><dd>'
              b'<tt>Add&nbsp;two&nbsp;instances&nbsp;together.&nbsp;This&nbsp;'
-             b'follows&nbsp;<a href="http://www.python.org/dev/peps/pep-0008/">'
+             b'follows&nbsp;<a href="https://peps.python.org/pep-0008/">'
              b'PEP008</a>,&nbsp;but&nbsp;has&nbsp;nothing<br>\nto&nbsp;do&nbsp;'
-             b'with&nbsp;<a href="http://www.rfc-editor.org/rfc/rfc1952.txt">'
+             b'with&nbsp;<a href="https://www.rfc-editor.org/rfc/rfc1952.txt">'
              b'RFC1952</a>.&nbsp;Case&nbsp;should&nbsp;matter:&nbsp;pEp008&nbsp;'
              b'and&nbsp;rFC1952.&nbsp;&nbsp;Things<br>\nthat&nbsp;start&nbsp;'
              b'with&nbsp;http&nbsp;and&nbsp;ftp&nbsp;should&nbsp;be&nbsp;'
@@ -153,7 +158,7 @@ class DocXMLRPCHTTPGETServer(unittest.TestCase):
     @make_request_and_skipIf(sys.flags.optimize >= 2,
                      "Docstrings are omitted with -O2 and above")
     def test_system_methods(self):
-        """Test the precense of three consecutive system.* methods.
+        """Test the presence of three consecutive system.* methods.
 
         This also tests their use of parameter type recognition and the
         systems related to that process.
@@ -177,10 +182,7 @@ class DocXMLRPCHTTPGETServer(unittest.TestCase):
              b'method&nbsp;takes&nbsp;two&nbsp;integers&nbsp;as&nbsp;arguments'
              b'<br>\nand&nbsp;returns&nbsp;a&nbsp;double&nbsp;result.<br>\n&nbsp;'
              b'<br>\nThis&nbsp;server&nbsp;does&nbsp;NOT&nbsp;support&nbsp;system'
-             b'.methodSignature.</tt></dd></dl>\n<dl><dt><a name="-test_method">'
-             b'<strong>test_method</strong></a>(arg)</dt><dd><tt>Test&nbsp;'
-             b'method\'s&nbsp;docs.&nbsp;This&nbsp;method&nbsp;truly&nbsp;does'
-             b'&nbsp;very&nbsp;little.</tt></dd></dl>'), response)
+             b'.methodSignature.</tt></dd></dl>'), response)
 
     def test_autolink_dotted_methods(self):
         """Test that selfdot values are made strong automatically in the
@@ -191,8 +193,34 @@ class DocXMLRPCHTTPGETServer(unittest.TestCase):
         self.assertIn(b"""Try&nbsp;self.<strong>add</strong>,&nbsp;too.""",
                       response.read())
 
-def test_main():
-    support.run_unittest(DocXMLRPCHTTPGETServer)
+    def test_annotations(self):
+        """ Test that annotations works as expected """
+        self.client.request("GET", "/")
+        response = self.client.getresponse()
+        docstring = (b'' if sys.flags.optimize >= 2 else
+                     b'<dd><tt>Use&nbsp;function&nbsp;annotations.</tt></dd>')
+        self.assertIn(
+            (b'<dl><dt><a name="-annotation"><strong>annotation</strong></a>'
+             b'(x: int)</dt>' + docstring + b'</dl>\n'
+             b'<dl><dt><a name="-method_annotation"><strong>'
+             b'method_annotation</strong></a>(x: bytes)</dt></dl>'),
+            response.read())
+
+    def test_server_title_escape(self):
+        # bpo-38243: Ensure that the server title and documentation
+        # are escaped for HTML.
+        self.serv.set_server_title('test_title<script>')
+        self.serv.set_server_documentation('test_documentation<script>')
+        self.assertEqual('test_title<script>', self.serv.server_title)
+        self.assertEqual('test_documentation<script>',
+                self.serv.server_documentation)
+
+        generated = self.serv.generate_html_documentation()
+        title = re.search(r'<title>(.+?)</title>', generated).group()
+        documentation = re.search(r'<p><tt>(.+?)</tt></p>', generated).group()
+        self.assertEqual('<title>Python: test_title&lt;script&gt;</title>', title)
+        self.assertEqual('<p><tt>test_documentation&lt;script&gt;</tt></p>', documentation)
+
 
 if __name__ == '__main__':
-    test_main()
+    unittest.main()

@@ -13,7 +13,6 @@ There's also a pattern matching implementation here.
 __author__ = "Guido van Rossum <guido@python.org>"
 
 import sys
-import warnings
 from io import StringIO
 
 HUGE = 0x7FFFFFFF  # maximum repeat count, default max
@@ -64,16 +63,6 @@ class Base(object):
 
     __hash__ = None # For Py3 compatibility.
 
-    def __ne__(self, other):
-        """
-        Compare two nodes for inequality.
-
-        This calls the method _eq().
-        """
-        if self.__class__ is not other.__class__:
-            return NotImplemented
-        return not self._eq(other)
-
     def _eq(self, other):
         """
         Compare two nodes for equality.
@@ -108,26 +97,6 @@ class Base(object):
         This must be implemented by the concrete subclass.
         """
         raise NotImplementedError
-
-    def set_prefix(self, prefix):
-        """
-        Set the prefix for the node (see Leaf class).
-
-        DEPRECATED; use the prefix property directly.
-        """
-        warnings.warn("set_prefix() is deprecated; use the prefix property",
-                      DeprecationWarning, stacklevel=2)
-        self.prefix = prefix
-
-    def get_prefix(self):
-        """
-        Return the prefix for the node (see Leaf class).
-
-        DEPRECATED; use the prefix property directly.
-        """
-        warnings.warn("get_prefix() is deprecated; use the prefix property",
-                      DeprecationWarning, stacklevel=2)
-        return self.prefix
 
     def replace(self, new):
         """Replace this node with a new one in the parent."""
@@ -214,8 +183,7 @@ class Base(object):
 
     def leaves(self):
         for child in self.children:
-            for x in child.leaves():
-                yield x
+            yield from child.leaves()
 
     def depth(self):
         if self.parent is None:
@@ -294,18 +262,17 @@ class Node(Base):
     def post_order(self):
         """Return a post-order iterator for the tree."""
         for child in self.children:
-            for node in child.post_order():
-                yield node
+            yield from child.post_order()
         yield self
 
     def pre_order(self):
         """Return a pre-order iterator for the tree."""
         yield self
         for child in self.children:
-            for node in child.pre_order():
-                yield node
+            yield from child.pre_order()
 
-    def _prefix_getter(self):
+    @property
+    def prefix(self):
         """
         The whitespace and comments preceding this node in the input.
         """
@@ -313,11 +280,10 @@ class Node(Base):
             return ""
         return self.children[0].prefix
 
-    def _prefix_setter(self, prefix):
+    @prefix.setter
+    def prefix(self, prefix):
         if self.children:
             self.children[0].prefix = prefix
-
-    prefix = property(_prefix_getter, _prefix_setter)
 
     def set_child(self, i, child):
         """
@@ -414,17 +380,17 @@ class Leaf(Base):
         """Return a pre-order iterator for the tree."""
         yield self
 
-    def _prefix_getter(self):
+    @property
+    def prefix(self):
         """
         The whitespace and comments preceding this token in the input.
         """
         return self._prefix
 
-    def _prefix_setter(self, prefix):
+    @prefix.setter
+    def prefix(self, prefix):
         self.changed()
         self._prefix = prefix
-
-    prefix = property(_prefix_getter, _prefix_setter)
 
 def convert(gr, raw_node):
     """
@@ -754,8 +720,8 @@ class WildcardPattern(BasePattern):
                         r[self.name] = nodes[:count]
                     yield count, r
             except RuntimeError:
-                # We fall back to the iterative pattern matching scheme if the recursive
-                # scheme hits the recursion limit.
+                # Fall back to the iterative pattern matching scheme if the
+                # recursive scheme hits the recursion limit (RecursionError).
                 for count, r in self._iterative_matches(nodes):
                     if self.name:
                         r[self.name] = nodes[:count]

@@ -14,7 +14,7 @@
 """
 import re,sys
 
-entityRE = re.compile('<!ENTITY +(\w+) +CDATA +"([^"]+)" +-- +((?:.|\n)+?) *-->')
+entityRE = re.compile(r'<!ENTITY +(\w+) +CDATA +"([^"]+)" +-- +((?:.|\n)+?) *-->')
 
 def parse(text,pos=0,endpos=None):
 
@@ -39,7 +39,7 @@ def writefile(f,defs):
         if charcode[:2] == '&#':
             code = int(charcode[2:-1])
             if code < 256:
-                charcode = "'\%o'" % code
+                charcode = r"'\%o'" % code
             else:
                 charcode = repr(charcode)
         else:
@@ -50,13 +50,15 @@ def writefile(f,defs):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        infile = open(sys.argv[1])
+        with open(sys.argv[1]) as infile:
+            text = infile.read()
     else:
-        infile = sys.stdin
-    if len(sys.argv) > 2:
-        outfile = open(sys.argv[2],'w')
-    else:
-        outfile = sys.stdout
-    text = infile.read()
+        text = sys.stdin.read()
+
     defs = parse(text)
-    writefile(outfile,defs)
+
+    if len(sys.argv) > 2:
+        with open(sys.argv[2],'w') as outfile:
+            writefile(outfile, defs)
+    else:
+        writefile(sys.stdout, defs)

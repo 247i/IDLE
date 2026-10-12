@@ -4,11 +4,13 @@ import sys
 import unittest
 from copy import copy
 from test.support import run_unittest
+from unittest import mock
 
 from distutils.errors import DistutilsPlatformError, DistutilsByteCompileError
 from distutils.util import (get_platform, convert_path, change_root,
                             check_environ, split_quoted, strtobool,
-                            rfc822_escape, byte_compile)
+                            rfc822_escape, byte_compile,
+                            grok_environment_error)
 from distutils import util # used to patch _environ_checked
 from distutils.sysconfig import get_config_vars
 from distutils import sysconfig
@@ -52,7 +54,8 @@ class UtilTestCase(support.EnvironGuard, unittest.TestCase):
             os.uname = self.uname
         else:
             del os.uname
-        sysconfig._config_vars = copy(self._config_vars)
+        sysconfig._config_vars.clear()
+        sysconfig._config_vars.update(self._config_vars)
         super(UtilTestCase, self).tearDown()
 
     def _set_uname(self, uname):
@@ -76,13 +79,6 @@ class UtilTestCase(support.EnvironGuard, unittest.TestCase):
                        '[MSC v.1310 32 bit (Amd64)]')
         sys.platform = 'win32'
         self.assertEqual(get_platform(), 'win-amd64')
-
-        # windows XP, itanium
-        os.name = 'nt'
-        sys.version = ('2.4.4 (#71, Oct 18 2006, 08:34:43) '
-                       '[MSC v.1310 32 bit (Itanium)]')
-        sys.platform = 'win32'
-        self.assertEqual(get_platform(), 'win-ia64')
 
         # macbook
         os.name = 'posix'
@@ -236,23 +232,38 @@ class UtilTestCase(support.EnvironGuard, unittest.TestCase):
         self.assertRaises(DistutilsPlatformError,
                           change_root, 'c:\\root', 'its\\here')
 
-        # XXX platforms to be covered: os2, mac
+        # XXX platforms to be covered: mac
 
     def test_check_environ(self):
         util._environ_checked = 0
-        if 'HOME' in os.environ:
-            del os.environ['HOME']
+        os.environ.pop('HOME', None)
 
-        # posix without HOME
-        if os.name == 'posix':  # this test won't run on windows
-            check_environ()
-            import pwd
-            self.assertEqual(os.environ['HOME'], pwd.getpwuid(os.getuid())[5])
-        else:
-            check_environ()
+        check_environ()
 
         self.assertEqual(os.environ['PLAT'], get_platform())
         self.assertEqual(util._environ_checked, 1)
+
+    @unittest.skipUnless(os.name == 'posix', 'specific to posix')
+    def test_check_environ_getpwuid(self):
+        util._environ_checked = 0
+        os.environ.pop('HOME', None)
+
+        import pwd
+
+        # only set pw_dir field, other fields are not used
+        result = pwd.struct_passwd((None, None, None, None, None,
+                                    '/home/distutils', None))
+        with mock.patch.object(pwd, 'getpwuid', return_value=result):
+            check_environ()
+            self.assertEqual(os.environ['HOME'], '/home/distutils')
+
+        util._environ_checked = 0
+        os.environ.pop('HOME', None)
+
+        # bpo-10496: Catch pwd.getpwuid() error
+        with mock.patch.object(pwd, 'getpwuid', side_effect=KeyError):
+            check_environ()
+            self.assertNotIn('HOME', os.environ)
 
     def test_split_quoted(self):
         self.assertEqual(split_quoted('""one"" "two" \'three\' \\four'),
@@ -266,7 +277,7 @@ class UtilTestCase(support.EnvironGuard, unittest.TestCase):
             self.assertTrue(strtobool(y))
 
         for n in no:
-            self.assertTrue(not strtobool(n))
+            self.assertFalse(strtobool(n))
 
     def test_rfc822_escape(self):
         header = 'I am a\npoor\nlonesome\nheader\n'
@@ -284,6 +295,13 @@ class UtilTestCase(support.EnvironGuard, unittest.TestCase):
             self.assertRaises(DistutilsByteCompileError, byte_compile, [])
         finally:
             sys.dont_write_bytecode = old_dont_write_bytecode
+
+    def test_grok_environment_error(self):
+        # test obsolete function to ensure backward compat (#4931)
+        exc = IOError("Unable to find batch file")
+        msg = grok_environment_error(exc)
+        self.assertEqual(msg, "error: Unable to find batch file")
+
 
 def test_suite():
     return unittest.makeSuite(UtilTestCase)

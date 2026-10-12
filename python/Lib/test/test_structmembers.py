@@ -1,3 +1,9 @@
+import unittest
+from test.support import import_helper
+from test.support import warnings_helper
+
+# Skip this test if the _testcapi module isn't available.
+import_helper.import_module('_testcapi')
 from _testcapi import _test_structmembersType, \
     CHAR_MAX, CHAR_MIN, UCHAR_MAX, \
     SHRT_MAX, SHRT_MIN, USHRT_MAX, \
@@ -5,9 +11,6 @@ from _testcapi import _test_structmembersType, \
     LONG_MAX, LONG_MIN, ULONG_MAX, \
     LLONG_MAX, LLONG_MIN, ULLONG_MAX, \
     PY_SSIZE_T_MAX, PY_SSIZE_T_MIN
-
-import unittest
-from test import support
 
 ts=_test_structmembersType(False,  # T_BOOL
                           1,      # T_BYTE
@@ -114,32 +117,29 @@ class ReadWriteTests(unittest.TestCase):
 class TestWarnings(unittest.TestCase):
 
     def test_byte_max(self):
-        with support.check_warnings(('', RuntimeWarning)):
+        with warnings_helper.check_warnings(('', RuntimeWarning)):
             ts.T_BYTE = CHAR_MAX+1
 
     def test_byte_min(self):
-        with support.check_warnings(('', RuntimeWarning)):
+        with warnings_helper.check_warnings(('', RuntimeWarning)):
             ts.T_BYTE = CHAR_MIN-1
 
     def test_ubyte_max(self):
-        with support.check_warnings(('', RuntimeWarning)):
+        with warnings_helper.check_warnings(('', RuntimeWarning)):
             ts.T_UBYTE = UCHAR_MAX+1
 
     def test_short_max(self):
-        with support.check_warnings(('', RuntimeWarning)):
+        with warnings_helper.check_warnings(('', RuntimeWarning)):
             ts.T_SHORT = SHRT_MAX+1
 
     def test_short_min(self):
-        with support.check_warnings(('', RuntimeWarning)):
+        with warnings_helper.check_warnings(('', RuntimeWarning)):
             ts.T_SHORT = SHRT_MIN-1
 
     def test_ushort_max(self):
-        with support.check_warnings(('', RuntimeWarning)):
+        with warnings_helper.check_warnings(('', RuntimeWarning)):
             ts.T_USHORT = USHRT_MAX+1
 
 
-def test_main(verbose=None):
-    support.run_unittest(__name__)
-
 if __name__ == "__main__":
-    test_main(verbose=True)
+    unittest.main()

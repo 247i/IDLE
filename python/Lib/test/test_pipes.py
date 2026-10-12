@@ -2,10 +2,16 @@ import pipes
 import os
 import string
 import unittest
-from test.support import TESTFN, run_unittest, unlink, reap_children
+import shutil
+from test.support import reap_children, unix_shell
+from test.support.os_helper import TESTFN, unlink
+
 
 if os.name != 'posix':
     raise unittest.SkipTest('pipes module only works on posix')
+
+if not (unix_shell and os.path.exists(unix_shell)):
+    raise unittest.SkipTest('pipes module requires a shell')
 
 TESTFN2 = TESTFN + "2"
 
@@ -18,15 +24,18 @@ class SimplePipeTests(unittest.TestCase):
             unlink(f)
 
     def testSimplePipe1(self):
+        if shutil.which('tr') is None:
+            self.skipTest('tr is not available')
         t = pipes.Template()
         t.append(s_command, pipes.STDIN_STDOUT)
-        f = t.open(TESTFN, 'w')
-        f.write('hello world #1')
-        f.close()
+        with t.open(TESTFN, 'w') as f:
+            f.write('hello world #1')
         with open(TESTFN) as f:
             self.assertEqual(f.read(), 'HELLO WORLD #1')
 
     def testSimplePipe2(self):
+        if shutil.which('tr') is None:
+            self.skipTest('tr is not available')
         with open(TESTFN, 'w') as f:
             f.write('hello world #2')
         t = pipes.Template()
@@ -36,6 +45,8 @@ class SimplePipeTests(unittest.TestCase):
             self.assertEqual(f.read(), 'HELLO WORLD #2')
 
     def testSimplePipe3(self):
+        if shutil.which('tr') is None:
+            self.skipTest('tr is not available')
         with open(TESTFN, 'w') as f:
             f.write('hello world #2')
         t = pipes.Template()
@@ -78,21 +89,6 @@ class SimplePipeTests(unittest.TestCase):
             f.write(d)
         with open(TESTFN) as f:
             self.assertEqual(f.read(), d)
-
-    def testQuoting(self):
-        safeunquoted = string.ascii_letters + string.digits + '@%_-+=:,./'
-        unicode_sample = '\xe9\xe0\xdf'  # e + acute accent, a + grave, sharp s
-        unsafe = '"`$\\!' + unicode_sample
-
-        self.assertEqual(pipes.quote(''), "''")
-        self.assertEqual(pipes.quote(safeunquoted), safeunquoted)
-        self.assertEqual(pipes.quote('test file name'), "'test file name'")
-        for u in unsafe:
-            self.assertEqual(pipes.quote('test%sname' % u),
-                              "'test%sname'" % u)
-        for u in unsafe:
-            self.assertEqual(pipes.quote("test%s'name'" % u),
-                             "'test%s'\"'\"'name'\"'\"''" % u)
 
     def testRepr(self):
         t = pipes.Template()
@@ -203,9 +199,10 @@ class SimplePipeTests(unittest.TestCase):
         self.assertNotEqual(id(t.steps), id(u.steps))
         self.assertEqual(t.debugging, u.debugging)
 
-def test_main():
-    run_unittest(SimplePipeTests)
+
+def tearDownModule():
     reap_children()
 
+
 if __name__ == "__main__":
-    test_main()
+    unittest.main()

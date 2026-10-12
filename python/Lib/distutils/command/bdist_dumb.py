@@ -22,7 +22,8 @@ class bdist_dumb(Command):
                      "platform name to embed in generated filenames "
                      "(default: %s)" % get_platform()),
                     ('format=', 'f',
-                     "archive format to create (tar, ztar, gztar, zip)"),
+                     "archive format to create (tar, gztar, bztar, xztar, "
+                     "ztar, zip)"),
                     ('keep-temp', 'k',
                      "keep the pseudo-installation tree around after " +
                      "creating the distribution archive"),
@@ -31,15 +32,20 @@ class bdist_dumb(Command):
                     ('skip-build', None,
                      "skip rebuilding everything (for testing/debugging)"),
                     ('relative', None,
-                     "build the archive using relative paths"
+                     "build the archive using relative paths "
                      "(default: false)"),
+                    ('owner=', 'u',
+                     "Owner name used when creating a tar file"
+                     " [default: current user]"),
+                    ('group=', 'g',
+                     "Group name used when creating a tar file"
+                     " [default: current group]"),
                    ]
 
     boolean_options = ['keep-temp', 'skip-build', 'relative']
 
     default_format = { 'posix': 'gztar',
-                       'nt': 'zip',
-                       'os2': 'zip' }
+                       'nt': 'zip' }
 
     def initialize_options(self):
         self.bdist_dir = None
@@ -49,6 +55,8 @@ class bdist_dumb(Command):
         self.dist_dir = None
         self.skip_build = None
         self.relative = 0
+        self.owner = None
+        self.group = None
 
     def finalize_options(self):
         if self.bdist_dir is None:
@@ -77,18 +85,13 @@ class bdist_dumb(Command):
         install.skip_build = self.skip_build
         install.warn_dir = 0
 
-        log.info("installing to %s" % self.bdist_dir)
+        log.info("installing to %s", self.bdist_dir)
         self.run_command('install')
 
         # And make an archive relative to the root of the
         # pseudo-installation tree.
         archive_basename = "%s.%s" % (self.distribution.get_fullname(),
                                       self.plat_name)
-
-        # OS/2 objects to any ":" characters in a filename (such as when
-        # a timestamp is used in a version) so change them to hyphens.
-        if os.name == "os2":
-            archive_basename = archive_basename.replace(":", "-")
 
         pseudoinstall_root = os.path.join(self.dist_dir, archive_basename)
         if not self.relative:
@@ -107,7 +110,8 @@ class bdist_dumb(Command):
 
         # Make the archive
         filename = self.make_archive(pseudoinstall_root,
-                                     self.format, root_dir=archive_root)
+                                     self.format, root_dir=archive_root,
+                                     owner=self.owner, group=self.group)
         if self.distribution.has_ext_modules():
             pyversion = get_python_version()
         else:

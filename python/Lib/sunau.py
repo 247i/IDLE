@@ -51,7 +51,7 @@ This returns an instance of a class with the following public methods:
         getcomptype()   -- returns compression type ('NONE' or 'ULAW')
         getcompname()   -- returns human-readable version of
                            compression type ('not compressed' matches 'NONE')
-        getparams()     -- returns a tuple consisting of all of the
+        getparams()     -- returns a namedtuple consisting of all of the
                            above in the above order
         getmarkers()    -- returns None (for compatibility with the
                            aifc module)
@@ -97,11 +97,17 @@ but when it is set to the correct value, the header does not have to
 be patched up.
 It is best to first set all parameters, perhaps possibly the
 compression type, and then write audio frames using writeframesraw.
-When all frames have been written, either call writeframes('') or
+When all frames have been written, either call writeframes(b'') or
 close() to patch up the sizes in the header.
 The close() method is called automatically when the class instance
 is destroyed.
 """
+
+from collections import namedtuple
+
+
+_sunau_params = namedtuple('_sunau_params',
+                           'nchannels sampwidth framerate nframes comptype compname')
 
 # from <multimedia/audio_filehdr.h>
 AUDIO_FILE_MAGIC = 0x2e736e64
@@ -163,6 +169,12 @@ class Au_read:
         if self._file:
             self.close()
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
     def initfp(self, file):
         self._file = file
         self._soundpos = 0
@@ -196,15 +208,18 @@ class Au_read:
             raise Error('unknown encoding')
         self._framerate = int(_read_u32(file))
         self._nchannels = int(_read_u32(file))
+        if not self._nchannels:
+            raise Error('bad # of channels')
         self._framesize = self._framesize * self._nchannels
         if self._hdr_size > 24:
             self._info = file.read(self._hdr_size - 24)
-            for i in range(len(self._info)):
-                if self._info[i] == b'\0':
-                    self._info = self._info[:i]
-                    break
+            self._info, _, _ = self._info.partition(b'\0')
         else:
-            self._info = ''
+            self._info = b''
+        try:
+            self._data_pos = file.tell()
+        except (AttributeError, OSError):
+            self._data_pos = None
 
     def getfp(self):
         return self._file
@@ -222,7 +237,7 @@ class Au_read:
         if self._data_size == AUDIO_UNKNOWN_SIZE:
             return AUDIO_UNKNOWN_SIZE
         if self._encoding in _simple_encodings:
-            return self._data_size / self._framesize
+            return self._data_size // self._framesize
         return 0                # XXX--must do some arithmetic here
 
     def getcomptype(self):
@@ -242,9 +257,9 @@ class Au_read:
             return 'not compressed'
 
     def getparams(self):
-        return self.getnchannels(), self.getsampwidth(), \
-                  self.getframerate(), self.getnframes(), \
-                  self.getcomptype(), self.getcompname()
+        return _sunau_params(self.getnchannels(), self.getsampwidth(),
+                  self.getframerate(), self.getnframes(),
+                  self.getcomptype(), self.getcompname())
 
     def getmarkers(self):
         return None
@@ -257,7 +272,8 @@ class Au_read:
             if nframes == AUDIO_UNKNOWN_SIZE:
                 data = self._file.read()
             else:
-                data = self._file.read(nframes * self._framesize * self._nchannels)
+                data = self._file.read(nframes * self._framesize)
+            self._soundpos += len(data) // self._framesize
             if self._encoding == AUDIO_FILE_ENCODING_MULAW_8:
                 import audioop
                 data = audioop.ulaw2lin(data, self._sampwidth)
@@ -265,8 +281,10 @@ class Au_read:
         return None             # XXX--not implemented yet
 
     def rewind(self):
+        if self._data_pos is None:
+            raise OSError('cannot seek')
+        self._file.seek(self._data_pos)
         self._soundpos = 0
-        self._file.seek(self._hdr_size)
 
     def tell(self):
         return self._soundpos
@@ -274,13 +292,17 @@ class Au_read:
     def setpos(self, pos):
         if pos < 0 or pos > self.getnframes():
             raise Error('position not in range')
-        self._file.seek(pos * self._framesize + self._hdr_size)
+        if self._data_pos is None:
+            raise OSError('cannot seek')
+        self._file.seek(self._data_pos + pos * self._framesize)
         self._soundpos = pos
 
     def close(self):
-        if self._opened and self._file:
-            self._file.close()
-        self._file = None
+        file = self._file
+        if file:
+            self._file = None
+            if self._opened:
+                file.close()
 
 class Au_write:
 
@@ -297,6 +319,12 @@ class Au_write:
         if self._file:
             self.close()
         self._file = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
 
     def initfp(self, file):
         self._file = file
@@ -326,7 +354,7 @@ class Au_write:
     def setsampwidth(self, sampwidth):
         if self._nframeswritten:
             raise Error('cannot change parameters after starting to write')
-        if sampwidth not in (1, 2, 4):
+        if sampwidth not in (1, 2, 3, 4):
             raise Error('bad sample width')
         self._sampwidth = sampwidth
 
@@ -381,19 +409,21 @@ class Au_write:
         self.setcomptype(comptype, compname)
 
     def getparams(self):
-        return self.getnchannels(), self.getsampwidth(), \
-                  self.getframerate(), self.getnframes(), \
-                  self.getcomptype(), self.getcompname()
+        return _sunau_params(self.getnchannels(), self.getsampwidth(),
+                  self.getframerate(), self.getnframes(),
+                  self.getcomptype(), self.getcompname())
 
     def tell(self):
         return self._nframeswritten
 
     def writeframesraw(self, data):
+        if not isinstance(data, (bytes, bytearray)):
+            data = memoryview(data).cast('B')
         self._ensure_header_written()
-        nframes = len(data) / self._framesize
         if self._comptype == 'ULAW':
             import audioop
             data = audioop.lin2ulaw(data, self._sampwidth)
+        nframes = len(data) // self._framesize
         self._file.write(data)
         self._nframeswritten = self._nframeswritten + nframes
         self._datawritten = self._datawritten + len(data)
@@ -405,14 +435,18 @@ class Au_write:
             self._patchheader()
 
     def close(self):
-        self._ensure_header_written()
-        if self._nframeswritten != self._nframes or \
-                  self._datalength != self._datawritten:
-            self._patchheader()
-        self._file.flush()
-        if self._opened and self._file:
-            self._file.close()
-        self._file = None
+        if self._file:
+            try:
+                self._ensure_header_written()
+                if self._nframeswritten != self._nframes or \
+                        self._datalength != self._datawritten:
+                    self._patchheader()
+                self._file.flush()
+            finally:
+                file = self._file
+                self._file = None
+                if self._opened:
+                    file.close()
 
     #
     # private methods
@@ -436,6 +470,9 @@ class Au_write:
             elif self._sampwidth == 2:
                 encoding = AUDIO_FILE_ENCODING_LINEAR_16
                 self._framesize = 2
+            elif self._sampwidth == 3:
+                encoding = AUDIO_FILE_ENCODING_LINEAR_24
+                self._framesize = 3
             elif self._sampwidth == 4:
                 encoding = AUDIO_FILE_ENCODING_LINEAR_32
                 self._framesize = 4
@@ -455,6 +492,10 @@ class Au_write:
             length = AUDIO_UNKNOWN_SIZE
         else:
             length = self._nframes * self._framesize
+        try:
+            self._form_length_pos = self._file.tell()
+        except (AttributeError, OSError):
+            self._form_length_pos = None
         _write_u32(self._file, length)
         self._datalength = length
         _write_u32(self._file, encoding)
@@ -464,7 +505,9 @@ class Au_write:
         self._file.write(b'\0'*(header_size - len(self._info) - 24))
 
     def _patchheader(self):
-        self._file.seek(8)
+        if self._form_length_pos is None:
+            raise OSError('cannot seek')
+        self._file.seek(self._form_length_pos)
         _write_u32(self._file, self._datawritten)
         self._datalength = self._datawritten
         self._file.seek(0, 2)
@@ -481,5 +524,3 @@ def open(f, mode=None):
         return Au_write(f)
     else:
         raise Error("mode must be 'r', 'rb', 'w', or 'wb'")
-
-openfp = open

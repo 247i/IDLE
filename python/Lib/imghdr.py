@@ -1,5 +1,7 @@
 """Recognize image file formats based on their first few bytes."""
 
+from os import PathLike
+
 __all__ = ["what"]
 
 #-------------------------#
@@ -7,18 +9,16 @@ __all__ = ["what"]
 #-------------------------#
 
 def what(file, h=None):
-    if h is None:
-        if isinstance(file, str):
-            f = open(file, 'rb')
-            h = f.read(32)
-        else:
-            location = file.tell()
-            h = file.read(32)
-            file.seek(location)
-            f = None
-    else:
-        f = None
+    f = None
     try:
+        if h is None:
+            if isinstance(file, (str, PathLike)):
+                f = open(file, 'rb')
+                h = f.read(32)
+            else:
+                location = file.tell()
+                h = file.read(32)
+                file.seek(location)
         for tf in tests:
             res = tf(h, f)
             if res:
@@ -112,6 +112,18 @@ def test_bmp(h, f):
 
 tests.append(test_bmp)
 
+def test_webp(h, f):
+    if h.startswith(b'RIFF') and h[8:12] == b'WEBP':
+        return 'webp'
+
+tests.append(test_webp)
+
+def test_exr(h, f):
+    if h.startswith(b'\x76\x2f\x31\x01'):
+        return 'exr'
+
+tests.append(test_exr)
+
 #--------------------#
 # Small test program #
 #--------------------#
@@ -140,7 +152,7 @@ def testall(list, recursive, toplevel):
             if recursive or toplevel:
                 print('recursing down:')
                 import glob
-                names = glob.glob(os.path.join(filename, '*'))
+                names = glob.glob(os.path.join(glob.escape(filename), '*'))
                 testall(names, recursive, 0)
             else:
                 print('*** directory (use -r) ***')
@@ -149,7 +161,7 @@ def testall(list, recursive, toplevel):
             sys.stdout.flush()
             try:
                 print(what(filename))
-            except IOError:
+            except OSError:
                 print('*** not found ***')
 
 if __name__ == '__main__':

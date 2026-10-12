@@ -23,9 +23,9 @@ def escapestr(text, ampm):
     """
     new_text = re.escape(text)
     new_text = new_text.replace(re.escape(ampm), ampm)
-    new_text = new_text.replace('\%', '%')
-    new_text = new_text.replace('\:', ':')
-    new_text = new_text.replace('\?', '?')
+    new_text = new_text.replace(r'\%', '%')
+    new_text = new_text.replace(r'\:', ':')
+    new_text = new_text.replace(r'\?', '?')
     return new_text
 
 
@@ -39,7 +39,21 @@ class StrftimeTest(unittest.TestCase):
         if now[3] < 12: self.ampm='(AM|am)'
         else: self.ampm='(PM|pm)'
 
-        self.jan1 = time.localtime(time.mktime((now[0], 1, 1, 0, 0, 0, 0, 1, 0)))
+        jan1 = time.struct_time(
+            (
+                now.tm_year,  # Year
+                1,  # Month (January)
+                1,  # Day (1st)
+                0,  # Hour (0)
+                0,  # Minute (0)
+                0,  # Second (0)
+                -1,  # tm_wday (will be determined)
+                1,  # tm_yday (day 1 of the year)
+                -1,  # tm_isdst (let the system determine)
+            )
+        )
+        # use mktime to get the correct tm_wday and tm_isdst values
+        self.jan1 = time.localtime(time.mktime(jan1))
 
         try:
             if now[8]: self.tz = time.tzname[1]
@@ -54,12 +68,10 @@ class StrftimeTest(unittest.TestCase):
         self.now = now
 
     def setUp(self):
-        try:
-            import java
-            java.util.Locale.setDefault(java.util.Locale.US)
-        except ImportError:
-            import locale
-            locale.setlocale(locale.LC_TIME, 'C')
+        from locale import setlocale, LC_TIME
+        saved_locale = setlocale(LC_TIME)
+        setlocale(LC_TIME, 'C')
+        self.addCleanup(setlocale, LC_TIME, saved_locale)
 
     def test_strftime(self):
         now = time.time()
@@ -112,7 +124,7 @@ class StrftimeTest(unittest.TestCase):
         )
 
         for e in expectations:
-            # musn't raise a value error
+            # mustn't raise a value error
             try:
                 result = time.strftime(e[0], now)
             except ValueError as error:
@@ -176,8 +188,28 @@ class StrftimeTest(unittest.TestCase):
                            (e[0], e[2]))
                     print("  Expected %s, but got %s" % (e[1], result))
 
-def test_main():
-    support.run_unittest(StrftimeTest)
+
+class Y1900Tests(unittest.TestCase):
+    """A limitation of the MS C runtime library is that it crashes if
+    a date before 1900 is passed with a format string containing "%y"
+    """
+
+    def test_y_before_1900(self):
+        # Issue #13674, #19634
+        t = (1899, 1, 1, 0, 0, 0, 0, 0, 0)
+        if sys.platform.startswith(("aix", "sunos", "solaris")):
+            with self.assertRaises(ValueError):
+                time.strftime("%y", t)
+        else:
+            self.assertEqual(time.strftime("%y", t), "99")
+
+    def test_y_1900(self):
+        self.assertEqual(
+            time.strftime("%y", (1900, 1, 1, 0, 0, 0, 0, 0, 0)), "00")
+
+    def test_y_after_1900(self):
+        self.assertEqual(
+            time.strftime("%y", (2013, 1, 1, 0, 0, 0, 0, 0, 0)), "13")
 
 if __name__ == '__main__':
-    test_main()
+    unittest.main()

@@ -1,0 +1,19 @@
+Metadata-Version: 2.1
+Name: pofile
+Version: 0.1.5
+Summary: pip install pofile
+Home-page: https://www.python-office.com/
+Author: CoderWanFeng
+Author-email: 1957875073@qq.com
+License: MIT
+Project-URL: Bug Tracker, https://github.com/CoderWanFeng/pofile/issues
+Project-URL: Documentation, https://github.com/CoderWanFeng/pofile/blob/master/README.md
+Project-URL: Source Code, https://github.com/CoderWanFeng/pofile
+Platform: any
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: openpyxl
+Requires-Dist: poprogress
+Requires-Dist: psutil
+

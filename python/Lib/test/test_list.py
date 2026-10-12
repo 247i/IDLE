@@ -1,5 +1,11 @@
+import signal
 import sys
-from test import support, list_tests
+import textwrap
+from test import list_tests, support
+from test.support import cpython_only
+from test.support.script_helper import assert_python_failure, assert_python_ok
+import pickle
+import unittest
 
 class ListTest(list_tests.CommonTest):
     type2test = list
@@ -14,6 +20,8 @@ class ListTest(list_tests.CommonTest):
         self.assertEqual(list((0, 1, 2, 3)), [0, 1, 2, 3])
         self.assertEqual(list(''), [])
         self.assertEqual(list('spam'), ['s', 'p', 'a', 'm'])
+        self.assertEqual(list(x for x in range(10) if x % 2),
+                         [1, 3, 5, 7, 9])
 
         if sys.maxsize == 0x7fffffff:
             # This test can currently only work on 32-bit machines.
@@ -37,6 +45,38 @@ class ListTest(list_tests.CommonTest):
         x.extend(-y for y in x)
         self.assertEqual(x, [])
 
+    def test_keyword_args(self):
+        with self.assertRaisesRegex(TypeError, 'keyword argument'):
+            list(sequence=[])
+
+    def test_keywords_in_subclass(self):
+        class subclass(list):
+            pass
+        u = subclass([1, 2])
+        self.assertIs(type(u), subclass)
+        self.assertEqual(list(u), [1, 2])
+        with self.assertRaises(TypeError):
+            subclass(sequence=())
+
+        class subclass_with_init(list):
+            def __init__(self, seq, newarg=None):
+                super().__init__(seq)
+                self.newarg = newarg
+        u = subclass_with_init([1, 2], newarg=3)
+        self.assertIs(type(u), subclass_with_init)
+        self.assertEqual(list(u), [1, 2])
+        self.assertEqual(u.newarg, 3)
+
+        class subclass_with_new(list):
+            def __new__(cls, seq, newarg=None):
+                self = super().__new__(cls, seq)
+                self.newarg = newarg
+                return self
+        u = subclass_with_new([1, 2], newarg=3)
+        self.assertIs(type(u), subclass_with_new)
+        self.assertEqual(list(u), [1, 2])
+        self.assertEqual(u.newarg, 3)
+
     def test_truth(self):
         super().test_truth()
         self.assertTrue(not [])
@@ -59,6 +99,37 @@ class ListTest(list_tests.CommonTest):
         self.assertRaises((MemoryError, OverflowError), mul, lst, n)
         self.assertRaises((MemoryError, OverflowError), imul, lst, n)
 
+    def test_empty_slice(self):
+        x = []
+        x[:] = x
+        self.assertEqual(x, [])
+
+    def test_list_resize_overflow(self):
+        # gh-97616: test new_allocated * sizeof(PyObject*) overflow
+        # check in list_resize()
+        lst = [0] * 65
+        del lst[1:]
+        self.assertEqual(len(lst), 1)
+
+        size = sys.maxsize
+        with self.assertRaises((MemoryError, OverflowError)):
+            lst * size
+        with self.assertRaises((MemoryError, OverflowError)):
+            lst *= size
+
+    def test_repr_mutate(self):
+        class Obj:
+            @staticmethod
+            def __repr__():
+                try:
+                    mylist.pop()
+                except IndexError:
+                    pass
+                return 'obj'
+
+        mylist = [Obj() for _ in range(5)]
+        self.assertEqual(repr(mylist), '[obj, obj, obj]')
+
     def test_repr_large(self):
         # Check the repr of large list objects
         def check(n):
@@ -69,6 +140,82 @@ class ListTest(list_tests.CommonTest):
         check(10)       # check our checking code
         check(1000000)
 
+    def test_iterator_pickle(self):
+        orig = self.type2test([4, 5, 6, 7])
+        data = [10, 11, 12, 13, 14, 15]
+        for proto in range(pickle.HIGHEST_PROTOCOL + 1):
+            # initial iterator
+            itorig = iter(orig)
+            d = pickle.dumps((itorig, orig), proto)
+            it, a = pickle.loads(d)
+            a[:] = data
+            self.assertEqual(type(it), type(itorig))
+            self.assertEqual(list(it), data)
+
+            # running iterator
+            next(itorig)
+            d = pickle.dumps((itorig, orig), proto)
+            it, a = pickle.loads(d)
+            a[:] = data
+            self.assertEqual(type(it), type(itorig))
+            self.assertEqual(list(it), data[1:])
+
+            # empty iterator
+            for i in range(1, len(orig)):
+                next(itorig)
+            d = pickle.dumps((itorig, orig), proto)
+            it, a = pickle.loads(d)
+            a[:] = data
+            self.assertEqual(type(it), type(itorig))
+            self.assertEqual(list(it), data[len(orig):])
+
+            # exhausted iterator
+            self.assertRaises(StopIteration, next, itorig)
+            d = pickle.dumps((itorig, orig), proto)
+            it, a = pickle.loads(d)
+            a[:] = data
+            self.assertEqual(list(it), [])
+
+    def test_reversed_pickle(self):
+        orig = self.type2test([4, 5, 6, 7])
+        data = [10, 11, 12, 13, 14, 15]
+        for proto in range(pickle.HIGHEST_PROTOCOL + 1):
+            # initial iterator
+            itorig = reversed(orig)
+            d = pickle.dumps((itorig, orig), proto)
+            it, a = pickle.loads(d)
+            a[:] = data
+            self.assertEqual(type(it), type(itorig))
+            self.assertEqual(list(it), data[len(orig)-1::-1])
+
+            # running iterator
+            next(itorig)
+            d = pickle.dumps((itorig, orig), proto)
+            it, a = pickle.loads(d)
+            a[:] = data
+            self.assertEqual(type(it), type(itorig))
+            self.assertEqual(list(it), data[len(orig)-2::-1])
+
+            # empty iterator
+            for i in range(1, len(orig)):
+                next(itorig)
+            d = pickle.dumps((itorig, orig), proto)
+            it, a = pickle.loads(d)
+            a[:] = data
+            self.assertEqual(type(it), type(itorig))
+            self.assertEqual(list(it), [])
+
+            # exhausted iterator
+            self.assertRaises(StopIteration, next, itorig)
+            d = pickle.dumps((itorig, orig), proto)
+            it, a = pickle.loads(d)
+            a[:] = data
+            self.assertEqual(list(it), [])
+
+    def test_step_overflow(self):
+        a = [0, 1, 2, 3, 4]
+        a[1::sys.maxsize] = [0]
+        self.assertEqual(a[3::sys.maxsize], [3])
 
     def test_no_comdat_folding(self):
         # Issue 8847: In the PGO build, the MSVC linker's COMDAT folding
@@ -78,20 +225,143 @@ class ListTest(list_tests.CommonTest):
         with self.assertRaises(TypeError):
             (3,) + L([1,2])
 
-def test_main(verbose=None):
-    support.run_unittest(ListTest)
+    def test_equal_operator_modifying_operand(self):
+        # test fix for seg fault reported in bpo-38588 part 2.
+        class X:
+            def __eq__(self,other) :
+                list2.clear()
+                return NotImplemented
 
-    # verify reference counting
-    import sys
-    if verbose and hasattr(sys, "gettotalrefcount"):
-        import gc
-        counts = [None] * 5
-        for i in range(len(counts)):
-            support.run_unittest(ListTest)
-            gc.collect()
-            counts[i] = sys.gettotalrefcount()
-        print(counts)
+        class Y:
+            def __eq__(self, other):
+                list1.clear()
+                return NotImplemented
 
+        class Z:
+            def __eq__(self, other):
+                list3.clear()
+                return NotImplemented
+
+        list1 = [X()]
+        list2 = [Y()]
+        self.assertTrue(list1 == list2)
+
+        list3 = [Z()]
+        list4 = [1]
+        self.assertFalse(list3 == list4)
+
+    def test_lt_operator_modifying_operand(self):
+        # See gh-120298
+        class evil:
+            def __lt__(self, other):
+                other.clear()
+                return NotImplemented
+
+        a = [[evil()]]
+        with self.assertRaises(TypeError):
+            a[0] < a
+
+    def test_list_index_modifing_operand(self):
+        # See gh-120384
+        class evil:
+            def __init__(self, lst):
+                self.lst = lst
+            def __iter__(self):
+                yield from self.lst
+                self.lst.clear()
+
+        lst = list(range(5))
+        operand = evil(lst)
+        with self.assertRaises(ValueError):
+            lst[::-1] = operand
+
+    @cpython_only
+    def test_preallocation(self):
+        iterable = [0] * 10
+        iter_size = sys.getsizeof(iterable)
+
+        self.assertEqual(iter_size, sys.getsizeof(list([0] * 10)))
+        self.assertEqual(iter_size, sys.getsizeof(list(range(10))))
+
+    def test_count_index_remove_crashes(self):
+        # bpo-38610: The count(), index(), and remove() methods were not
+        # holding strong references to list elements while calling
+        # PyObject_RichCompareBool().
+        class X:
+            def __eq__(self, other):
+                lst.clear()
+                return NotImplemented
+
+        lst = [X()]
+        with self.assertRaises(ValueError):
+            lst.index(lst)
+
+        class L(list):
+            def __eq__(self, other):
+                str(other)
+                return NotImplemented
+
+        lst = L([X()])
+        lst.count(lst)
+
+        lst = L([X()])
+        with self.assertRaises(ValueError):
+            lst.remove(lst)
+
+        # bpo-39453: list.__contains__ was not holding strong references
+        # to list elements while calling PyObject_RichCompareBool().
+        lst = [X(), X()]
+        3 in lst
+        lst = [X(), X()]
+        X() in lst
+
+    def test_tier2_invalidates_iterator(self):
+        # GH-121012
+        for _ in range(100):
+            a = [1, 2, 3]
+            it = iter(a)
+            for _ in it:
+                pass
+            a.append(4)
+            self.assertEqual(list(it), [])
+
+    @support.nomemtest
+    def test_no_memory(self):
+        # gh-118331: Make sure we don't crash if list allocation fails
+        code = textwrap.dedent("""
+        import _testcapi, sys
+        # Prime the freelist
+        l = [None]
+        del l
+        _testcapi.set_nomemory(0)
+        l = [None]
+        """)
+        rc, _, _ = assert_python_failure("-c", code)
+        if support.MS_WINDOWS:
+            # STATUS_ACCESS_VIOLATION
+            self.assertNotEqual(rc, 0xC0000005)
+        else:
+            self.assertNotEqual(rc, -int(signal.SIGSEGV))
+
+    def test_deopt_from_append_list(self):
+        # gh-132011: it used to crash, because
+        # of `CALL_LIST_APPEND` specialization failure.
+        code = textwrap.dedent("""
+            l = []
+            def lappend(l, x, y):
+                l.append((x, y))
+            for x in range(3):
+                lappend(l, None, None)
+            try:
+                lappend(list, None, None)
+            except TypeError:
+                pass
+            else:
+                raise AssertionError
+        """)
+
+        rc, _, _ = assert_python_ok("-c", code)
+        self.assertEqual(rc, 0)
 
 if __name__ == "__main__":
-    test_main(verbose=True)
+    unittest.main()

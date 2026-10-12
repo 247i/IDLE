@@ -14,6 +14,10 @@ printable -- a string containing all ASCII characters considered printable
 
 """
 
+__all__ = ["ascii_letters", "ascii_lowercase", "ascii_uppercase", "capwords",
+           "digits", "hexdigits", "octdigits", "printable", "punctuation",
+           "whitespace", "Formatter", "Template"]
+
 import _string
 
 # Some strings for ctype-style character classification
@@ -24,7 +28,7 @@ ascii_letters = ascii_lowercase + ascii_uppercase
 digits = '0123456789'
 hexdigits = digits + 'abcdef' + 'ABCDEF'
 octdigits = '01234567'
-punctuation = """!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""
+punctuation = r"""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""
 printable = digits + ascii_letters + punctuation + whitespace
 
 # Functions which aren't available as string methods.
@@ -46,52 +50,39 @@ def capwords(s, sep=None):
 
 ####################################################################
 import re as _re
+from collections import ChainMap as _ChainMap
 
-class _multimap:
-    """Helper class for combining multiple mappings.
+_sentinel_dict = {}
 
-    Used by .{safe_,}substitute() to combine the mapping and keyword
-    arguments.
-    """
-    def __init__(self, primary, secondary):
-        self._primary = primary
-        self._secondary = secondary
-
-    def __getitem__(self, key):
-        try:
-            return self._primary[key]
-        except KeyError:
-            return self._secondary[key]
-
-
-class _TemplateMetaclass(type):
-    pattern = r"""
-    %(delim)s(?:
-      (?P<escaped>%(delim)s) |   # Escape sequence of two delimiters
-      (?P<named>%(id)s)      |   # delimiter and a Python identifier
-      {(?P<braced>%(id)s)}   |   # delimiter and a braced identifier
-      (?P<invalid>)              # Other ill-formed delimiter exprs
-    )
-    """
-
-    def __init__(cls, name, bases, dct):
-        super(_TemplateMetaclass, cls).__init__(name, bases, dct)
-        if 'pattern' in dct:
-            pattern = cls.pattern
-        else:
-            pattern = _TemplateMetaclass.pattern % {
-                'delim' : _re.escape(cls.delimiter),
-                'id'    : cls.idpattern,
-                }
-        cls.pattern = _re.compile(pattern, cls.flags | _re.VERBOSE)
-
-
-class Template(metaclass=_TemplateMetaclass):
+class Template:
     """A string class for supporting $-substitutions."""
 
     delimiter = '$'
-    idpattern = r'[_a-z][_a-z0-9]*'
+    # r'[a-z]' matches to non-ASCII letters when used with IGNORECASE, but
+    # without the ASCII flag.  We can't add re.ASCII to flags because of
+    # backward compatibility.  So we use the ?a local flag and [a-z] pattern.
+    # See https://bugs.python.org/issue31672
+    idpattern = r'(?a:[_a-z][_a-z0-9]*)'
+    braceidpattern = None
     flags = _re.IGNORECASE
+
+    def __init_subclass__(cls):
+        super().__init_subclass__()
+        if 'pattern' in cls.__dict__:
+            pattern = cls.pattern
+        else:
+            delim = _re.escape(cls.delimiter)
+            id = cls.idpattern
+            bid = cls.braceidpattern or cls.idpattern
+            pattern = fr"""
+            {delim}(?:
+              (?P<escaped>{delim})  |   # Escape sequence of two delimiters
+              (?P<named>{id})       |   # delimiter and a Python identifier
+              {{(?P<braced>{bid})}} |   # delimiter and a braced identifier
+              (?P<invalid>)             # Other ill-formed delimiter exprs
+            )
+            """
+        cls.pattern = _re.compile(pattern, cls.flags | _re.VERBOSE)
 
     def __init__(self, template):
         self.template = template
@@ -100,7 +91,7 @@ class Template(metaclass=_TemplateMetaclass):
 
     def _invalid(self, mo):
         i = mo.start('invalid')
-        lines = self.template[:i].splitlines(True)
+        lines = self.template[:i].splitlines(keepends=True)
         if not lines:
             colno = 1
             lineno = 1
@@ -110,24 +101,17 @@ class Template(metaclass=_TemplateMetaclass):
         raise ValueError('Invalid placeholder in string: line %d, col %d' %
                          (lineno, colno))
 
-    def substitute(self, *args, **kws):
-        if len(args) > 1:
-            raise TypeError('Too many positional arguments')
-        if not args:
+    def substitute(self, mapping=_sentinel_dict, /, **kws):
+        if mapping is _sentinel_dict:
             mapping = kws
         elif kws:
-            mapping = _multimap(kws, args[0])
-        else:
-            mapping = args[0]
+            mapping = _ChainMap(kws, mapping)
         # Helper function for .sub()
         def convert(mo):
             # Check the most common path first.
             named = mo.group('named') or mo.group('braced')
             if named is not None:
-                val = mapping[named]
-                # We use this idiom instead of str() because the latter will
-                # fail if val is a Unicode containing non-ASCII characters.
-                return '%s' % (val,)
+                return str(mapping[named])
             if mo.group('escaped') is not None:
                 return self.delimiter
             if mo.group('invalid') is not None:
@@ -136,23 +120,17 @@ class Template(metaclass=_TemplateMetaclass):
                              self.pattern)
         return self.pattern.sub(convert, self.template)
 
-    def safe_substitute(self, *args, **kws):
-        if len(args) > 1:
-            raise TypeError('Too many positional arguments')
-        if not args:
+    def safe_substitute(self, mapping=_sentinel_dict, /, **kws):
+        if mapping is _sentinel_dict:
             mapping = kws
         elif kws:
-            mapping = _multimap(kws, args[0])
-        else:
-            mapping = args[0]
+            mapping = _ChainMap(kws, mapping)
         # Helper function for .sub()
         def convert(mo):
             named = mo.group('named') or mo.group('braced')
             if named is not None:
                 try:
-                    # We use this idiom instead of str() because the latter
-                    # will fail if val is a Unicode containing non-ASCII
-                    return '%s' % (mapping[named],)
+                    return str(mapping[named])
                 except KeyError:
                     return mo.group()
             if mo.group('escaped') is not None:
@@ -163,6 +141,9 @@ class Template(metaclass=_TemplateMetaclass):
                              self.pattern)
         return self.pattern.sub(convert, self.template)
 
+# Initialize Template.pattern.  __init_subclass__() is automatically called
+# only for subclasses, not for the Template class itself.
+Template.__init_subclass__()
 
 
 ########################################################################
@@ -176,16 +157,17 @@ class Template(metaclass=_TemplateMetaclass):
 # The field name parser is implemented in _string.formatter_field_name_split
 
 class Formatter:
-    def format(self, format_string, *args, **kwargs):
+    def format(self, format_string, /, *args, **kwargs):
         return self.vformat(format_string, args, kwargs)
 
     def vformat(self, format_string, args, kwargs):
         used_args = set()
-        result = self._vformat(format_string, args, kwargs, used_args, 2)
+        result, _ = self._vformat(format_string, args, kwargs, used_args, 2)
         self.check_unused_args(used_args, args, kwargs)
         return result
 
-    def _vformat(self, format_string, args, kwargs, used_args, recursion_depth):
+    def _vformat(self, format_string, args, kwargs, used_args, recursion_depth,
+                 auto_arg_index=0):
         if recursion_depth < 0:
             raise ValueError('Max string recursion exceeded')
         result = []
@@ -201,6 +183,23 @@ class Formatter:
                 # this is some markup, find the object and do
                 #  the formatting
 
+                # handle arg indexing when empty field_names are given.
+                if field_name == '':
+                    if auto_arg_index is False:
+                        raise ValueError('cannot switch from manual field '
+                                         'specification to automatic field '
+                                         'numbering')
+                    field_name = str(auto_arg_index)
+                    auto_arg_index += 1
+                elif field_name.isdigit():
+                    if auto_arg_index:
+                        raise ValueError('cannot switch from manual field '
+                                         'specification to automatic field '
+                                         'numbering')
+                    # disable auto arg incrementing, if it gets
+                    # used later on, then an exception will be raised
+                    auto_arg_index = False
+
                 # given the field_name, find the object it references
                 #  and the argument it came from
                 obj, arg_used = self.get_field(field_name, args, kwargs)
@@ -210,13 +209,15 @@ class Formatter:
                 obj = self.convert_field(obj, conversion)
 
                 # expand the format spec, if needed
-                format_spec = self._vformat(format_spec, args, kwargs,
-                                            used_args, recursion_depth-1)
+                format_spec, auto_arg_index = self._vformat(
+                    format_spec, args, kwargs,
+                    used_args, recursion_depth-1,
+                    auto_arg_index=auto_arg_index)
 
                 # format the object and append to the result
                 result.append(self.format_field(obj, format_spec))
 
-        return ''.join(result)
+        return ''.join(result), auto_arg_index
 
 
     def get_value(self, key, args, kwargs):

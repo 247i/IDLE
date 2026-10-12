@@ -1,62 +1,56 @@
-"""Test correct operation of the print function.
-"""
-
-# In 2.6, this gives us the behavior we want.  In 3.0, it has
-#  no function, but it still must parse correctly.
-from __future__ import print_function
-
 import unittest
-from test import support
+import sys
+from io import StringIO
 
-try:
-    # 3.x
-    from io import StringIO
-except ImportError:
-    # 2.x
-    from StringIO import StringIO
+from test import support
 
 NotDefined = object()
 
 # A dispatch table all 8 combinations of providing
-#  sep, end, and file
+# sep, end, and file.
 # I use this machinery so that I'm not just passing default
-#  values to print, I'm either passing or not passing in the
-#  arguments
+# values to print, I'm either passing or not passing in the
+# arguments.
 dispatch = {
     (False, False, False):
-     lambda args, sep, end, file: print(*args),
+        lambda args, sep, end, file: print(*args),
     (False, False, True):
-     lambda args, sep, end, file: print(file=file, *args),
+        lambda args, sep, end, file: print(file=file, *args),
     (False, True,  False):
-     lambda args, sep, end, file: print(end=end, *args),
+        lambda args, sep, end, file: print(end=end, *args),
     (False, True,  True):
-     lambda args, sep, end, file: print(end=end, file=file, *args),
+        lambda args, sep, end, file: print(end=end, file=file, *args),
     (True,  False, False):
-     lambda args, sep, end, file: print(sep=sep, *args),
+        lambda args, sep, end, file: print(sep=sep, *args),
     (True,  False, True):
-     lambda args, sep, end, file: print(sep=sep, file=file, *args),
+        lambda args, sep, end, file: print(sep=sep, file=file, *args),
     (True,  True,  False):
-     lambda args, sep, end, file: print(sep=sep, end=end, *args),
+        lambda args, sep, end, file: print(sep=sep, end=end, *args),
     (True,  True,  True):
-     lambda args, sep, end, file: print(sep=sep, end=end, file=file, *args),
-    }
+        lambda args, sep, end, file: print(sep=sep, end=end, file=file, *args),
+}
+
 
 # Class used to test __str__ and print
 class ClassWith__str__:
     def __init__(self, x):
         self.x = x
+
     def __str__(self):
         return self.x
 
-class TestPrint(unittest.TestCase):
-    def check(self, expected, args,
-            sep=NotDefined, end=NotDefined, file=NotDefined):
-        # Capture sys.stdout in a StringIO.  Call print with args,
-        #  and with sep, end, and file, if they're defined.  Result
-        #  must match expected.
 
-        # Look up the actual function to call, based on if sep, end, and file
-        #  are defined
+class TestPrint(unittest.TestCase):
+    """Test correct operation of the print function."""
+
+    def check(self, expected, args,
+              sep=NotDefined, end=NotDefined, file=NotDefined):
+        # Capture sys.stdout in a StringIO.  Call print with args,
+        # and with sep, end, and file, if they're defined.  Result
+        # must match expected.
+
+        # Look up the actual function to call, based on if sep, end,
+        # and file are defined.
         fn = dispatch[(sep is not NotDefined,
                        end is not NotDefined,
                        file is not NotDefined)]
@@ -69,7 +63,7 @@ class TestPrint(unittest.TestCase):
     def test_print(self):
         def x(expected, args, sep=NotDefined, end=NotDefined):
             # Run the test 2 ways: not using file, and using
-            #  file directed to a StringIO
+            # file directed to a StringIO.
 
             self.check(expected, args, sep=sep, end=end)
 
@@ -101,18 +95,110 @@ class TestPrint(unittest.TestCase):
         x('*\n', (ClassWith__str__('*'),))
         x('abc 1\n', (ClassWith__str__('abc'), 1))
 
-#        # 2.x unicode tests
-#        x(u'1 2\n', ('1', u'2'))
-#        x(u'u\1234\n', (u'u\1234',))
-#        x(u'  abc 1\n', (' ', ClassWith__str__(u'abc'), 1))
-
         # errors
         self.assertRaises(TypeError, print, '', sep=3)
         self.assertRaises(TypeError, print, '', end=3)
         self.assertRaises(AttributeError, print, '', file='')
 
-def test_main():
-    support.run_unittest(TestPrint)
+    def test_print_flush(self):
+        # operation of the flush flag
+        class filelike:
+            def __init__(self):
+                self.written = ''
+                self.flushed = 0
+
+            def write(self, str):
+                self.written += str
+
+            def flush(self):
+                self.flushed += 1
+
+        f = filelike()
+        print(1, file=f, end='', flush=True)
+        print(2, file=f, end='', flush=True)
+        print(3, file=f, flush=False)
+        self.assertEqual(f.written, '123\n')
+        self.assertEqual(f.flushed, 2)
+
+        # ensure exceptions from flush are passed through
+        class noflush:
+            def write(self, str):
+                pass
+
+            def flush(self):
+                raise RuntimeError
+        self.assertRaises(RuntimeError, print, 1, file=noflush(), flush=True)
+
+    def test_gh130163(self):
+        class X:
+            def __str__(self):
+                sys.stdout = StringIO()
+                support.gc_collect()
+                return 'foo'
+
+        with support.swap_attr(sys, 'stdout', None):
+            sys.stdout = StringIO()  # the only reference
+            print(X())  # should not crash
+
+
+class TestPy2MigrationHint(unittest.TestCase):
+    """Test that correct hint is produced analogous to Python3 syntax,
+    if print statement is executed as in Python 2.
+    """
+
+    def test_normal_string(self):
+        python2_print_str = 'print "Hello World"'
+        with self.assertRaises(SyntaxError) as context:
+            exec(python2_print_str)
+
+        self.assertIn("Missing parentheses in call to 'print'. Did you mean print(...)",
+                str(context.exception))
+
+    def test_string_with_soft_space(self):
+        python2_print_str = 'print "Hello World",'
+        with self.assertRaises(SyntaxError) as context:
+            exec(python2_print_str)
+
+        self.assertIn("Missing parentheses in call to 'print'. Did you mean print(...)",
+                str(context.exception))
+
+    def test_string_with_excessive_whitespace(self):
+        python2_print_str = 'print  "Hello World", '
+        with self.assertRaises(SyntaxError) as context:
+            exec(python2_print_str)
+
+        self.assertIn("Missing parentheses in call to 'print'. Did you mean print(...)",
+                str(context.exception))
+
+    def test_string_with_leading_whitespace(self):
+        python2_print_str = '''if 1:
+            print "Hello World"
+        '''
+        with self.assertRaises(SyntaxError) as context:
+            exec(python2_print_str)
+
+        self.assertIn("Missing parentheses in call to 'print'. Did you mean print(...)",
+                str(context.exception))
+
+    # bpo-32685: Suggestions for print statement should be proper when
+    # it is in the same line as the header of a compound statement
+    # and/or followed by a semicolon
+    def test_string_with_semicolon(self):
+        python2_print_str = 'print p;'
+        with self.assertRaises(SyntaxError) as context:
+            exec(python2_print_str)
+
+        self.assertIn("Missing parentheses in call to 'print'. Did you mean print(...)",
+                str(context.exception))
+
+    def test_string_in_loop_on_same_line(self):
+        python2_print_str = 'for i in s: print i'
+        with self.assertRaises(SyntaxError) as context:
+            exec(python2_print_str)
+
+        self.assertIn("Missing parentheses in call to 'print'. Did you mean print(...)",
+                str(context.exception))
+
 
 if __name__ == "__main__":
-    test_main()
+    unittest.main()

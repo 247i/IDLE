@@ -1,10 +1,11 @@
 from __future__ import unicode_literals
-
 import unittest
-from test import support
 
-def test_main():
-    pass
+
+class Tests(unittest.TestCase):
+    def test_unicode_literals(self):
+        self.assertIsInstance("literal", str)
+
 
 if __name__ == "__main__":
-    test_main()
+    unittest.main()

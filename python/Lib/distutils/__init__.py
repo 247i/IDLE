@@ -8,10 +8,13 @@ used from a setup script as
    setup (...)
 """
 
-# Distutils version
-#
-# Updated automatically by the Python release process.
-#
-#--start constants--
-__version__ = "3.2.5"
-#--end constants--
+import sys
+import warnings
+
+__version__ = sys.version[:sys.version.index(' ')]
+
+_DEPRECATION_MESSAGE = ("The distutils package is deprecated and slated for "
+                        "removal in Python 3.12. Use setuptools or check "
+                        "PEP 632 for potential alternatives")
+warnings.warn(_DEPRECATION_MESSAGE,
+              DeprecationWarning, 2)

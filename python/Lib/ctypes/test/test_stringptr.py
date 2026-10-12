@@ -1,4 +1,5 @@
 import unittest
+from test import support
 from ctypes import *
 
 import _ctypes_test
@@ -7,6 +8,7 @@ lib = CDLL(_ctypes_test.__file__)
 
 class StringPtrTestCase(unittest.TestCase):
 
+    @support.refcount_test
     def test__POINTER_c_char(self):
         class X(Structure):
             _fields_ = [("str", POINTER(c_char))]
@@ -68,8 +70,8 @@ class StringPtrTestCase(unittest.TestCase):
         x = r[0], r[1], r[2], r[3], r[4]
         self.assertEqual(x, (b"c", b"d", b"e", b"f", b"\000"))
         del buf
-        # x1 will NOT be the same as x, usually:
-        x1 = r[0], r[1], r[2], r[3], r[4]
+        # Because r is a pointer to memory that is freed after deleting buf,
+        # the pointer is hanging and using it would reference freed memory.
 
 if __name__ == '__main__':
     unittest.main()

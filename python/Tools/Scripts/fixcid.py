@@ -88,16 +88,16 @@ def main():
     sys.exit(bad)
 
 # Change this regular expression to select a different set of files
-Wanted = '^[a-zA-Z0-9_]+\.[ch]$'
+Wanted = r'^[a-zA-Z0-9_]+\.[ch]$'
 def wanted(name):
-    return re.match(Wanted, name) >= 0
+    return re.match(Wanted, name)
 
 def recursedown(dirname):
     dbg('recursedown(%r)\n' % (dirname,))
     bad = 0
     try:
         names = os.listdir(dirname)
-    except os.error as msg:
+    except OSError as msg:
         err(dirname + ': cannot list directory: ' + str(msg) + '\n')
         return 1
     names.sort()
@@ -168,6 +168,7 @@ def fix(filename):
     if filename == '-': return 0 # Done in filter mode
     f.close()
     if not g: return 0 # No changes
+    g.close()
 
     # Finishing touch -- move files
 
@@ -175,17 +176,17 @@ def fix(filename):
     try:
         statbuf = os.stat(filename)
         os.chmod(tempname, statbuf[ST_MODE] & 0o7777)
-    except os.error as msg:
+    except OSError as msg:
         err(tempname + ': warning: chmod failed (' + str(msg) + ')\n')
     # Then make a backup of the original file as filename~
     try:
         os.rename(filename, filename + '~')
-    except os.error as msg:
+    except OSError as msg:
         err(filename + ': warning: backup failed (' + str(msg) + ')\n')
     # Now move the temp file to the original file
     try:
         os.rename(tempname, filename)
-    except os.error as msg:
+    except OSError as msg:
         err(filename + ': rename failed (' + str(msg) + ')\n')
         return 1
     # Return success
@@ -193,21 +194,21 @@ def fix(filename):
 
 # Tokenizing ANSI C (partly)
 
-Identifier = '\(struct \)?[a-zA-Z_][a-zA-Z0-9_]+'
-String = '"\([^\n\\"]\|\\\\.\)*"'
-Char = '\'\([^\n\\\']\|\\\\.\)*\''
-CommentStart = '/\*'
-CommentEnd = '\*/'
+Identifier = '(struct )?[a-zA-Z_][a-zA-Z0-9_]+'
+String = r'"([^\n\\"]|\\.)*"'
+Char = r"'([^\n\\']|\\.)*'"
+CommentStart = r'/\*'
+CommentEnd = r'\*/'
 
 Hexnumber = '0[xX][0-9a-fA-F]*[uUlL]*'
 Octnumber = '0[0-7]*[uUlL]*'
 Decnumber = '[1-9][0-9]*[uUlL]*'
-Intnumber = Hexnumber + '\|' + Octnumber + '\|' + Decnumber
+Intnumber = Hexnumber + '|' + Octnumber + '|' + Decnumber
 Exponent = '[eE][-+]?[0-9]+'
-Pointfloat = '\([0-9]+\.[0-9]*\|\.[0-9]+\)\(' + Exponent + '\)?'
+Pointfloat = r'([0-9]+\.[0-9]*|\.[0-9]+)(' + Exponent + r')?'
 Expfloat = '[0-9]+' + Exponent
-Floatnumber = Pointfloat + '\|' + Expfloat
-Number = Floatnumber + '\|' + Intnumber
+Floatnumber = Pointfloat + '|' + Expfloat
+Number = Floatnumber + '|' + Intnumber
 
 # Anything else is an operator -- don't list this explicitly because of '/*'
 
@@ -225,15 +226,16 @@ def initfixline():
 
 def fixline(line):
     global Program
-##  print '-->', repr(line)
+##  print('-->', repr(line))
     i = 0
     while i < len(line):
-        i = Program.search(line, i)
-        if i < 0: break
-        found = Program.group(0)
-##      if Program is InsideCommentProgram: print '...',
-##      else: print '   ',
-##      print found
+        match = Program.search(line, i)
+        if match is None: break
+        i = match.start()
+        found = match.group(0)
+##      if Program is InsideCommentProgram: print(end='... ')
+##      else: print(end='    ')
+##      print(found)
         if len(found) == 2:
             if found == '/*':
                 Program = InsideCommentProgram
@@ -247,15 +249,15 @@ def fixline(line):
                     print('Found in comment:', found)
                     i = i + n
                     continue
-                if NotInComment.has_key(found):
-##                  print 'Ignored in comment:',
-##                  print found, '-->', subst
-##                  print 'Line:', line,
+                if found in NotInComment:
+##                  print(end='Ignored in comment: ')
+##                  print(found, '-->', subst)
+##                  print('Line:', line, end='')
                     subst = found
 ##              else:
-##                  print 'Substituting in comment:',
-##                  print found, '-->', subst
-##                  print 'Line:', line,
+##                  print(end='Substituting in comment: ')
+##                  print(found, '-->', subst)
+##                  print('Line:', line, end='')
             line = line[:i] + subst + line[i+n:]
             n = len(subst)
         i = i + n
@@ -279,36 +281,36 @@ def addsubst(substfile):
     except IOError as msg:
         err(substfile + ': cannot read substfile: ' + str(msg) + '\n')
         sys.exit(1)
-    lineno = 0
-    while 1:
-        line = fp.readline()
-        if not line: break
-        lineno = lineno + 1
-        try:
-            i = line.index('#')
-        except ValueError:
-            i = -1          # Happens to delete trailing \n
-        words = line[:i].split()
-        if not words: continue
-        if len(words) == 3 and words[0] == 'struct':
-            words[:2] = [words[0] + ' ' + words[1]]
-        elif len(words) != 2:
-            err(substfile + '%s:%r: warning: bad line: %r' % (substfile, lineno, line))
-            continue
-        if Reverse:
-            [value, key] = words
-        else:
-            [key, value] = words
-        if value[0] == '*':
-            value = value[1:]
-        if key[0] == '*':
-            key = key[1:]
-            NotInComment[key] = value
-        if key in Dict:
-            err('%s:%r: warning: overriding: %r %r\n' % (substfile, lineno, key, value))
-            err('%s:%r: warning: previous: %r\n' % (substfile, lineno, Dict[key]))
-        Dict[key] = value
-    fp.close()
+    with fp:
+        lineno = 0
+        while 1:
+            line = fp.readline()
+            if not line: break
+            lineno = lineno + 1
+            try:
+                i = line.index('#')
+            except ValueError:
+                i = -1          # Happens to delete trailing \n
+            words = line[:i].split()
+            if not words: continue
+            if len(words) == 3 and words[0] == 'struct':
+                words[:2] = [words[0] + ' ' + words[1]]
+            elif len(words) != 2:
+                err(substfile + '%s:%r: warning: bad line: %r' % (substfile, lineno, line))
+                continue
+            if Reverse:
+                [value, key] = words
+            else:
+                [key, value] = words
+            if value[0] == '*':
+                value = value[1:]
+            if key[0] == '*':
+                key = key[1:]
+                NotInComment[key] = value
+            if key in Dict:
+                err('%s:%r: warning: overriding: %r %r\n' % (substfile, lineno, key, value))
+                err('%s:%r: warning: previous: %r\n' % (substfile, lineno, Dict[key]))
+            Dict[key] = value
 
 if __name__ == '__main__':
     main()

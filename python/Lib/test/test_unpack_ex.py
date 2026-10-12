@@ -1,5 +1,9 @@
 # Tests for extended unpacking, starred expressions.
 
+import doctest
+import unittest
+
+
 doctests = """
 
 Unpack tuple
@@ -20,6 +24,12 @@ Unpack implied tuple
 
     >>> *a, = 7, 8, 9
     >>> a == [7, 8, 9]
+    True
+
+Unpack nested implied tuple
+
+    >>> [*[*a]] = [[7,8,9]]
+    >>> a == [[7,8,9]]
     True
 
 Unpack string... fun!
@@ -71,21 +81,219 @@ Multiple targets
     >>> a == 0 and b == [1, 2, 3] and c == 4 and d == [0, 1, 2, 3] and e == 4
     True
 
+Assignment unpacking
+
+    >>> a, b, *c = range(5)
+    >>> a, b, c
+    (0, 1, [2, 3, 4])
+    >>> *a, b, c = a, b, *c
+    >>> a, b, c
+    ([0, 1, 2], 3, 4)
+
+Set display element unpacking
+
+    >>> a = [1, 2, 3]
+    >>> sorted({1, *a, 0, 4})
+    [0, 1, 2, 3, 4]
+
+    >>> {1, *1, 0, 4}
+    Traceback (most recent call last):
+      ...
+    TypeError: 'int' object is not iterable
+
+Dict display element unpacking
+
+    >>> kwds = {'z': 0, 'w': 12}
+    >>> sorted({'x': 1, 'y': 2, **kwds}.items())
+    [('w', 12), ('x', 1), ('y', 2), ('z', 0)]
+
+    >>> sorted({**{'x': 1}, 'y': 2, **{'z': 3}}.items())
+    [('x', 1), ('y', 2), ('z', 3)]
+
+    >>> sorted({**{'x': 1}, 'y': 2, **{'x': 3}}.items())
+    [('x', 3), ('y', 2)]
+
+    >>> sorted({**{'x': 1}, **{'x': 3}, 'x': 4}.items())
+    [('x', 4)]
+
+    >>> {**{}}
+    {}
+
+    >>> a = {}
+    >>> {**a}[0] = 1
+    >>> a
+    {}
+
+    >>> {**1}
+    Traceback (most recent call last):
+    ...
+    TypeError: 'int' object is not a mapping
+
+    >>> {**[]}
+    Traceback (most recent call last):
+    ...
+    TypeError: 'list' object is not a mapping
+
+    >>> len(eval("{" + ", ".join("**{{{}: {}}}".format(i, i)
+    ...                          for i in range(1000)) + "}"))
+    1000
+
+    >>> {0:1, **{0:2}, 0:3, 0:4}
+    {0: 4}
+
+List comprehension element unpacking
+
+    >>> a, b, c = [0, 1, 2], 3, 4
+    >>> [*a, b, c]
+    [0, 1, 2, 3, 4]
+
+    >>> l = [a, (3, 4), {5}, {6: None}, (i for i in range(7, 10))]
+    >>> [*item for item in l]
+    Traceback (most recent call last):
+    ...
+    SyntaxError: iterable unpacking cannot be used in comprehension
+
+    >>> [*[0, 1] for i in range(10)]
+    Traceback (most recent call last):
+    ...
+    SyntaxError: iterable unpacking cannot be used in comprehension
+
+    >>> [*'a' for i in range(10)]
+    Traceback (most recent call last):
+    ...
+    SyntaxError: iterable unpacking cannot be used in comprehension
+
+    >>> [*[] for i in range(10)]
+    Traceback (most recent call last):
+    ...
+    SyntaxError: iterable unpacking cannot be used in comprehension
+
+    >>> {**{} for a in [1]}
+    Traceback (most recent call last):
+    ...
+    SyntaxError: dict unpacking cannot be used in dict comprehension
+
+# Pegen is better here.
+# Generator expression in function arguments
+
+#     >>> list(*x for x in (range(5) for i in range(3)))
+#     Traceback (most recent call last):
+#     ...
+#         list(*x for x in (range(5) for i in range(3)))
+#                   ^
+#     SyntaxError: invalid syntax
+
+    >>> dict(**x for x in [{1:2}])
+    Traceback (most recent call last):
+    ...
+        dict(**x for x in [{1:2}])
+                   ^
+    SyntaxError: invalid syntax
+
+Iterable argument unpacking
+
+    >>> print(*[1], *[2], 3)
+    1 2 3
+
+Make sure that they don't corrupt the passed-in dicts.
+
+    >>> def f(x, y):
+    ...     print(x, y)
+    ...
+    >>> original_dict = {'x': 1}
+    >>> f(**original_dict, y=2)
+    1 2
+    >>> original_dict
+    {'x': 1}
+
 Now for some failures
+
+Make sure the raised errors are right for keyword argument unpackings
+
+    >>> from collections.abc import MutableMapping
+    >>> class CrazyDict(MutableMapping):
+    ...     def __init__(self):
+    ...         self.d = {}
+    ...
+    ...     def __iter__(self):
+    ...         for x in self.d.__iter__():
+    ...             if x == 'c':
+    ...                 self.d['z'] = 10
+    ...             yield x
+    ...
+    ...     def __getitem__(self, k):
+    ...         return self.d[k]
+    ...
+    ...     def __len__(self):
+    ...         return len(self.d)
+    ...
+    ...     def __setitem__(self, k, v):
+    ...         self.d[k] = v
+    ...
+    ...     def __delitem__(self, k):
+    ...         del self.d[k]
+    ...
+    >>> d = CrazyDict()
+    >>> d.d = {chr(ord('a') + x): x for x in range(5)}
+    >>> e = {**d}
+    Traceback (most recent call last):
+    ...
+    RuntimeError: dictionary changed size during iteration
+
+    >>> d.d = {chr(ord('a') + x): x for x in range(5)}
+    >>> def f(**kwargs): print(kwargs)
+    >>> f(**d)
+    Traceback (most recent call last):
+    ...
+    RuntimeError: dictionary changed size during iteration
+
+Overridden parameters
+
+    >>> f(x=5, **{'x': 3}, y=2)
+    Traceback (most recent call last):
+      ...
+    TypeError: test.test_unpack_ex.f() got multiple values for keyword argument 'x'
+
+    >>> f(**{'x': 3}, x=5, y=2)
+    Traceback (most recent call last):
+      ...
+    TypeError: test.test_unpack_ex.f() got multiple values for keyword argument 'x'
+
+    >>> f(**{'x': 3}, **{'x': 5}, y=2)
+    Traceback (most recent call last):
+      ...
+    TypeError: test.test_unpack_ex.f() got multiple values for keyword argument 'x'
+
+    >>> f(x=5, **{'x': 3}, **{'x': 2})
+    Traceback (most recent call last):
+      ...
+    TypeError: test.test_unpack_ex.f() got multiple values for keyword argument 'x'
+
+    >>> f(**{1: 3}, **{1: 5})
+    Traceback (most recent call last):
+      ...
+    TypeError: test.test_unpack_ex.f() got multiple values for keyword argument '1'
 
 Unpacking non-sequence
 
     >>> a, *b = 7
     Traceback (most recent call last):
       ...
-    TypeError: 'int' object is not iterable
+    TypeError: cannot unpack non-iterable int object
 
 Unpacking sequence too short
 
     >>> a, *b, c, d, e = Seq()
     Traceback (most recent call last):
       ...
-    ValueError: need more than 3 values to unpack
+    ValueError: not enough values to unpack (expected at least 4, got 3)
+
+Unpacking sequence too short and target appears last
+
+    >>> a, b, c, d, *e = Seq()
+    Traceback (most recent call last):
+      ...
+    ValueError: not enough values to unpack (expected at least 4, got 3)
 
 Unpacking a sequence where the test for too long raises a different kind of
 error
@@ -116,12 +324,17 @@ Now some general starred expressions (all fail).
     >>> a, *b, c, *d, e = range(10) # doctest:+ELLIPSIS
     Traceback (most recent call last):
       ...
-    SyntaxError: two starred expressions in assignment
+    SyntaxError: multiple starred expressions in assignment
 
     >>> [*b, *c] = range(10) # doctest:+ELLIPSIS
     Traceback (most recent call last):
       ...
-    SyntaxError: two starred expressions in assignment
+    SyntaxError: multiple starred expressions in assignment
+
+    >>> a,*b,*c,*d = range(4) # doctest:+ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    SyntaxError: multiple starred expressions in assignment
 
     >>> *a = range(10) # doctest:+ELLIPSIS
     Traceback (most recent call last):
@@ -131,27 +344,52 @@ Now some general starred expressions (all fail).
     >>> *a # doctest:+ELLIPSIS
     Traceback (most recent call last):
       ...
-    SyntaxError: can use starred expression only as assignment target
+    SyntaxError: can't use starred expression here
 
     >>> *1 # doctest:+ELLIPSIS
     Traceback (most recent call last):
       ...
-    SyntaxError: can use starred expression only as assignment target
+    SyntaxError: can't use starred expression here
 
     >>> x = *a # doctest:+ELLIPSIS
     Traceback (most recent call last):
       ...
-    SyntaxError: can use starred expression only as assignment target
+    SyntaxError: can't use starred expression here
+
+    >>> (*x),y = 1, 2 # doctest:+ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    SyntaxError: cannot use starred expression here
+
+    >>> (((*x))),y = 1, 2 # doctest:+ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    SyntaxError: cannot use starred expression here
+
+    >>> z,(*x),y = 1, 2, 4 # doctest:+ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    SyntaxError: cannot use starred expression here
+
+    >>> z,(*x) = 1, 2 # doctest:+ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    SyntaxError: cannot use starred expression here
+
+    >>> ((*x),y) = 1, 2 # doctest:+ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    SyntaxError: cannot use starred expression here
 
 Some size constraints (all fail.)
 
-    >>> s = ", ".join("a%d" % i for i in range(1<<8)) + ", *rest = range(1<<8 + 1)"
+    >>> s = ", ".join("a%d" % i for i in range(1<<8)) + ", *rest = range((1<<8) + 1)"
     >>> compile(s, 'test', 'exec') # doctest:+ELLIPSIS
     Traceback (most recent call last):
      ...
     SyntaxError: too many expressions in star-unpacking assignment
 
-    >>> s = ", ".join("a%d" % i for i in range(1<<8 + 1)) + ", *rest = range(1<<8 + 2)"
+    >>> s = ", ".join("a%d" % i for i in range((1<<8) + 1)) + ", *rest = range((1<<8) + 2)"
     >>> compile(s, 'test', 'exec') # doctest:+ELLIPSIS
     Traceback (most recent call last):
      ...
@@ -164,11 +402,10 @@ Some size constraints (all fail.)
 
 __test__ = {'doctests' : doctests}
 
-def test_main(verbose=False):
-    import sys
-    from test import support
-    from test import test_unpack_ex
-    support.run_doctest(test_unpack_ex, verbose)
+def load_tests(loader, tests, pattern):
+    tests.addTest(doctest.DocTestSuite())
+    return tests
+
 
 if __name__ == "__main__":
-    test_main(verbose=True)
+    unittest.main()

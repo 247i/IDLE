@@ -1,40 +1,40 @@
-import os
 import unittest
 from test import support
+from test.support import import_helper
+from test.support import check_sanitizer
+
+if check_sanitizer(address=True, memory=True):
+    raise unittest.SkipTest("Tests involvin libX11 can SEGFAULT on ASAN/MSAN builds")
 
 # Skip this test if _tkinter wasn't built.
-support.import_module('_tkinter')
-
-# Make sure tkinter._fix runs to set up the environment
-support.import_fresh_module('tkinter')
+import_helper.import_module('_tkinter')
 
 # Skip test if tk cannot be initialized.
-from tkinter.test.support import check_tk_availability
-check_tk_availability()
+support.requires('gui')
 
+import tkinter
 from _tkinter import TclError
 from tkinter import ttk
-from tkinter.test import runtktests
-from tkinter.test.support import get_tk_root
 
-try:
-    ttk.Button()
-except TclError as msg:
-    # assuming ttk is not available
-    raise unittest.SkipTest("ttk not available: %s" % msg)
 
-def test_main(enable_gui=False):
-    if enable_gui:
-        if support.use_resources is None:
-            support.use_resources = ['gui']
-        elif 'gui' not in support.use_resources:
-            support.use_resources.append('gui')
-
+def setUpModule():
+    root = None
     try:
-        support.run_unittest(
-                *runtktests.get_tests(text=False, packages=['test_ttk']))
+        root = tkinter.Tk()
+        button = ttk.Button(root)
+        button.destroy()
+        del button
+    except TclError as msg:
+        # assuming ttk is not available
+        raise unittest.SkipTest("ttk not available: %s" % msg)
     finally:
-        get_tk_root().destroy()
+        if root is not None:
+            root.destroy()
+        del root
+
+def load_tests(loader, tests, pattern):
+    return loader.discover('tkinter.test.test_ttk')
+
 
 if __name__ == '__main__':
-    test_main(enable_gui=True)
+    unittest.main()

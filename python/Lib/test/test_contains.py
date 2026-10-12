@@ -1,6 +1,6 @@
 from collections import deque
-from test.support import run_unittest
 import unittest
+from test.support import NEVER_EQ
 
 
 class base_set:
@@ -24,8 +24,11 @@ class TestContains(unittest.TestCase):
         self.assertNotIn(0, b)
         self.assertIn(1, c)
         self.assertNotIn(0, c)
-        self.assertRaises(TypeError, lambda: 1 in a)
-        self.assertRaises(TypeError, lambda: 1 not in a)
+        msg = "argument of type 'base_set' is not a container or iterable"
+        with self.assertRaisesRegex(TypeError, msg):
+            1 in a
+        with self.assertRaisesRegex(TypeError, msg):
+            1 not in a
 
         # test char in string
         self.assertIn('c', 'abc')
@@ -70,13 +73,7 @@ class TestContains(unittest.TestCase):
         # containment and equality tests involving elements that are
         # not necessarily equal to themselves
 
-        class MyNonReflexive(object):
-            def __eq__(self, other):
-                return False
-            def __hash__(self):
-                return 28
-
-        values = float('nan'), 1, None, 'abc', MyNonReflexive()
+        values = float('nan'), 1, None, 'abc', NEVER_EQ
         constructors = list, tuple, dict.fromkeys, set, frozenset, deque
         for constructor in constructors:
             container = constructor(values)
@@ -85,9 +82,31 @@ class TestContains(unittest.TestCase):
             self.assertTrue(container == constructor(values))
             self.assertTrue(container == container)
 
+    def test_block_fallback(self):
+        # blocking fallback with __contains__ = None
+        class ByContains(object):
+            def __contains__(self, other):
+                return False
+        c = ByContains()
+        class BlockContains(ByContains):
+            """Is not a container
 
-def test_main():
-    run_unittest(TestContains)
+            This class is a perfectly good iterable (as tested by
+            list(bc)), as well as inheriting from a perfectly good
+            container, but __contains__ = None prevents the usual
+            fallback to iteration in the container protocol. That
+            is, normally, 0 in bc would fall back to the equivalent
+            of any(x==0 for x in bc), but here it's blocked from
+            doing so.
+            """
+            def __iter__(self):
+                while False:
+                    yield None
+            __contains__ = None
+        bc = BlockContains()
+        self.assertFalse(0 in c)
+        self.assertFalse(0 in list(bc))
+        self.assertRaises(TypeError, lambda: 0 in bc)
 
 if __name__ == '__main__':
-    test_main()
+    unittest.main()

@@ -1,0 +1,2 @@
+[console_scripts]
+friendly = friendly.__main__:main

@@ -1,6 +1,7 @@
-t/pandoc.exe
+/t/pandoc.exe
 /t/VSCodium
 /t/VSCode
+__pycache__/
 *.pyc
 *.log
 *.bak

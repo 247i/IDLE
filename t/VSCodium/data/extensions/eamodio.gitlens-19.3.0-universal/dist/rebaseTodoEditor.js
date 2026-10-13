@@ -1,5 +1,0 @@
-(()=>{let e=require("node:fs"),t=require("node:process"),i=t.argv[2];null==i&&(0,t.exit)(1);try{var r,l;let n,p;t.env.GL_ACCEPT_TODO&&(0,t.exit)(0),t.env.GL_FIXUP_SHA&&t.env.GL_FIXUP_TARGET&&((0,e.writeFileSync)(i,function(e,t,i){let r=e.split(`
-`),l=e=>r.findIndex(t=>{let i=/^(?:pick|p)\s+([0-9a-f]+)\b/.exec(t);return null!=i&&e.startsWith(i[1])}),n=l(t);if(-1===n)return e;let p=l(i);if(-1===p)return e;let[s]=r.splice(n,1),u=n<p?p-1:p;return r.splice(u+1,0,s.replace(/^(?:pick|p)(\s)/,"fixup$1")),r.join(`
-`)}((0,e.readFileSync)(i,"utf8"),t.env.GL_FIXUP_SHA,t.env.GL_FIXUP_TARGET)),(0,t.exit)(0));let s=(t.env.GL_SQUASH_SHAS??"").split(",").filter(Boolean),u=t.env.GL_SQUASH_ACTION;0===s.length&&(0,t.exit)(1),(0,e.writeFileSync)(i,(r=(0,e.readFileSync)(i,"utf8"),l="fixup"===u||"drop"===u||"reword"===u?u:"squash",n="squash"===l||"fixup"===l,p=!1,r.split(`
-`).map(e=>{let t=/^(?:pick|p)\s+([0-9a-f]+)\b/.exec(e);return null!=t&&s.some(e=>e.startsWith(t[1]))?n&&!p?(p=!0,e):e.replace(/^(?:pick|p)(\s)/,`${l}$1`):e}).join(`
-`))),(0,t.exit)(0)}catch{(0,t.exit)(1)}module.exports={}})();

@@ -1,1 +1,0 @@
-let e=null;function t(){return e||(typeof acquireVsCodeApi>"u"?(console.warn("VS Code API not available, using mock"),e={postMessage:o=>console.log("Mock postMessage:",o),getState:()=>({}),setState:o=>console.log("Mock setState:",o)}):e=acquireVsCodeApi(),e)}function s(){return t()}export{s as u};

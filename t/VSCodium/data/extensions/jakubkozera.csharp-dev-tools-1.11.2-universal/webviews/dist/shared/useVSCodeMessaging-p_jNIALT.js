@@ -1,1 +1,0 @@
-import{r as o}from"./client-NjayGRq9.js";import{u as c}from"./global-AEwRjoX6.js";function d(){const e=c(),r=o.useCallback(s=>{e.postMessage(s)},[e]),a=o.useCallback(s=>{const t=n=>{s(n.data)};return window.addEventListener("message",t),()=>window.removeEventListener("message",t)},[]);return{postMessage:r,subscribe:a,vscode:e}}export{d as u};

@@ -1,6 +1,0 @@
-/*!
- * Application Insights JavaScript SDK - Web Snippet, 1.0.1
- * Copyright (c) Microsoft and contributors. All rights reserved.
- */
-
-/*! http://mths.be/fromcodepoint v0.1.0 by @mathias */

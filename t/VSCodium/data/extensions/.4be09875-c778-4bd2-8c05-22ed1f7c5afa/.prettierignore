@@ -1,4 +1,0 @@
-**/*.ts
-**/*.tsx
-.vscode/*.json
-.prettierrc.json

@@ -1,8 +1,0 @@
-{
-	"scopeName": "source.ilspy-code-cs",
-	"patterns": [
-		{
-			"include": "source.cs"
-		}
-	]
-}

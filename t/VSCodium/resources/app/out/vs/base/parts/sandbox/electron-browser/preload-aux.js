@@ -1,3 +1,0 @@
-"use strict";(function(){const{ipcRenderer:o,webFrame:n,contextBridge:s}=require("electron");function t(e){if(!e?.startsWith("vscode:"))throw new Error(`Unsupported event IPC channel '${e}'`);return!0}const i={ipcRenderer:{send(e,...r){t(e)&&o.send(e,...r)},invoke(e,...r){return t(e),o.invoke(e,...r)}},webFrame:{setZoomLevel(e){typeof e=="number"&&n.setZoomLevel(e)}}};try{s.exposeInMainWorld("vscode",i)}catch(e){console.error(e)}})();
-
-//# sourceMappingURL=https://github.com/VSCodium/sourcemaps/releases/download/stable-1a46a584725d5dd330e0bcd7f5510f24990efcf2/core-vs\base\parts\sandbox\electron-browser\preload-aux.js.map

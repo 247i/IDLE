@@ -1,0 +1,163 @@
+{
+	"name": "pythonrepl",
+	"displayName": "Python REPL",
+	"description": "Enables Convenient Python REPL Commands - open Python terminal and send selected codes, cells and files.",
+	"version": "0.5.2",
+	"publisher": "astrapios",
+	"license": "MIT",
+	"engines": {
+		"vscode": "^1.75.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Astrapios/vscode_python_repl.git"
+	},
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "pythonREPL.sendFileContents",
+				"title": "Python REPL: Send File Contents"
+			},
+			{
+				"command": "pythonREPL.sendSelected",
+				"title": "Python REPL: Send Selected Text (or current line)"
+			},
+			{
+				"command": "pythonREPL.activatePython",
+				"title": "Python REPL: Activate/Initialize Python"
+			},
+			{
+				"command": "pythonREPL.sendCell",
+				"title": "Python REPL: Send Cell"
+			},
+			{
+				"command": "pythonREPL.sendCellAndMove",
+				"title": "Python REPL: Send Cell and Move to Next Cell"
+			},
+			{
+				"command": "pythonREPL.sendAllAbove",
+				"title": "Python REPL: Send Everything Above Current Cell"
+			},
+			{
+				"command": "pythonREPL.goToNextCell",
+				"title": "Python REPL: Go to Next Cell"
+			},
+			{
+				"command": "pythonREPL.goToPreviousCell",
+				"title": "Python REPL: Go to Previous Cell"
+			},
+			{
+				"command": "pythonREPL.goToCellStart",
+				"title": "Python REPL: Go to Cell Start"
+			},
+			{
+				"command": "pythonREPL.goToCellEnd",
+				"title": "Python REPL: Go to Cell End"
+			}
+		],
+		"configuration": {
+			"type": "object",
+			"title": "Python REPL",
+			"properties": {
+				"pythonREPL.runInCurrentDirectory": {
+					"type": "boolean",
+					"default": true,
+					"description": "Enable/Disable Run in the same directory as the file"
+				},
+				"pythonREPL.sendTextDirectly": {
+					"type": "boolean",
+					"default": false,
+					"description": "Enable/Disable direct text send"
+				},
+				"pythonREPL.focusActiveEditorGroup": {
+					"type": "boolean",
+					"default": true,
+					"description": "Enable/Disable run focus Active EditorGroup."
+				},
+				"pythonREPL.customTerminalCommand": {
+					"type": "string",
+					"description": "Custom commands to run when creating a new integrated terminal"
+				},
+				"pythonREPL.customEnvironmentActivationCommand": {
+					"type": "string",
+					"description": "Custom environment activation command (if not set, will auto-detect conda/virtual environments from VS Code Python interpreter)"
+				},
+				"pythonREPL.pythonRunCommand": {
+					"type": "string",
+					"default": "ipython --matplotlib",
+					"description": "Default Python REPL with options (full path accepted)"
+				},
+				"pythonREPL.terminalInitTimeout": {
+					"type": "number",
+					"default": 1000,
+					"description": "Milliseconds to wait for terminal initialization"
+				},
+				"pythonREPL.pythonInitTimeout": {
+					"type": "number",
+					"default": 300,
+					"description": "Milliseconds to wait for Python repl initialization"
+				},
+				"pythonREPL.isAutoInputLine": {
+					"type": "boolean",
+					"default": false,
+					"description": "Enable/Disable auto get line in doc. use`%load`"
+				},
+				"pythonREPL.cell.blockSymbol": {
+					"type": "string",
+					"default": "#.*%%.*",
+					"description": "Cell block indicator"
+				},
+				"pythonREPL.cell.regexFlags": {
+					"type": "string",
+					"default": "i",
+					"description": "Regex flags to use for cell block search"
+				},
+				"pythonREPL.cell.copyToClipboard": {
+					"type": "boolean",
+					"default": false,
+					"description": "Copy the sent cell to the clipboard"
+				},
+				"pythonREPL.cell.debugNotify": {
+					"type": "boolean",
+					"default": false,
+					"description": "Show a notify message of the used search properties"
+				},
+				"pythonREPL.saveFileBeforeSend": {
+					"type": "boolean",
+					"default": true,
+					"description": "Save the document before send"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "^8.1.0",
+		"@types/mocha": "^10.0.0",
+		"@types/node": "16.x",
+		"@types/vscode": "^1.75.0",
+		"@typescript-eslint/eslint-plugin": "^5.62.0",
+		"@typescript-eslint/parser": "^5.62.0",
+		"@vscode/test-electron": "^2.5.2",
+		"eslint": "^8.57.0",
+		"glob": "^13.0.0",
+		"mocha": "^10.8.2",
+		"typescript": "^4.9.5"
+	},
+	"__metadata": {
+		"installedTimestamp": 1787670549754,
+		"targetPlatform": "universal",
+		"size": 43733
+	}
+}

@@ -1,0 +1,475 @@
+# Pretty XML
+
+<!-- markdownlint-disable-next-line MD033 -->
+<img src='https://github.com/pmahend1/prettyxml/raw/HEAD/images/logo.png' width='200' height='200' alt="logo" />
+
+[What is it?](#what-is-it)
+
+[Features](#features)  
+[1. Prettify XML (XML Formatting)](#1-prettify-xml-xml-formatting)  
+[2. Pretty XML: Minimize](#2-pretty-xml-minimize)
+
+[Keyboard Shortcuts](#keyboard-shortcuts)
+
+[Settings](#settings)
+
+[Requirements](#requirements)
+
+[Installation](#installation)
+
+[Known Issues](#known-issues)
+
+[Change Log](https://github.com/pmahend1/prettyxml/blob/HEAD/CHANGELOG.md#change-log)
+
+[For more information](#for-more-information)
+
+## What is it?
+
+Pretty XML is a XML formatter extension for Visual Studio Code and VSCodium. It formats XML documents just like Visual Studio on Windows.
+
+**Supported file extensions**:
+
+- xml
+- xaml
+- axml
+- xsd
+- xsl
+- plist
+- mobileconfig
+- config
+- csproj
+- svg
+- resx and all other XML type of files.
+
+There is also **Visual Studio for Mac** version of this extension. Check it out at [PrettyXML.VSMac](https://github.com/pmahend1/PrettyXML.VSMac)
+
+Suggestions, improvement PRs are welcome.  
+<!-- License|Deploy  -->
+[![License](https://img.shields.io/github/license/pmahend1/PrettyXML?style=for-the-badge&label=License&color=lightblue)](https://choosealicense.com/licenses/mit/)![Deploy](https://img.shields.io/github/actions/workflow/status/pmahend1/prettyxml/main.yml?branch=main&color=darkgreen&label=Deploy%20CI&style=for-the-badge&logo=github)  
+
+<!-- Visual Studio MarketPlace: Version|Installs|Downloads|Rating -->
+[![Visual Studio Marketplace Version](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpmahend1%2FPrettyXML%2Fbadges%2F.github%2Fbadges%2Fvsmp-version.json&style=for-the-badge&color=blue&logo=data:image%2Fsvg%2Bxml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI%2BPHBhdGggZmlsbD0iIzAwN0FDQyIgZD0iTTIzLjE1IDIuNTg3TDE4LjIxLjIxYTEuNDk0IDEuNDk0IDAgMCAwLTEuNzA1LjI5bC05LjQ2IDguNjMtNC4xMi0zLjEyOGEuOTk5Ljk5OSAwIDAgMC0xLjI3Ni4wNTdMLjMyNyA3LjI2MUExIDEgMCAwIDAgLjMyNiA4Ljc0TDMuODk5IDEyIC4zMjYgMTUuMjZhMSAxIDAgMCAwIC4wMDEgMS40NzlMMS42NSAxNy45NGEuOTk5Ljk5OSAwIDAgMCAxLjI3Ni4wNTdsNC4xMi0zLjEyOCA5LjQ2IDguNjNhMS40OTIgMS40OTIgMCAwIDAgMS43MDQuMjlsNC45NDItMi4zNzdBMS41IDEuNSAwIDAgMCAyNCAyMC4wNlYzLjkzOWExLjUgMS41IDAgMCAwLS44NS0xLjM1MnptLTUuMTQ2IDE0Ljg2MUwxMC44MjYgMTJsNy4xNzgtNS40NDh2MTAuODk2eiIvPjwvc3ZnPg==)](https://marketplace.visualstudio.com/items?itemName=PrateekMahendrakar.prettyxml)![Installs](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpmahend1%2FPrettyXML%2Fbadges%2F.github%2Fbadges%2Fvsmp-installs.json&style=for-the-badge&color=blue)![Downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpmahend1%2FPrettyXML%2Fbadges%2F.github%2Fbadges%2Fvsmp-downloads.json&style=for-the-badge&color=blue)![Rating](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpmahend1%2FPrettyXML%2Fbadges%2F.github%2Fbadges%2Fvsmp-rating.json&style=for-the-badge&color=blue)  
+
+<!-- Open VSX: Version|Installs|Downloads|Rating-->
+[![Open VSX](https://img.shields.io/open-vsx/v/PrateekMahendrakar/prettyxml?color=darkcyan&style=for-the-badge&logo=vscodium&logoColor=darkcyan)](https://open-vsx.org/extension/PrateekMahendrakar/prettyxml)![Downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpmahend1%2FPrettyXML%2Fbadges%2F.github%2Fbadges%2Fovsx-downloads.json&color=darkcyan&style=for-the-badge)![Rating](https://img.shields.io/open-vsx/rating/PrateekMahendrakar/prettyxml?color=darkcyan&style=for-the-badge)  
+
+![prettify gif.](https://github.com/pmahend1/prettyxml/raw/HEAD/images/Prettify.gif)
+
+---
+
+## Features
+
+### 1. Prettify XML (XML Formatting)
+
+Right Click and Select Prettify XML or use [shortcut](#keyboard-shortcuts)
+
+- Position each attribute on a separate line.
+- First attribute on same line as start element start tag.
+- All attributes indented aligning with first attribute.
+- If no child for an element then close inline end tag.
+- No empty lines.
+- Supports `'` and whitespace unicodes in attribute value for XAML parser compatibility.
+
+### 1.a. Format Entire Document
+
+- Lets you format entire valid XML document.
+
+### 1.b. Format Selection - Beta
+
+- Lets you format part of an XML document. XML can be partial and invalid. This is in beta, so feel free to submit pull request with improvements.
+- The selection is indented from the indentation of its first line, so it keeps the depth it sits at in the document, and that first line's indentation is kept exactly as it was written.
+- Indentation follows the editor: one tab per level when the editor inserts tabs, otherwise `prettyxml.settings.indentSpaceLength` spaces. Continuation lines of a wrapped attribute list line up with spaces, since a column inside a tag cannot be written in tabs.
+- Nothing is added or removed. An end tag closes the element it names, an element the selection leaves open keeps its content indented under it, and a selection that starts or ends in the middle of a tag keeps those characters as they are.
+- Content of an element carrying `xml:space="preserve"` is left as written when that element is inside the selection.
+- An element whose content mixes text and markup is kept on one line when it begins and ends with text, as in `<p>some <b>bold</b> text</p>`. Otherwise the markup that the text joins together shares a line, as in `<A />&nbsp;<B />`. Text spanning several lines is re-indented a line at a time.
+
+![Format Selection Screenshot](https://github.com/pmahend1/prettyxml/raw/HEAD/images/FormatSelection.png)
+  
+Before
+
+![Before.](https://github.com/pmahend1/prettyxml/raw/HEAD/images/before.png)
+
+After
+
+![After.](https://github.com/pmahend1/prettyxml/raw/HEAD/images/after.png)
+
+### 2. Pretty XML: Minimize
+
+Minimizes XML.
+
+![minimize gif.](https://github.com/pmahend1/prettyxml/raw/HEAD/images/Minimize.gif)
+
+---
+
+## Keyboard Shortcuts
+
+| Command             | Platform       | Shortcut         |
+| ------------------- | -------------- | ---------------- |
+| Prettify XML        | Mac            | **Cmd+K L**      |
+| Prettify XML        | Windows, Linux | **Control+K L**  |
+| PrettyXML: Minimize | Mac            | **Cmd+K \`**     |
+| PrettyXML: Minimize | Windows, Linux | **Control+K \`** |
+
+> **Note**
+>
+> You can change these in **Preferences → Keyboard Shortcuts** if you want.
+
+---
+
+## Settings
+
+These will be for **Prettify XML** command.
+
+| Setting Key                                                                                                                                     | Default Value   | Description                                                                  |
+|-------------------------------------------------------------------------------------------------------------------------------------------------|-----------------|------------------------------------------------------------------------------|
+| prettyxml.settings.indentSpaceLength                                                                                                            | 4               | No. of spaces for indentation.                                               |
+| prettyxml.settings.useSingleQuotes                                                                                                              | false           | Use ' instead of \"                                                          |
+| prettyxml.settings.useSelfClosingTag                                                                                                            | true            | If no child nodes then self closing tag />                                   |
+| prettyxml.settings.formatOnSave                                                                                                                 | false           | Enable format on save                                                        |
+| prettyxml.settings.allowSingleQuoteInAttributeValue                                                                                             | true            | Allows ' in attribute values instead of \&apos;                              |
+| prettyxml.settings.addSpaceBeforeSelfClosingTag                                                                                                 | true            | Adds space before self closing tag                                           |
+| prettyxml.settings.wrapCommentTextWithSpaces                                                                                                    | true            | Wraps comment text with a single space                                       |
+| prettyxml.settings.allowWhiteSpaceUnicodesInAttributeValues                                                                                     | true            | Allows white space unicodes in attribute values                              |
+| prettyxml.settings.positionFirstAttributeOnSameLine                                                                                             | true            | Position first attribute on same line.                                       |
+| prettyxml.settings.positionAllAttributesOnFirstLine                                                                                             | false           | Position all attributes on first line                                        |
+| prettyxml.settings.preserveWhiteSpacesInComment                                                                                                 | false           | Preserves whitespaces in a comment.                                          |
+| prettyxml.settings.addSpaceBeforeEndOfXmlDeclaration                                                                                            | false           | Add space before end of XML declaration.                                     |
+| [prettyxml.settings.addXmlDeclarationIfMissing](#add-xml-declaration-if-missing)                                                                | true            | Add XML declaration if missing.                                              |
+| [prettyxml.settings.attributesInNewlineThreshold](#attributes-in-newline-threshold)                                                             | 1               | Attributes count threshold to position attributes in newlines.               |
+| prettyxml.settings.enableLogs                                                                                                                   | false           | Enables logs                                                                 |
+| [prettyxml.settings.wildCardedExceptionsForPositionAllAttributesOnFirstLine](#wild-carded-exceptions-for-position-all-attributes-on-first-line) | Array\<string\> | Wild card exceptions for elements to ignore positionAllAttributesOnFirstLine |
+| [prettyxml.settings.addEmptyLineBetweenElements](#add-empty-line-between-elements)                                                              | false           | Add empty line between elements if the child count is greater than 2         |
+| [prettyxml.settings.addEmptyEol](#add-empty-eol)                                                                                                | false           | Add empty EOL to files if it does not exist.                                 |
+| [prettyxml.settings.preserveNewLines](#preserve-new-lines)                                                                                      | false           | Preserve existing new lines between elements.                                |
+| [prettyxml.settings.preserveCommentPlacement](#preserve-comment-placement)                                                                      | false           | Preserve comment line placement.                                             |
+| [prettyxml.settings.escapeInvisibleNonAsciiCharacters](#escape-invisible-non-ascii-characters)                                                  | false           | Escape invisible non-ASCII characters as character references.               |
+
+![The PrettyXML settings pane in the VS Code settings UI.](https://github.com/pmahend1/prettyxml/raw/HEAD/images/settings.png)
+
+> The top of the settings pane. Each entry carries its default and, where it helps, a worked
+> example. The table above is the complete list - search `prettyxml` in **Settings** to scroll
+> through them all.
+
+### Attributes In Newline Threshold
+
+Example:
+
+Value = 2
+
+#### Input 1
+
+```xml
+<Element Attribute1="Value1" Attribute2="Value2" />
+```
+
+#### Output 1
+
+```xml
+<Element Attribute1="Value1" Attribute2="Value2" />
+```
+
+#### Input 2
+
+```xml
+<Element Attribute1="Value1" Attribute2="Value2" Attribute3="Value3" />
+```
+
+#### Output 2
+
+```xml
+<Element Attribute1="Value1"
+         Attribute2="Value2"
+         Attribute3="Value3" />
+```
+
+### Wild Carded Exceptions For Position All Attributes On First Line
+
+List of element names to ignore Position All Attributes On First Line setting. Include element names or patterns here.
+
+Example:
+
+```json
+ "prettyxml.settings.wildCardedExceptionsForPositionAllAttributesOnFirstLine": ["Content*"]
+```
+
+#### Input 3
+
+```xml
+<View>
+    <Content X="X"
+             Y="Y" Z="Z">
+        <Label text="{i18>LabelText}" />
+        <Input id="Input1" 
+               value="{service>description}" />
+    </Content>
+</View>
+```
+
+#### Output 3
+
+```xml
+<View>
+    <Content X="X"
+             Y="Y"
+             Z="Z">
+        <Label text="{i18>LabelText}" />
+        <Input id="Input1" value="{service>description}" />
+    </Content>
+</View>
+```
+
+### Add Empty Line Between Elements
+
+If enabled, and child elements count is greater than 2 then adds empty line between elements.
+
+> [!NOTE]  
+> Please note it wont add empty element before first element and after last element.
+
+#### Input 4
+
+```xml
+<Root>
+<Element1>Text1</Element1>
+<Element2>Text2</Element2>
+<Element3>Text3</Element3>
+</Root>
+```
+
+#### Output 4
+
+```xml
+<Root>
+    <Element1>Text1</Element1>
+
+    <Element2>Text2</Element2>
+
+    <Element3>Text3</Element3>
+</Root>
+```
+
+### Add Xml Declaration If Missing
+
+Adds XML declaration `<?xml version="1.0" encoding="UTF-8"?>` if missing.
+Default is `true`.
+
+Also applies to **Pretty XML: Minimize**, the one setting that does. A declaration the document
+already has is kept either way.
+
+### Preserve New Lines
+
+Preserves existing new lines between elements. Any number of blank lines between two elements is
+kept as one, and a blank line right after a start tag or right before an end tag is dropped.
+
+Example: Value = **false**
+
+#### Input 5
+
+```xml
+<Root>
+      <Element1>Text1</Element1>
+
+
+    <Element2>Text2</Element2>
+
+        <Element3>Text3</Element3>
+    <Element3>Text4</Element3>
+</Root>
+```
+
+#### Output 5
+
+```xml
+<Root>
+    <Element1>Text1</Element1>
+    <Element2>Text2</Element2>
+    <Element3>Text3</Element3>
+    <Element3>Text4</Element3>
+</Root>
+```
+
+Example: Value = **true**
+
+#### Input 6
+
+```xml
+<Root>
+      <Element1>Text1</Element1>
+
+
+    <Element2>Text2</Element2>
+
+        <Element3>Text3</Element3>
+    <Element3>Text4</Element3>
+</Root>
+```
+
+#### Output 6
+
+```xml
+<Root>
+    <Element1>Text1</Element1>
+
+    <Element2>Text2</Element2>
+
+    <Element3>Text3</Element3>
+    <Element3>Text4</Element3>
+</Root>
+```
+
+### Preserve Comment Placement
+
+Preserve existing comment line placement. Default is *Unchecked*
+
+**Checked** : Comments remains in their original lines.
+**Unchecked** : Comments may be repositioned into other lines according to formatting rules.
+
+Example: Value = **false**
+
+#### Input 7
+
+```xml
+<Root>
+    <Element1>Text1</Element1>  <!--A comment-->
+    <Element2>Text2</Element2><!--Another comment-->
+    <Element3>Text3</Element3>
+</Root>
+```
+
+#### Output 7
+
+```xml
+<Root>
+    <Element1>Text1</Element1>
+    <!-- A comment -->
+    <Element2>Text2</Element2>
+    <!-- Another comment -->
+    <Element3>Text3</Element3>
+</Root>
+```
+
+Example: Value = **true**
+
+#### Input 8
+
+```xml
+<Root>
+    <Element1>Text1</Element1>    <!--A comment-->
+    <Element2>Text2</Element2>   <!--Another comment-->
+    <Element3>Text3</Element3>
+</Root>
+```
+
+#### Output 8
+
+```xml
+<Root>
+    <Element1>Text1</Element1><!-- A comment -->
+    <Element2>Text2</Element2><!-- Another comment -->
+    <Element3>Text3</Element3>
+</Root>
+```
+
+### Add Empty EOL
+
+Adds an empty line (trailing newline) at the end of formatted files if one does not exist.
+
+Default is `false` (*Unchecked*).
+
+- **Checked (`true`)**: Ensures the formatted document ends with a trailing newline (matching CRLF or LF based on the file).
+- **Unchecked (`false`)**: Preserves the original file's trailing line ending without forcing one if it did not exist.
+
+### Escape Invisible Non-ASCII Characters
+
+Escapes the non-ASCII characters that draw nothing - non-breaking and zero-width spaces, joiners, bidi marks, the soft hyphen and the BOM - as numeric character references, so you can see what is actually in the file.
+
+Default is `false` (*Unchecked*).
+
+- **Checked (`true`)**: Invisible non-ASCII characters are written as `&#x...;` references.
+- **Unchecked (`false`)**: Invisible non-ASCII characters are written as literal characters.
+
+Characters that draw something are left literal at either setting - `ü`, `日` and `😀` are never escaped.
+
+Applies to element text and attribute values. CDATA sections and comments resolve no character references, so their contents are left untouched either way.
+
+> Tab, newline and carriage return are ASCII, and are decided by
+> `prettyxml.settings.allowWhiteSpaceUnicodesInAttributeValues` instead. The two settings cover
+> different characters and neither overrides the other.
+
+The examples below write the invisible characters as references on the input side so they can be read - `&#xA0;` is a non-breaking space and `&#x200B;` is a zero-width space.
+
+Example: Value = **false**
+
+#### Input 9
+
+```xml
+<Invoice>
+    <Line note="10&#xA0;km">Total&#xA0;price&#x200B;: 12 €</Line>
+    <Customer>Müller</Customer>
+</Invoice>
+```
+
+#### Output 9
+
+```xml
+<Invoice>
+    <Line note="10 km">Total price​: 12 €</Line>
+    <Customer>Müller</Customer>
+</Invoice>
+```
+
+The non-breaking and zero-width spaces are still there - they are just indistinguishable from an ordinary space and from nothing at all.
+
+Example: Value = **true**
+
+#### Input 10
+
+```xml
+<Invoice>
+    <Line note="10&#xA0;km">Total&#xA0;price&#x200B;: 12 €</Line>
+    <Customer>Müller</Customer>
+</Invoice>
+```
+
+#### Output 10
+
+```xml
+<Invoice>
+    <Line note="10&#xA0;km">Total&#xA0;price&#x200B;: 12 €</Line>
+    <Customer>Müller</Customer>
+</Invoice>
+```
+
+The `€` and the `ü` are visible characters, so they stay literal in both.
+
+---
+
+## Requirements
+
+- [**DotNet 10**](https://dotnet.microsoft.com/en-us/download/dotnet) installed on your machine and should be accessible through terminal.
+- Install [Muhammad-Sammy C#](https://open-vsx.org/extension/muhammad-sammy/csharp) or [Microsoft C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) extension.
+- Visual Studio Code/VSCodium 1.99.1 or higher.
+
+---
+
+## Installation
+
+Visual Studio Code - [Visual Studio MarketPlace](https://marketplace.visualstudio.com/items?itemName=PrateekMahendrakar.prettyxml)
+
+For VSCodium - [open-vsx.org](https://open-vsx.org/extension/PrateekMahendrakar/prettyxml)
+
+---
+
+## Known Issues
+
+- Limited DTD support.
+- Formats valid XML files only. Syntax errors are displayed.
+- Format Selection can only see what is selected, so `xml:space="preserve"` on an element outside the selection is not honored - select that element too if its content must be left alone.
+- Format Document always indents with spaces, even in a tab-indented document. Only Format Selection follows the editor's tabs.
+
+Issues can be reported at [issues section](https://github.com/pmahend1/PrettyXML/issues)
+
+---
+
+### For more information
+
+- [Source Code](https://github.com/pmahend1/prettyxml)

@@ -1,5 +1,5 @@
 /t/pandoc.exe
-/t/VSCodium
+VSCodium.exe
 /t/VSCode
 __pycache__/
 *.pyc
@@ -10,3 +10,4 @@ settings/settings/.spyder-py3/config/spyder.ini
 settings/settings/.spyder-py3/config/transient.ini
 settings/settings/.spyder-py3/pdb_history.sqlite
 settings/settings/.spyder-py3/spyder.lock/symlink
+/t/VSCodium/data/user-data/CachedExtensionVSIXs

@@ -1,0 +1,110 @@
+{
+	"name": "rainbow-struct-field-tags",
+	"displayName": "Rainbow Struct Field Tags",
+	"description": "Highlighting struct field tags in Go to make it easier to read.",
+	"version": "0.4.0",
+	"icon": "./assets/logo.png",
+	"publisher": "se-dev-pion",
+	"repository": "https://github.com/se-dev-pion/rainbow-struct-field-tags",
+	"engines": {
+		"vscode": "^1.85.2"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onLanguage:go",
+		"onLanguage:goctl"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "Rainbow Struct Field Tags Configuration",
+			"properties": {
+				"rainbow-struct-field-tags.key-color": {
+					"type": "string",
+					"default": "",
+					"description": "Highlight color of keys in struct field tags."
+				},
+				"rainbow-struct-field-tags.value-item-color": {
+					"type": "string",
+					"default": "",
+					"description": "Highlight color of items in struct field tag values."
+				},
+				"rainbow-struct-field-tags.value-option-color": {
+					"type": "string",
+					"default": "",
+					"description": "Highlight color of options in struct field tag values."
+				},
+				"rainbow-struct-field-tags.option-branch-color": {
+					"type": "string",
+					"default": "",
+					"description": "Highlight color of branches in struct field tag values."
+				},
+				"rainbow-struct-field-tags.value-gap-color": {
+					"type": "string",
+					"default": "rgba(128,128,128,0.5)",
+					"description": "Highlight color of gaps between items struct field tag values."
+				},
+				"rainbow-struct-field-tags.background-color": {
+					"type": "string",
+					"default": "",
+					"description": "Background color of struct field tag strings."
+				},
+				"rainbow-struct-field-tags.text-color": {
+					"type": "string",
+					"default": "",
+					"description": "Basic text color of struct field tag strings."
+				},
+				"rainbow-struct-field-tags.gorm-tag-key": {
+					"type": "string",
+					"default": "gorm",
+					"description": "Key to be recognized as gorm tags."
+				},
+				"rainbow-struct-field-tags.debounce-timeout": {
+					"type": "integer",
+					"default": 50,
+					"description": "The debounce timeout milliseconds of redecorate on input, greater for less device requirements and less for less delay."
+				}
+			}
+		},
+		"grammars": [
+			{
+				"scopeName": "tag.struct.go",
+				"path": "./syntaxes/embed.tmLanguage.json",
+				"injectTo": [
+					"source.go",
+					"source.goctl"
+				]
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src",
+		"test": "vscode-test",
+		"build": "vsce package --no-dependencies",
+		"publish": "vsce publish --no-dependencies"
+	},
+	"devDependencies": {
+		"@types/mocha": "^10.0.9",
+		"@types/node": "20.x",
+		"@types/vscode": "^1.85.2",
+		"@typescript-eslint/eslint-plugin": "^8.10.0",
+		"@typescript-eslint/parser": "^8.7.0",
+		"@vscode/test-cli": "^0.0.10",
+		"@vscode/test-electron": "^2.4.1",
+		"@vscode/vsce": "^3.2.1",
+		"eslint": "^9.13.0",
+		"typescript": "^5.6.3"
+	},
+	"__metadata": {
+		"installedTimestamp": 1787044180534,
+		"targetPlatform": "universal",
+		"size": 81745
+	}
+}

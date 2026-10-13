@@ -1,0 +1,96 @@
+{
+    "name": "vscode-ungit",
+    "displayName": "Ungit",
+    "description": "Ungit in Visual Studio Code.",
+    "icon": "images/logo.png",
+    "version": "2.5.2",
+    "publisher": "Hirse",
+    "galleryBanner": {
+        "color": "#252833",
+        "theme": "dark"
+    },
+    "license": "MIT",
+    "bugs": "https://github.com/hirse/vscode-ungit/issues",
+    "homepage": "https://github.com/hirse/vscode-ungit",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/hirse/vscode-ungit.git"
+    },
+    "categories": [
+        "Other"
+    ],
+    "keywords": [
+        "ungit",
+        "git",
+        "multi-root ready"
+    ],
+    "engines": {
+        "vscode": "^1.75.0"
+    },
+    "main": "./out/src/extension",
+    "contributes": {
+        "configuration": {
+            "title": "Ungit",
+            "properties": {
+                "ungit.showButton": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Show a button in the editor title bar to open Ungit",
+                    "scope": "resource"
+                },
+                "ungit.showInActiveColumn": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Open the Ungit view in the active editor column instead of on the side",
+                    "scope": "resource"
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "extension.ungit",
+                "title": "Open Ungit",
+                "icon": {
+                    "dark": "./images/icon-dark.svg",
+                    "light": "./images/icon-light.svg"
+                }
+            }
+        ],
+        "menus": {
+            "editor/title": [
+                {
+                    "when": "config.ungit.showButton",
+                    "command": "extension.ungit",
+                    "group": "navigation"
+                }
+            ]
+        },
+        "keybindings": [
+            {
+                "command": "extension.ungit",
+                "key": "shift+alt+u",
+                "mac": "shift+alt+u"
+            }
+        ]
+    },
+    "scripts": {
+        "build": "tsc",
+        "compile": "tsc -watch",
+        "package": "vsce package",
+        "publish": "vsce publish",
+        "test": "eslint src/*"
+    },
+    "dependencies": {
+        "ungit": "1.5.24",
+        "vscode-extension-telemetry": "0.4.5"
+    },
+    "devDependencies": {
+        "@types/node": "16.x.x",
+        "@types/vscode": "1.75.x",
+        "@typescript-eslint/eslint-plugin": "6.x.x",
+        "@typescript-eslint/parser": "6.x.x",
+        "@vscode/vsce": "^2.20.x",
+        "eslint": "8.x.x",
+        "typescript": "5.1.x"
+    }
+}

@@ -1,0 +1,399 @@
+/* Color Convertor Styles */
+:root {
+    --background-color: var(--vscode-editor-background, #1e1e1e);
+    --foreground-color: var(--vscode-editor-foreground, #d4d4d4);
+    --border-color: var(--vscode-panel-border, #3c3c3c);
+    --input-background: var(--vscode-input-background, #3c3c3c);
+    --input-border: var(--vscode-input-border, #3c3c3c);
+    --button-background: var(--vscode-button-background, #0e639c);
+    --button-hover: var(--vscode-button-hoverBackground, #1177bb);
+    --secondary-button: var(--vscode-button-secondaryBackground, #3c3c3c);
+    --secondary-button-hover: var(--vscode-button-secondaryHoverBackground, #464647);
+    --success-color: #22c55e;
+    --error-color: var(--vscode-editorError-foreground, #f14c4c);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--vscode-font-family, 'Segoe WPC', 'Segoe UI', system-ui, sans-serif);
+    font-size: var(--vscode-font-size, 13px);
+    background-color: var(--background-color);
+    color: var(--foreground-color);
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.4;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header h1 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.description {
+    margin: 8px 0 16px 0;
+    opacity: 0.75;
+    font-size: 14px;
+}
+
+.secondary-button {
+    background: var(--secondary-button);
+    border: 1px solid var(--border-color);
+    color: var(--foreground-color);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.secondary-button:hover {
+    background: var(--secondary-button-hover);
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Color Picker Section */
+.color-picker-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.color-preview {
+    width: 100%;
+    height: 60px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.color-swatch {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.color-swatch::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(45deg, #ccc 25%, transparent 25%),
+        linear-gradient(-45deg, #ccc 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ccc 75%),
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 10px 10px;
+    background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+    z-index: -1;
+}
+
+.picker-container {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 400px;
+}
+
+.saturation-picker {
+    position: relative;
+    width: 200px;
+    height: 150px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    cursor: crosshair;
+    overflow: hidden;
+}
+
+#saturationCanvas {
+    width: 100%;
+    height: 100%;
+}
+
+.picker-handle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.hue-slider, .alpha-slider {
+    position: relative;
+    width: 20px;
+    height: 150px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.hue-slider {
+    background: linear-gradient(to bottom, 
+        #ff0000 0%, 
+        #ffff00 16.66%, 
+        #00ff00 33.33%, 
+        #00ffff 50%, 
+        #0000ff 66.66%, 
+        #ff00ff 83.33%, 
+        #ff0000 100%
+    );
+}
+
+.alpha-slider {
+    background-image: 
+        linear-gradient(45deg, #ccc 25%, transparent 25%),
+        linear-gradient(-45deg, #ccc 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ccc 75%),
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 8px 8px;
+    background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+}
+
+.alpha-slider::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 0%, #000 100%);
+}
+
+.slider-handle {
+    position: absolute;
+    width: 24px;
+    height: 8px;
+    background: white;
+    border: 1px solid #000;
+    border-radius: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    z-index: 10;
+}
+
+.picker-label {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.75;
+    text-align: center;
+}
+
+/* Arrow Divider */
+.arrow-divider {
+    display: flex;
+    justify-content: center;
+    opacity: 0.5;
+    margin: 8px 0;
+}
+
+/* Format Sections */
+.formats-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.format-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}
+
+.format-row.has-error .format-input {
+    border-color: var(--error-color);
+}
+
+.format-label {
+    width: 60px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.format-input {
+    flex: 1;
+    background: var(--input-background);
+    border: 1px solid var(--input-border);
+    color: var(--foreground-color);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.format-input:focus {
+    border-color: var(--button-background);
+}
+
+.format-input:invalid {
+    border-color: var(--error-color);
+}
+
+.copy-button {
+    background: transparent;
+    border: none;
+    color: var(--foreground-color);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    opacity: 0.75;
+    transition: opacity 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.copy-button:hover {
+    opacity: 1;
+}
+
+.copy-button.copied {
+    color: var(--success-color);
+}
+
+.copy-button.copied svg {
+    stroke: var(--success-color);
+}
+
+.name-badge {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--vscode-badge-background, #4d4d4d);
+    color: var(--vscode-badge-foreground, #ffffff);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    z-index: 5;
+}
+
+/* Error Messages */
+.error-message {
+    color: var(--error-color);
+    font-size: 11px;
+    margin-top: 4px;
+    margin-left: 72px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .container {
+        padding: 16px;
+    }
+    
+    .picker-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .hue-slider, .alpha-slider {
+        width: 200px;
+        height: 20px;
+    }
+    
+    .hue-slider {
+        background: linear-gradient(to right, 
+            #ff0000 0%, 
+            #ffff00 16.66%, 
+            #00ff00 33.33%, 
+            #00ffff 50%, 
+            #0000ff 66.66%, 
+            #ff00ff 83.33%, 
+            #ff0000 100%
+        );
+    }
+    
+    .alpha-slider::after {
+        background: linear-gradient(to right, transparent 0%, #000 100%);
+    }
+    
+    .slider-handle {
+        width: 8px;
+        height: 24px;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+    }
+    
+    .format-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .format-label {
+        width: auto;
+    }
+    
+    .name-badge {
+        position: static;
+        transform: none;
+        align-self: flex-start;
+        margin-top: 4px;
+    }
+}
+
+/* Animation */
+@keyframes colorChange {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.color-swatch.updating {
+    animation: colorChange 0.3s ease;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .color-swatch.updating {
+        animation: none;
+    }
+    
+    .copy-button,
+    .secondary-button {
+        transition: none;
+    }
+}

@@ -1,0 +1,58 @@
+{
+  "id": "advancedSearch",
+  "title": "Advanced Search: Types & Symbols",
+  "description": "Learn how to quickly find and navigate C# types and symbols in your codebase using the Advanced Search feature.",
+  "steps": [
+    {
+      "id": "openAdvancedSearch",
+      "title": "Opening the Advanced Search",
+      "description": "The Advanced Search feature allows you to quickly find C# types (classes, interfaces, enums, structs, records) and their members across your entire solution.\n\nYou can open it in three ways:\n\n1. Press **Alt+P** (default keyboard shortcut)\n2. Run the command **C# Solution Explorer: Advanced Search: Types & Symbols** from the Command Palette (Ctrl+Shift+P)\n3. Click on the search button in the Solution Explorer title bar",
+      "media": {
+        "image": "media/walkthroughs/advanced-search.png",
+        "altText": "Advanced Search dialog with search results"
+      },
+      "completionEvents": [
+        "onCommand:csharp-dev-tools.advancedSearch"
+      ]
+    },
+    {
+      "id": "searchingTypes",
+      "title": "Searching for Types",
+      "description": "To search for types (classes, interfaces, enums, structs, records):\n\n1. Type any part of the type name in the search box\n2. Results are ordered by relevance, with exact matches first\n3. Types are shown with their namespace and member count\n4. Types are prioritized over members in the results\n\nYou can use fuzzy matching - the characters don't need to be consecutive, just in the same order.",
+      "media": {
+        "image": "media/walkthroughs/advanced-search.png",
+        "altText": "Advanced Search showing type search results"
+      }
+    },
+    {
+      "id": "searchingMembers",
+      "title": "Searching for Members",
+      "description": "To search for members (methods, properties, fields, events) across all types:\n\n1. Type the member name in the search box\n2. Members are shown with their containing type\n\nYou can also use the **@** symbol syntax:\n\n- **@methodName**: Find methods with that name across all types\n- **TypeName@memberName**: Find members within a specific type\n\nThis allows you to quickly narrow down to specific members in large codebases.",
+      "media": {
+        "image": "media/walkthroughs/advanced-search.png",
+        "altText": "Advanced Search showing member search results with @ syntax"
+      }
+    },
+    {
+      "id": "previewAndNavigation",
+      "title": "Preview and Navigation",
+      "description": "As you navigate through search results:\n\n1. A preview of the selected item opens automatically\n2. The preview shows the code around the selected item\n3. Press Enter to navigate to the selected item and close the search\n4. Escape closes the search without navigation\n\nThe preview makes it easy to quickly find the right item without leaving the search dialog.",
+      "media": {
+        "image": "media/walkthroughs/advanced-search.png",
+        "altText": "Advanced Search with preview of selected item"
+      }
+    },
+    {
+      "id": "indexManagement",
+      "title": "Search Index Management",
+      "description": "The search index is built automatically when you open a solution and updated whenever files change.\n\nIf you need to manually rebuild the index:\n\n1. Run the command **C# Solution Explorer: Rebuild Search Index** from the Command Palette\n2. This will re-scan all C# files in your workspace and update the search index\n\nThis is useful if you've made many changes or if search results seem out of date.",
+      "media": {
+        "image": "media/walkthroughs/advanced-search.png",
+        "altText": "Command Palette showing the Rebuild Search Index command"
+      },
+      "completionEvents": [
+        "onCommand:csharp-dev-tools.rebuildSearchIndex"
+      ]
+    }
+  ]
+}

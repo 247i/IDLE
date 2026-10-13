@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Maker</title>
+    <link rel="stylesheet" href="gradientMaker.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="section">
+                <h2 class="section-title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+                    </svg>
+                    Gradient Maker
+                </h2>
+                <p class="section-subtitle">Create and customize CSS gradients with multiple color stops.</p>
+            </div>
+
+            <div class="section">
+                <div class="gradient-bar" id="gradientBar"></div>
+            </div>
+
+            <div class="section">
+                <div class="controls">
+                    <div class="control-group">
+                        <label class="control-label">Gradient Type</label>
+                        <select class="dropdown" id="gradientType">
+                            <option value="linear">Linear</option>
+                            <option value="radial">Radial</option>
+                            <option value="conic">Conic</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Rotation Angle</label>
+                        <div class="angle-control">
+                            <div class="angle-circle" id="angleCircle">
+                                <div class="angle-handle" id="angleHandle"></div>
+                                <div class="angle-value" id="angleValue">90°</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="color-stops" id="colorStops">
+                    <!-- Color stops will be added here dynamically -->
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="output-section">
+                    <div class="output-tabs">
+                        <button class="tab active" data-tab="css">CSS</button>
+                        <button class="tab" data-tab="hex">HEX</button>
+                    </div>
+                    <div class="code-output" id="codeOutput"></div>
+                    <button class="copy-btn" id="copyBtn">Copy to Clipboard</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview">
+            <div class="gradient-preview" id="gradientPreview"></div>
+        </div>
+    </div>
+    <script src="gradientMaker.js"></script>
+</body>
+</html>

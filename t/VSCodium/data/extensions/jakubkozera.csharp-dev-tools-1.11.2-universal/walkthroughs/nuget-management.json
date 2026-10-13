@@ -1,0 +1,46 @@
+{
+  "id": "nugetManagement",
+  "title": "NuGet Package Management",
+  "description": "Learn how to manage NuGet packages directly from the Solution Explorer.",
+  "steps": [
+    {
+      "id": "openNuGetManager",
+      "title": "Opening the NuGet Manager",
+      "description": "The NuGet Package Manager lets you add, update, or remove NuGet packages in your projects without leaving VS Code.\n\nTo open the NuGet Manager:\n\n1. Right-click on a project or solution in the Solution Explorer\n2. Select **Manage NuGet Packages** from the context menu\n\nThis opens a dedicated interface for managing packages.",
+      "media": {
+        "image": "media/walkthroughs/nuget-manager.png",
+        "altText": "NuGet Package Manager interface"
+      },
+      "completionEvents": [
+        "onCommand:nugetManager.openPackageManager"
+      ]
+    },
+    {
+      "id": "browsePackages",
+      "title": "Browsing Available Packages",
+      "description": "To find and install new packages:\n\n1. Click the **Browse** tab in the NuGet Manager\n2. Enter a search term in the search box\n3. Browse the list of available packages\n4. Select a package to see its details, including description and versions\n5. Click **Install** to add it to your project\n\nYou can sort packages by relevance, downloads, or name to find popular and well-maintained packages.",
+      "media": {
+        "image": "media/walkthroughs/nuget-manager.png",
+        "altText": "Browsing packages in the NuGet Manager"
+      }
+    },
+    {
+      "id": "installedPackages",
+      "title": "Managing Installed Packages",
+      "description": "To view and manage packages already installed in your project:\n\n1. Click the **Installed** tab in the NuGet Manager\n2. See all packages currently installed in your project\n3. Check if updates are available (indicated by an update icon)\n4. Click **Update** to upgrade to the latest version\n5. Click **Uninstall** to remove a package\n\nYou can also view detailed information about each installed package.",
+      "media": {
+        "image": "media/walkthroughs/nuget-manager.png",
+        "altText": "Managing installed packages in the NuGet Manager"
+      }
+    },
+    {
+      "id": "packageSources",
+      "title": "Managing Package Sources",
+      "description": "The NuGet Manager supports multiple package sources:\n\n1. Default NuGet.org public feed\n2. Private feeds (Azure DevOps, MyGet, etc.)\n3. Local package sources\n\nYou can select the active package source from the dropdown menu in the NuGet Manager. Package sources are read from your NuGet configuration files.",
+      "media": {
+        "image": "media/walkthroughs/nuget-manager.png",
+        "altText": "Package source selection in the NuGet Manager"
+      }
+    }
+  ]
+}

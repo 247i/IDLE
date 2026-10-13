@@ -1,0 +1,132 @@
+{
+	"name": "jupyter-cell-rainbow",
+	"displayName": "Jupyter Cell Rainbow",
+	"description": "Tint each notebook cell by its position so you never lose your place.",
+	"version": "0.1.0",
+	"publisher": "aburkard",
+	"license": "MIT",
+	"icon": "icon.png",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/aburkard/jupyter-cell-rainbow.git"
+	},
+	"bugs": {
+		"url": "https://github.com/aburkard/jupyter-cell-rainbow/issues"
+	},
+	"homepage": "https://github.com/aburkard/jupyter-cell-rainbow#readme",
+	"galleryBanner": {
+		"color": "#1e1e20",
+		"theme": "dark"
+	},
+	"engines": {
+		"vscode": "^1.85.0"
+	},
+	"categories": [
+		"Notebooks",
+		"Visualization"
+	],
+	"keywords": [
+		"jupyter",
+		"notebook",
+		"rainbow",
+		"colors",
+		"cells",
+		"palette",
+		"navigation"
+	],
+	"activationEvents": [
+		"onNotebook:jupyter-notebook",
+		"onNotebook:*"
+	],
+	"main": "./dist/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "jupyterCellRainbow.toggle",
+				"title": "Jupyter Cell Rainbow: Toggle"
+			},
+			{
+				"command": "jupyterCellRainbow.refresh",
+				"title": "Jupyter Cell Rainbow: Refresh Colors"
+			},
+			{
+				"command": "jupyterCellRainbow.pickPalette",
+				"title": "Jupyter Cell Rainbow: Pick Palette"
+			}
+		],
+		"configuration": {
+			"title": "Jupyter Cell Rainbow",
+			"properties": {
+				"jupyterCellRainbow.enabled": {
+					"type": "boolean",
+					"default": true,
+					"description": "Color notebook cell backgrounds by position."
+				},
+				"jupyterCellRainbow.palette": {
+					"type": "string",
+					"enum": [
+						"rainbow",
+						"pastel",
+						"ocean",
+						"warm",
+						"custom"
+					],
+					"enumDescriptions": [
+						"Full HSL rainbow that cycles through every hue",
+						"Soft pastel cycle",
+						"Cool blues and greens",
+						"Warm reds, oranges, yellows",
+						"Use the hex colors listed in jupyterCellRainbow.customColors"
+					],
+					"default": "rainbow",
+					"description": "Color palette used to cycle through cells."
+				},
+				"jupyterCellRainbow.customColors": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [
+						"#ff6b6b",
+						"#feca57",
+						"#1dd1a1",
+						"#54a0ff",
+						"#5f27cd"
+					],
+					"description": "Hex colors cycled through when palette is set to 'custom'."
+				},
+				"jupyterCellRainbow.opacity": {
+					"type": "number",
+					"default": 0.12,
+					"minimum": 0,
+					"maximum": 1,
+					"description": "Background tint opacity (0 = invisible, 1 = solid)."
+				},
+				"jupyterCellRainbow.cycleLength": {
+					"type": "number",
+					"default": 12,
+					"minimum": 2,
+					"maximum": 360,
+					"description": "Number of distinct colors before the palette repeats. Lower = more repetition; higher = more gradual gradient."
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run build",
+		"build": "tsc -p ./",
+		"watch": "tsc -w -p ./",
+		"package": "vsce package"
+	},
+	"devDependencies": {
+		"@types/node": "^20.11.0",
+		"@types/vscode": "^1.85.0",
+		"typescript": "^5.4.0",
+		"@vscode/vsce": "^2.24.0"
+	},
+	"__metadata": {
+		"installedTimestamp": 1787035119122,
+		"targetPlatform": "universal",
+		"size": 319816
+	}
+}

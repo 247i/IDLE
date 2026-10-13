@@ -1,0 +1,197 @@
+{
+  "name": "Gherkin (Feature)",
+  "scopeName": "text.gherkin.feature",
+  "fileTypes": ["feature"],
+  "patterns": [
+    {
+      "include": "#feature"
+    },
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#tags"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#background"
+    },
+    {
+      "include": "#scenario"
+    },
+    {
+      "include": "#scenario-outline"
+    },
+    {
+      "include": "#examples"
+    },
+    {
+      "include": "#steps"
+    },
+    {
+      "include": "#table"
+    },
+    {
+      "include": "#doc-strings"
+    }
+  ],
+  "repository": {
+    "feature": {
+      "patterns": [
+        {
+          "match": "^\\s*(Feature|Funkcja|Özellik|Fonctionnalité|Eigenschap|기능|フィーチャ|Característica|Caracteristica):\\s*(.*)$",
+          "captures": {
+            "1": {
+              "name": "keyword.language.gherkin.feature"
+            },
+            "2": {
+              "name": "entity.name.section.gherkin"
+            }
+          }
+        }
+      ]
+    },
+    "background": {
+      "patterns": [
+        {
+          "match": "^\\s*(Background|Contexto|Fundo|Antecedentes|Tình huống|Contexte|Контекст|前提|배경):\\s*(.*)$",
+          "captures": {
+            "1": {
+              "name": "keyword.language.gherkin.background"
+            },
+            "2": {
+              "name": "entity.name.section.gherkin"
+            }
+          }
+        }
+      ]
+    },
+    "scenario": {
+      "patterns": [
+        {
+          "match": "^\\s*(Scenario|Scenariusz|Senaryo|Scénario|Scenario|Cenário|Сценарий|シナリオ|시나리오|Escenario):\\s*(.*)$",
+          "captures": {
+            "1": {
+              "name": "keyword.language.gherkin.scenario"
+            },
+            "2": {
+              "name": "entity.name.section.gherkin"
+            }
+          }
+        }
+      ]
+    },
+    "scenario-outline": {
+      "patterns": [
+        {
+          "match": "^\\s*(Scenario Outline|Scenario Template|Esquema do Cenário|Esquema del escenario|Esquema de l'escenari|Senaryo taslağı|Szablon scenariusza|Struktura scenarija|Koncept|Delineação do Cenário|Cenário Modelo|Contexte|สรุปสถานการณ์|Sценарий Модель|Концепт|Структура сценария|シナリオアウトライン|시나리오 개요):\\s*(.*)$",
+          "captures": {
+            "1": {
+              "name": "keyword.language.gherkin.scenario.outline"
+            },
+            "2": {
+              "name": "entity.name.section.gherkin"
+            }
+          }
+        }
+      ]
+    },
+    "examples": {
+      "patterns": [
+        {
+          "match": "^\\s*(Examples|Exemplos|Ejemplos|Exemples|Παραδείγματα|Örnekler|Примеры|例|예|Ví dụ|Приклади|Примери|דוגמאות|Contoh):\\s*(.*)$",
+          "captures": {
+            "1": {
+              "name": "keyword.language.gherkin.examples"
+            },
+            "2": {
+              "name": "entity.name.section.gherkin"
+            }
+          }
+        }
+      ]
+    },
+    "steps": {
+      "patterns": [
+        {
+          "match": "^\\s*(Given|When|Then|And|But|\\*|E|Mas|Dado|Quando|Então|Zgjidhur|Dati|Quando|Allora|Δεδομένου|Όταν|Τότε|Και|Αλλά|Givet|När|Så|Och|Men|Antatt|Når|Så|Og|Men|Gegeven|Als|Dan|En|Maar|Angenommen|Wenn|Dann|Und|Aber|Soit|Étantdonné|Quand|Alors|Et|Mais|Gegewe|Wanneer|Dan|En|Maar|Dopuszczając|Zakładając|Mając|Jeżeli|Jeśli|Gdy|Kiedy|Wtedy|Oraz|I|Ale|Задати|Задате|Задато|Припустимо|Припустиме|Нехай|Коли|Якщо|То|Тоді|Та|І|Але|Дадена|Нека|Когато|Тогава|И|Но|Given|When|Then|And|But|もし|前提|ならば|但し|且つ|しかし|ただし|그리고|만일|만약|단|조건|먼저|그러면|만약|하지만|단|اذاً|عندما|ثم|و|لكن|Когда|Тогава|Дато|Предположим|То|И|Но)\\s+(.*)$",
+          "captures": {
+            "1": {
+              "name": "keyword.language.gherkin.step"
+            },
+            "2": {
+              "name": "string.quoted.double.gherkin"
+            }
+          }
+        }
+      ]
+    },
+    "tags": {
+      "patterns": [
+        {
+          "match": "(@[^@\\s]+)",
+          "name": "storage.type.tag.gherkin"
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "match": "^\\s*#.*$",
+          "name": "comment.line.number-sign.gherkin"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "match": "\"([^\"]*)\"",
+          "name": "string.quoted.double.gherkin"
+        },
+        {
+          "match": "'([^']*)'",
+          "name": "string.quoted.single.gherkin"
+        }
+      ]
+    },
+    "table": {
+      "patterns": [
+        {
+          "match": "^\\s*(\\|)(.+)(\\|)\\s*$",
+          "captures": {
+            "1": {
+              "name": "keyword.operator.gherkin.table"
+            },
+            "2": {
+              "name": "variable.other.gherkin.table"
+            },
+            "3": {
+              "name": "keyword.operator.gherkin.table"
+            }
+          }
+        }
+      ]
+    },
+    "doc-strings": {
+      "patterns": [
+        {
+          "begin": "^\\s*(\"\"\")",
+          "end": "^\\s*(\"\"\")",
+          "name": "string.quoted.triple.gherkin",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.string.begin.gherkin"
+            }
+          },
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.definition.string.end.gherkin"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

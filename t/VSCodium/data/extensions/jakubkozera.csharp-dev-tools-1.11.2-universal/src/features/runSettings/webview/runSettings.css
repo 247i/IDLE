@@ -1,0 +1,209 @@
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: var(--vscode-font-family);
+    font-size: var(--vscode-font-size);
+    color: var(--vscode-foreground);
+    background-color: var(--vscode-sideBar-background);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-sizing: border-box;
+    padding: 8px 16px 16px;
+}
+
+/* No .runsettings section */
+.no-runsettings-section {
+    text-align: center;
+    padding: 24px 16px;
+}
+
+.no-runsettings-icon {
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: center;
+}
+
+.no-runsettings-section h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.1em;
+    color: var(--vscode-foreground);
+}
+
+.no-runsettings-section p {
+    margin: 0 0 16px 0;
+    color: var(--vscode-descriptionForeground);
+    font-size: 0.9em;
+}
+
+/* Single .runsettings section */
+.single-runsettings-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.runsettings-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    min-width: 0;
+}
+
+.runsettings-icon {
+    color: var(--vscode-symbolIcon-fileForeground);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.runsettings-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.runsettings-name {
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: var(--vscode-foreground);
+}
+
+.runsettings-description {
+    font-size: 0.9em;
+    color: var(--vscode-descriptionForeground);
+}
+
+.runsettings-actions {
+    display: flex;
+    gap: 4px;
+}
+
+/* Multiple .runsettings section */
+.multiple-runsettings-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.section-header h4 {
+    margin: 0 0 8px 0;
+    font-size: 1em;
+    color: var(--vscode-foreground);
+}
+
+.section-header p {
+    margin: 0;
+    font-size: 0.9em;
+    color: var(--vscode-descriptionForeground);
+}
+
+.dropdown-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.dropdown {
+    flex: 1;
+    padding: 8px 10px;
+    background-color: var(--vscode-dropdown-background);
+    color: var(--vscode-dropdown-foreground);
+    border: 1px solid var(--vscode-dropdown-border);
+    border-radius: 4px;
+    font-family: var(--vscode-font-family);
+    font-size: var(--vscode-font-size);
+}
+
+.dropdown:focus {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: -1px;
+}
+
+/* Usage info */
+.usage-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: var(--vscode-notifications-infoBackground, rgba(0, 122, 204, 0.1));
+    border: 1px solid var(--vscode-notifications-infoBorder, #007acc);
+    border-radius: 4px;
+}
+
+.usage-icon {
+    color: var(--vscode-notifications-infoBorder, #007acc);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.usage-text {
+    font-size: 0.9em;
+    color: var(--vscode-foreground);
+}
+
+/* Buttons */
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--vscode-font-family);
+    font-size: var(--vscode-font-size);
+    transition: background-color 0.2s ease;
+}
+
+.button:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.button:focus {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: -1px;
+}
+
+.button-primary {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+}
+
+.button-icon {
+    padding: 6px;
+    background-color: transparent;
+    color: var(--vscode-icon-foreground);
+    border: 1px solid transparent;
+}
+
+.button-icon:hover {
+    background-color: var(--vscode-toolbar-hoverBackground);
+    border-color: var(--vscode-widget-border);
+}
+
+.button-icon:focus {
+    background-color: var(--vscode-toolbar-hoverBackground);
+    border-color: var(--vscode-focusBorder);
+}
+.button-icon.runsettings-icon-button {
+    color: var(--vscode-icon-foreground);
+    flex-shrink: 0;
+}
+
+.button-icon.runsettings-icon-button:hover {
+    background-color: var(--vscode-toolbar-hoverBackground);
+    color: var(--vscode-textLink-activeForeground);
+}
+
+.button-icon.runsettings-icon-button svg {
+    display: block;
+}

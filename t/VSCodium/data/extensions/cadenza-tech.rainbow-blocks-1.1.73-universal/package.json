@@ -1,0 +1,139 @@
+{
+	"name": "rainbow-blocks",
+	"displayName": "Rainbow Blocks",
+	"description": "Colorize matching block pairs for Ruby, Elixir, Crystal, Lua, Julia, Bash, and more",
+	"version": "1.1.73",
+	"publisher": "cadenza-tech",
+	"license": "MIT",
+	"icon": "images/icon.png",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/cadenza-tech/rainbow-blocks"
+	},
+	"engines": {
+		"vscode": "^1.42.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"keywords": [
+		"rainbow",
+		"blocks",
+		"brackets",
+		"ruby",
+		"elixir",
+		"bash",
+		"ada",
+		"applescript",
+		"cobol",
+		"crystal",
+		"erlang",
+		"fortran",
+		"julia",
+		"lua",
+		"pascal",
+		"matlab",
+		"octave",
+		"verilog",
+		"vhdl",
+		"syntax",
+		"highlighting"
+	],
+	"activationEvents": [
+		"onLanguage:ruby",
+		"onLanguage:elixir",
+		"onLanguage:bash",
+		"onLanguage:shellscript",
+		"onLanguage:ada",
+		"onLanguage:applescript",
+		"onLanguage:cobol",
+		"onLanguage:COBOL",
+		"onLanguage:crystal",
+		"onLanguage:erlang",
+		"onLanguage:fortran",
+		"onLanguage:fortran-modern",
+		"onLanguage:FortranFixedForm",
+		"onLanguage:FortranFreeForm",
+		"onLanguage:julia",
+		"onLanguage:lua",
+		"onLanguage:pascal",
+		"onLanguage:objectpascal",
+		"onLanguage:matlab",
+		"onLanguage:octave",
+		"onLanguage:verilog",
+		"onLanguage:systemverilog",
+		"onLanguage:vhdl"
+	],
+	"main": "./dist/extension.js",
+	"contributes": {
+		"configuration": {
+			"title": "Rainbow Blocks",
+			"properties": {
+				"rainbowBlocks.colors": {
+					"type": "array",
+					"default": [
+						"#E07080",
+						"#E0E070",
+						"#70B0E0"
+					],
+					"items": {
+						"type": "string"
+					},
+					"maxItems": 100,
+					"description": "Colors for block pairs. Cycles when nesting exceeds the number of colors."
+				},
+				"rainbowBlocks.debounceMs": {
+					"type": "number",
+					"default": 100,
+					"minimum": 0,
+					"maximum": 10000,
+					"description": "Debounce time in milliseconds for decoration updates."
+				}
+			}
+		}
+	},
+	"scripts": {
+		"upgrade": "yarn up \"*\" \"@*/*\"",
+		"vscode:prepublish": "yarn run package",
+		"compile": "yarn run check-types && yarn run lint && yarn run build",
+		"watch": "npm-run-all -p watch:*",
+		"watch:esbuild": "node esbuild.js --watch",
+		"watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+		"package": "yarn run check-types && yarn run lint && node esbuild.js --production",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+		"check-types": "tsc --noEmit",
+		"lint": "biome lint",
+		"lint:fix": "biome lint --write",
+		"format": "biome format",
+		"format:fix": "biome format --write",
+		"check": "biome check",
+		"check:fix": "biome check --write",
+		"test": "vscode-test",
+		"test:perf": "yarn run compile-tests && node perfRunner.js",
+		"test:coverage": "yarn run compile-tests && c8 mocha --ui tdd --timeout 60000 \"out/test/parsers/**/*.test.js\" --grep \"\\[perf\\]\" --invert",
+		"build": "node esbuild.js"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.4",
+		"@types/mocha": "^10.0.10",
+		"@types/node": "~24.13.3",
+		"@types/vscode": "~1.42.0",
+		"@vscode/test-cli": "^0.0.15",
+		"@vscode/test-electron": "^3.0.0",
+		"@vscode/vsce": "^3.9.2",
+		"c8": "^12.0.0",
+		"esbuild": "^0.28.1",
+		"mocha": "^11.7.6",
+		"npm-run-all": "^4.1.5",
+		"ovsx": "^1.0.2",
+		"typescript": "^7.0.2"
+	},
+	"packageManager": "yarn@4.17.1",
+	"__metadata": {
+		"installedTimestamp": 1791765670402,
+		"targetPlatform": "universal",
+		"size": 920727
+	}
+}

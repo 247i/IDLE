@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate SQL Script</title>
+    <link rel="stylesheet" href="generateSqlScript.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Generate Entity Framework SQL Script</h1>
+        
+        <div class="form-group">
+            <label for="startupProject">Startup Project</label>
+            <div class="project-select-container">
+                <div class="custom-select" id="startupProjectSelect">
+                    <div class="custom-select-trigger" tabindex="0">
+                        <div class="project-icon" id="startupProjectIcon"></div>
+                        <span class="project-name placeholder-text">Select startup project...</span>
+                    </div>
+                    <div class="custom-select-options" id="startupProjectOptions">
+                        <!-- Options will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            <div class="help-text">The executable project used to provide connection strings and other configuration</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="migrationsProject">Migrations Project</label>
+            <div class="project-select-container">
+                <div class="custom-select" id="migrationsProjectSelect">
+                    <div class="custom-select-trigger" tabindex="0">
+                        <div class="project-icon" id="migrationsProjectIcon"></div>
+                        <span class="project-name placeholder-text">Select project containing DbContext...</span>
+                    </div>
+                    <div class="custom-select-options" id="migrationsProjectOptions">
+                        <!-- Options will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            <div class="help-text">The project containing your DbContext and migrations</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="dbContextClass">DbContext Class</label>
+            <input type="text" id="dbContextClass" placeholder="ApplicationDbContext">
+            <div class="help-text">Specify the DbContext class name if you have multiple contexts</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="fromMigration">From Migration</label>
+            <div class="migration-select-container">
+                <div class="custom-select" id="fromMigrationSelect">
+                    <div class="custom-select-trigger" tabindex="0">
+                        <div class="migration-icon" id="fromMigrationIcon"></div>
+                        <span class="migration-name placeholder-text">Select starting migration (optional)...</span>
+                    </div>
+                    <div class="custom-select-options" id="fromMigrationOptions">
+                        <div class="custom-select-option" data-value="">
+                            <div class="migration-icon"></div>
+                            <span class="migration-name">Start from beginning</span>
+                        </div>
+                        <!-- Options will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            <div class="help-text">The migration to start from (leave empty to start from the beginning)</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="toMigration">To Migration</label>
+            <div class="migration-select-container">
+                <div class="custom-select" id="toMigrationSelect">
+                    <div class="custom-select-trigger" tabindex="0">
+                        <div class="migration-icon" id="toMigrationIcon"></div>
+                        <span class="migration-name placeholder-text">Select target migration (optional)...</span>
+                    </div>
+                    <div class="custom-select-options" id="toMigrationOptions">
+                        <div class="custom-select-option" data-value="">
+                            <div class="migration-icon"></div>
+                            <span class="migration-name">Include all migrations</span>
+                        </div>
+                        <!-- Options will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            <div class="help-text">The migration to generate script up to (leave empty to include all)</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="outputFile">Output File</label>
+            <input type="text" id="outputFile" placeholder="script.sql" value="script.sql">
+            <div class="help-text">The file where the SQL script will be saved</div>
+        </div>
+        
+        <div class="form-group">
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="idempotent">
+                    <span class="checkmark"></span>
+                    Make script idempotent
+                </label>
+                <div class="help-text">Generate a script that can be run multiple times safely</div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="noTransactions">
+                    <span class="checkmark"></span>
+                    No transactions
+                </label>
+                <div class="help-text">Don't wrap the script in transactions</div>
+            </div>
+        </div>
+        
+        <div class="preview-section">
+            <div class="preview-command" id="commandPreview">
+                Configure script options to see the generated command...
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="secondary-button" id="cancelButton">Cancel</button>
+            <button class="primary-button" id="runButton" disabled>Generate Script</button>
+        </div>
+    </div>
+
+    <script src="generateSqlScript.js"></script>
+</body>
+</html>

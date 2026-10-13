@@ -1,0 +1,81 @@
+@font-face {
+    font-family: "icons";
+    src: url("./icons.eot?a1c110e9f7e31880661b9e05adc97386#iefix") format("embedded-opentype"),
+url("./icons.woff2?a1c110e9f7e31880661b9e05adc97386") format("woff2"),
+url("./icons.woff?a1c110e9f7e31880661b9e05adc97386") format("woff");
+}
+
+i[class^="icon-"]:before, i[class*=" icon-"]:before {
+    font-family: icons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-resharper-logo:before {
+    content: "\f101";
+}
+.icon-support-icon:before {
+    content: "\f102";
+}
+.icon-search-icon:before {
+    content: "\f103";
+}
+.icon-link-icon:before {
+    content: "\f104";
+}
+.icon-hierarchy-icon:before {
+    content: "\f105";
+}
+.icon-gear-icon:before {
+    content: "\f106";
+}
+.icon-feedback-icon:before {
+    content: "\f107";
+}
+.icon-code-icon:before {
+    content: "\f108";
+}
+.icon-clock-icon:before {
+    content: "\f109";
+}
+.icon-jetbrains-logo:before {
+    content: "\f10a";
+}
+.icon-bug-icon:before {
+    content: "\f10b";
+}
+.icon-survey-4-icon:before {
+    content: "\f10c";
+}
+.icon-survey-3-icon:before {
+    content: "\f10d";
+}
+.icon-survey-2-icon:before {
+    content: "\f10e";
+}
+.icon-survey-1-icon:before {
+    content: "\f10f";
+}
+.icon-survey-0-icon:before {
+    content: "\f110";
+}
+.icon-back-icon:before {
+    content: "\f111";
+}
+.icon-link-arrow:before {
+    content: "\f112";
+}
+.icon-resharper-logo-crossed:before {
+    content: "\f113";
+}
+.icon-placeholder-icon:before {
+    content: "\f115";
+}
+.icon-value-tracking:before {
+    content: "\f114";
+}

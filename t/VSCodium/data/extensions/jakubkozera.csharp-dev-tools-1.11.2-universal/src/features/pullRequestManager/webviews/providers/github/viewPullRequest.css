@@ -1,0 +1,550 @@
+/* GitHub-specific styles for pull request view */
+
+/* GitHub color scheme and styling */
+.github-pr-icon {
+    display: flex;
+    align-items: center;
+    margin-right: var(--pr-spacing-sm);
+    color: var(--vscode-foreground);
+}
+
+/* GitHub header styling */
+.pr-header {
+    background-color: var(--vscode-titleBar-activeBackground);
+    padding: var(--pr-spacing-md) var(--pr-spacing-xl);
+    border-bottom: 1px solid var(--vscode-panel-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--pr-spacing-md);
+    flex: 1;
+}
+
+.pr-title {
+    font-size: var(--pr-font-size-xxl);
+    font-weight: 600;
+    margin: 0;
+    color: var(--vscode-foreground);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--pr-spacing-md);
+}
+
+/* GitHub info bar */
+.github-info {
+    background-color: var(--vscode-sideBar-background);
+    padding: var(--pr-spacing-lg) var(--pr-spacing-xl);
+    border-bottom: 1px solid var(--vscode-panel-border);
+    display: flex;
+    align-items: center;
+    gap: var(--pr-spacing-md);
+    flex-shrink: 0;
+}
+
+.github-status {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    padding: var(--pr-spacing-xs) var(--pr-spacing-sm);
+    border-radius: 3px;
+    font-size: var(--pr-font-size-sm);
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.github-status.status-open {
+    background-color: #238636;
+    color: white;
+}
+
+.github-status.status-closed {
+    background-color: #da3633;
+    color: white;
+}
+
+.github-status.status-merged {
+    background-color: #8250df;
+    color: white;
+}
+
+.github-status.status-draft {
+    background-color: #656d76;
+    color: white;
+}
+
+.github-pr-id {
+    color: var(--vscode-descriptionForeground);
+    font-weight: 500;
+    font-family: var(--vscode-editor-font-family);
+}
+
+.github-merge-info {
+    color: var(--vscode-descriptionForeground);
+    display: flex;
+    align-items: center;
+    gap: var(--pr-spacing-sm);
+}
+
+.github-merge-info strong {
+    color: var(--vscode-foreground);
+    font-family: var(--vscode-editor-font-family);
+}
+
+.github-checks {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--pr-spacing-sm);
+}
+
+/* GitHub navigation tabs */
+.github-nav {
+    background-color: var(--vscode-titleBar-activeBackground);
+    padding: 0 var(--pr-spacing-xl);
+    border-bottom: 1px solid var(--vscode-panel-border);
+    display: flex;
+    gap: 24px;
+    flex-shrink: 0;
+}
+
+.github-nav .nav-tab {
+    padding: var(--pr-spacing-md) 0;
+    color: var(--vscode-tab-inactiveForeground);
+    cursor: pointer;
+    position: relative;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    font-size: var(--pr-font-size-lg);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: var(--pr-spacing-sm);
+}
+
+.github-nav .nav-tab svg {
+    width: 16px;
+    height: 16px;
+}
+
+.github-nav .nav-tab.active {
+    color: var(--vscode-tab-activeForeground);
+    border-bottom-color: #fd8c73; /* GitHub orange accent */
+}
+
+.github-nav .nav-tab:hover {
+    color: var(--vscode-tab-activeForeground);
+}
+
+.github-badge {
+    background: #d1242f;
+    color: white;
+    border-radius: 10px;
+    padding: 2px var(--pr-spacing-xs);
+    font-size: var(--pr-font-size-xs);
+    font-weight: 600;
+    min-width: 10px;
+    height: 16px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* GitHub overview layout */
+.github-overview-layout {
+    display: flex;
+    height: 100%;
+    gap: var(--pr-spacing-xl);
+    padding: var(--pr-spacing-xl);
+}
+
+.github-main-column {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.github-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+
+.github-description {
+    background: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: var(--pr-border-radius);
+    padding: var(--pr-spacing-lg);
+    margin-bottom: var(--pr-spacing-xl);
+}
+
+.github-timeline {
+    margin-top: var(--pr-spacing-lg);
+}
+
+.github-timeline h3 {
+    margin: 0 0 var(--pr-spacing-lg) 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.github-timeline-items {
+    margin-bottom: var(--pr-spacing-xl);
+}
+
+.github-timeline-item {
+    display: flex;
+    margin-bottom: var(--pr-spacing-lg);
+    padding-bottom: var(--pr-spacing-lg);
+    border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.github-timeline-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.github-timeline-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: var(--pr-spacing-md);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.github-timeline-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.github-timeline-content {
+    flex: 1;
+}
+
+.github-timeline-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--pr-spacing-xs);
+    gap: var(--pr-spacing-xs);
+}
+
+.github-timeline-author {
+    font-weight: 600;
+    color: var(--vscode-foreground);
+}
+
+.github-timeline-action {
+    color: var(--vscode-descriptionForeground);
+}
+
+.github-timeline-date {
+    color: var(--vscode-descriptionForeground);
+    font-size: 12px;
+}
+
+.github-timeline-body {
+    background: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: var(--pr-border-radius);
+    padding: var(--pr-spacing-md);
+    margin-top: var(--pr-spacing-sm);
+}
+
+.github-comment-form {
+    margin-top: var(--pr-spacing-xl);
+    padding-top: var(--pr-spacing-lg);
+    border-top: 1px solid var(--vscode-panel-border);
+}
+
+.comment-input-wrapper {
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: var(--pr-border-radius);
+    overflow: hidden;
+}
+
+.comment-input {
+    width: 100%;
+    min-height: 80px;
+    padding: var(--pr-spacing-md);
+    border: none;
+    background: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.comment-input:focus {
+    outline: none;
+    background: var(--vscode-input-background);
+}
+
+.comment-actions {
+    background: var(--vscode-editor-background);
+    padding: var(--pr-spacing-sm) var(--pr-spacing-md);
+    border-top: 1px solid var(--vscode-panel-border);
+    text-align: right;
+}
+
+/* GitHub files tab styling */
+.github-files {
+    background: var(--vscode-panel-border);
+}
+
+.github-files-sidebar {
+    background: var(--vscode-sideBar-background);
+    border-right: 1px solid var(--vscode-panel-border);
+}
+
+.github-diff-content {
+    background: var(--vscode-editor-background);
+}
+
+/* GitHub file items with more GitHub-like styling */
+.github-files .file-item {
+    padding: var(--pr-spacing-sm) var(--pr-spacing-lg);
+    border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.github-files .file-item:hover {
+    background: #0969da1a; /* GitHub blue with opacity */
+}
+
+.github-files .file-item.selected {
+    background: #0969da;
+    color: white;
+}
+
+.github-files .file-item.added {
+    border-left: 3px solid #2ea043;
+}
+
+.github-files .file-item.deleted {
+    border-left: 3px solid #cf222e;
+}
+
+.github-files .file-item.modified {
+    border-left: 3px solid #fb8500;
+}
+
+/* GitHub commits styling */
+.github-commits {
+    background: var(--vscode-editor-background);
+}
+
+.github-commits-count {
+    background: #f6f8fa;
+    color: #24292f;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: var(--pr-spacing-xs) var(--pr-spacing-sm);
+    font-size: var(--pr-font-size-sm);
+    font-weight: 500;
+}
+
+.github-commits-list .commit-item {
+    background: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: var(--pr-border-radius);
+    margin-bottom: var(--pr-spacing-md);
+    transition: box-shadow 0.2s ease;
+}
+
+.github-commits-list .commit-item:hover {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-color: #d0d7de;
+}
+
+.github-commits-list .commit-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--vscode-panel-border);
+}
+
+.github-commits-list .commit-sha {
+    background: #f6f8fa;
+    color: #0969da;
+    border: 1px solid #d0d7de;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    padding: 2px var(--pr-spacing-xs);
+    border-radius: 3px;
+    font-size: var(--pr-font-size-xs);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.github-commits-list .commit-sha:hover {
+    background: #e7ecf0;
+}
+
+/* GitHub-specific buttons */
+.btn.github-btn {
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    font-weight: 500;
+    line-height: 20px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--pr-spacing-xs);
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+}
+
+.btn.github-btn.btn-primary {
+    background: #2da44e;
+    border-color: rgba(27, 31, 36, 0.15);
+    color: #ffffff;
+}
+
+.btn.github-btn.btn-primary:hover {
+    background: #2c974b;
+}
+
+.btn.github-btn.btn-secondary {
+    background: #f6f8fa;
+    border-color: rgba(27, 31, 36, 0.15);
+    color: #24292f;
+}
+
+.btn.github-btn.btn-secondary:hover {
+    background: #f3f4f6;
+}
+
+/* GitHub dropdown arrow */
+.dropdown-arrow {
+    margin-left: var(--pr-spacing-xs);
+    font-size: 10px;
+    opacity: 0.8;
+}
+
+/* GitHub-specific spacing and layout adjustments */
+.github-files .files-header {
+    background: #f6f8fa;
+    border-bottom: 1px solid #d0d7de;
+}
+
+.github-files .files-header h4 {
+    color: #24292f;
+    font-weight: 600;
+}
+
+/* GitHub status indicators */
+.github-check-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--pr-spacing-xs);
+    padding: var(--pr-spacing-xs) var(--pr-spacing-sm);
+    border-radius: 3px;
+    font-size: var(--pr-font-size-sm);
+    font-weight: 500;
+}
+
+.github-check-status.success {
+    background: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #a3cfbb;
+}
+
+.github-check-status.failure {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f1aeb5;
+}
+
+.github-check-status.pending {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+/* GitHub dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+    .github-commits-count {
+        background: #21262d;
+        color: #f0f6fc;
+        border-color: #30363d;
+    }
+    
+    .github-commits-list .commit-sha {
+        background: #21262d;
+        color: #58a6ff;
+        border-color: #30363d;
+    }
+    
+    .github-commits-list .commit-sha:hover {
+        background: #30363d;
+    }
+    
+    .btn.github-btn.btn-secondary {
+        background: #21262d;
+        border-color: #30363d;
+        color: #f0f6fc;
+    }
+    
+    .btn.github-btn.btn-secondary:hover {
+        background: #30363d;
+    }
+    
+    .github-files .files-header {
+        background: #161b22;
+        border-bottom-color: #30363d;
+    }
+    
+    .github-files .files-header h4 {
+        color: #f0f6fc;
+    }
+}
+
+/* GitHub Merge Button Dropdown Styles */
+.merge-container .merge-main-button {
+    background: #2da44e;
+    border-color: rgba(27, 31, 36, 0.15);
+    color: #ffffff;
+    border-radius: 6px;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+.merge-container .merge-main-button:hover {
+    background: #2c974b;
+}
+
+.merge-container .merge-options-menu {
+    border-radius: 0 0 6px 6px;
+    border-color: rgba(27, 31, 36, 0.15);
+}
+
+.merge-container .merge-option-item {
+    font-size: 13px;
+    padding: 10px 16px;
+}
+
+.merge-container .merge-option-item:hover {
+    background: #f6f8fa;
+}
+
+/* GitHub dark theme merge button adjustments */
+@media (prefers-color-scheme: dark) {
+    .merge-container .merge-option-item:hover {
+        background: #21262d;
+    }
+}

@@ -1,0 +1,8 @@
+{
+	"scopeName": "source.xaml",
+	"patterns": [
+		{
+			"include": "text.xml"
+		}
+	]
+}

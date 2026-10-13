@@ -1,0 +1,39 @@
+{
+  "comments": {
+    "blockComment": ["@*", "*@"]
+  },
+  "brackets": [
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"],
+    ["<", ">"]
+  ],
+  "autoClosingPairs": [
+    { "open": "{", "close": "}" },
+    { "open": "[", "close": "]" },
+    { "open": "(", "close": ")" },
+    { "open": "<", "close": ">" },
+    { "open": "\"", "close": "\"", "notIn": ["string"] },
+    { "open": "'", "close": "'", "notIn": ["string"] },
+    { "open": "@*", "close": "*@" }
+  ],
+  "surroundingPairs": [
+    { "open": "{", "close": "}" },
+    { "open": "[", "close": "]" },
+    { "open": "(", "close": ")" },
+    { "open": "<", "close": ">" },
+    { "open": "\"", "close": "\"" },
+    { "open": "'", "close": "'" }
+  ],
+  "folding": {
+    "markers": {
+      "start": "^\\s*@(code|functions|section)\\s*(\\w+\\s*)?\\{",
+      "end": "^\\s*\\}"
+    }
+  },
+  "indentationRules": {
+    "increaseIndentPattern": "(<(?!\\?|area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)[^/]*>|\\{[^}]*$|@(code|functions|section|if|else|for|foreach|while|switch|try|catch|finally|lock|using).*\\{\\s*$)",
+    "decreaseIndentPattern": "^\\s*(\\}|</[^>]+>)"
+  },
+  "wordPattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\/\\?\\s]+)"
+}

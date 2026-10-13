@@ -1,0 +1,85 @@
+{
+  "iconDefinitions": {
+    "csharp": {
+      "iconPath": "./icons/csharp.svg"
+    },
+    "fsharp": {
+      "iconPath": "./icons/fsharp.svg"
+    },
+    "visualbasic": {
+      "iconPath": "./icons/visualbasic.svg"
+    },
+    "dotnet": {
+      "iconPath": "./icons/dotnet.svg"
+    },
+    "csproj": {
+      "iconPath": "./icons/csproj.svg"
+    },
+    "solution": {
+      "iconPath": "./icons/solution.svg"
+    },
+    "feature": {
+      "iconPath": "./icons/Cucumber.png"
+    },
+    "folder-default": {
+      "iconPath": "./icons/folders/default-open.svg"
+    },
+    "folder-default-open": {
+      "iconPath": "./icons/folders/default-open.svg"
+    },
+    "folder-solution": {
+      "iconPath": "./icons/folders/solutionfolder.svg"
+    },
+    "folder-solution-open": {
+      "iconPath": "./icons/folders/solutionfolder.svg"
+    },
+    "csproj-test": {
+      "iconPath": "./icons/csproj-test.svg"
+    },
+    "csproj-test-light": {
+      "iconPath": "./icons/csproj-test-light.svg"
+    },
+    "csproj-function": {
+      "iconPath": "./icons/csproj-function.svg"
+    },
+    "csproj-function-light": {
+      "iconPath": "./icons/csproj-function-light.svg"
+    },
+    "csproj-desktop": {
+      "iconPath": "./icons/csproj-desktop.svg"
+    },
+    "csproj-desktop-light": {
+      "iconPath": "./icons/csproj-desktop-light.svg"
+    }
+  },
+  "fileExtensions": {
+    "cs": "csharp",
+    "fs": "fsharp",
+    "vb": "visualbasic",
+    "csproj": "csproj",
+    "vbproj": "dotnet",
+    "fsproj": "dotnet",
+    "sln": "solution",
+    "feature": "feature"
+  },
+  "fileNames": {},
+  "folder": "folder-default",
+  "folderExpanded": "folder-default-open",
+  "folderNames": {
+    "bin": "folder-solution",
+    "obj": "folder-solution",
+    "packages": "folder-solution",
+    ".vs": "folder-solution",
+    "Debug": "folder-solution",
+    "Release": "folder-solution"
+  },
+  "folderNamesExpanded": {
+    "bin": "folder-solution-open",
+    "obj": "folder-solution-open",
+    "packages": "folder-solution-open",
+    ".vs": "folder-solution-open",
+    "Debug": "folder-solution-open",
+    "Release": "folder-solution-open"
+  },
+  "hidesExplorerArrows": false
+}

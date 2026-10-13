@@ -1,0 +1,138 @@
+{
+  "$schema": "https://raw.githubusercontent.com/AJMediaGroup/vscode-tmlanguage/master/tmlanguage.json",
+  "name": "ASP.NET Razor",
+  "scopeName": "text.html.cshtml",
+  "patterns": [
+    { "include": "#razor-comment" },
+    { "include": "#razor-functions-block" },
+    { "include": "#razor-section-block" },
+    { "include": "#razor-directives" },
+    { "include": "#razor-control-structures" },
+    { "include": "#razor-explicit-expression" },
+    { "include": "#razor-code-block" },
+    { "include": "#razor-implicit-expression" },
+    { "include": "text.html.basic" }
+  ],
+  "repository": {
+    "razor-comment": {
+      "name": "comment.block.razor",
+      "begin": "@\\*",
+      "end": "\\*@",
+      "patterns": [
+        { "include": "#razor-comment" }
+      ]
+    },
+    "razor-functions-block": {
+      "name": "meta.block.razor.functions",
+      "begin": "@functions\\s*\\{",
+      "beginCaptures": {
+        "0": { "name": "keyword.control.razor.directive.functions" }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": { "name": "keyword.control.razor.directive.functions" }
+      },
+      "patterns": [
+        { "include": "source.cs" }
+      ]
+    },
+    "razor-section-block": {
+      "name": "meta.block.razor.section",
+      "begin": "@section\\s+(\\w+)\\s*\\{",
+      "beginCaptures": {
+        "0": { "name": "keyword.control.razor.directive.section" },
+        "1": { "name": "entity.name.section.razor" }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": { "name": "keyword.control.razor.directive.section" }
+      },
+      "patterns": [
+        { "include": "$self" }
+      ]
+    },
+    "razor-directives": {
+      "patterns": [
+        {
+          "name": "meta.directive.razor",
+          "match": "@(page|model|inherits|inject|implements|layout|attribute|addTagHelper|removeTagHelper|tagHelperPrefix|namespace|preservewhitespace)\\b",
+          "captures": {
+            "0": { "name": "keyword.control.razor.directive" }
+          }
+        },
+        {
+          "name": "meta.directive.razor.using",
+          "match": "@using\\b",
+          "captures": {
+            "0": { "name": "keyword.control.razor.directive.using" }
+          }
+        }
+      ]
+    },
+    "razor-control-structures": {
+      "patterns": [
+        {
+          "name": "meta.control.razor",
+          "begin": "@(if|else if|else|for|foreach|while|do|switch|try|catch|finally|lock|using|await|helper)\\b",
+          "beginCaptures": {
+            "0": { "name": "keyword.control.razor" }
+          },
+          "end": "(?<=\\})|(?=\\n)",
+          "patterns": [
+            {
+              "begin": "\\(",
+              "end": "\\)",
+              "patterns": [
+                { "include": "source.cs" }
+              ]
+            },
+            {
+              "begin": "\\{",
+              "end": "\\}",
+              "patterns": [
+                { "include": "$self" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "razor-explicit-expression": {
+      "name": "meta.expression.razor.explicit",
+      "begin": "@\\(",
+      "beginCaptures": {
+        "0": { "name": "keyword.control.razor.transition" }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": { "name": "keyword.control.razor.transition" }
+      },
+      "patterns": [
+        { "include": "source.cs" }
+      ]
+    },
+    "razor-code-block": {
+      "name": "meta.block.razor.csharp",
+      "begin": "@\\{",
+      "beginCaptures": {
+        "0": { "name": "keyword.control.razor.transition" }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": { "name": "keyword.control.razor.transition" }
+      },
+      "patterns": [
+        { "include": "#razor-comment" },
+        { "include": "source.cs" }
+      ]
+    },
+    "razor-implicit-expression": {
+      "name": "meta.expression.razor.implicit",
+      "match": "@([A-Za-z_][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*(\\([^)]*\\))?)",
+      "captures": {
+        "0": { "name": "meta.expression.razor" },
+        "1": { "name": "source.cs" }
+      }
+    }
+  }
+}

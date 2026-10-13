@@ -1,0 +1,185 @@
+/**
+ * SharedDropdown Component Styles
+ * 
+ * Reusable custom dropdown component styled for VSCode webviews.
+ * Uses VSCode theme variables for automatic theme support.
+ */
+
+/* Container */
+.custom-select {
+    position: relative;
+    font-size: 13px;
+    min-width: 160px;
+    user-select: none;
+}
+
+/* Trigger / Selected item display */
+.select-selected {
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 4px;
+    padding: 6px 30px 6px 10px; /* Extra padding right for chevron */
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    transition: border-color 0.2s;
+    outline: none;
+}
+
+.select-selected:hover {
+    border-color: var(--vscode-focusBorder);
+}
+
+.select-selected:focus {
+    border-color: var(--vscode-focusBorder);
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: -1px;
+}
+
+/* Chevron icon */
+.chevron-icon {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    transform: translateY(-50%);
+    transition: transform 0.3s ease;
+    pointer-events: none;
+}
+
+/* Rotate chevron when open */
+.select-selected.select-arrow-active .chevron-icon {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Dropdown list */
+.select-items {
+    position: fixed;
+    background-color: var(--vscode-dropdown-background);
+    color: var(--vscode-dropdown-foreground);
+    border: 1px solid var(--vscode-dropdown-border);
+    border-radius: 4px;
+    z-index: 99999;
+    margin-top: 4px;
+    min-width: 160px;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden; /* Hide horizontal scroll */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    
+    /* Animation for list appearance - always enabled */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s;
+}
+
+/* Search wrapper */
+.select-search-wrapper {
+    position: sticky;
+    top: 0;
+    background-color: var(--vscode-dropdown-background);
+    border-bottom: 1px solid var(--vscode-dropdown-border);
+    z-index: 2;
+}
+
+/* Search input */
+.select-search-input {
+    width: 100%;
+    padding: 6px 28px 6px 8px;
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.select-search-input:focus {
+    border-color: var(--vscode-focusBorder);
+}
+
+.select-search-input::placeholder {
+    color: var(--vscode-input-placeholderForeground);
+}
+
+/* Search icon */
+.select-search-icon {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    opacity: 0.7;
+    z-index: 1;
+}
+
+.select-search-icon svg {
+    color: var(--vscode-input-foreground);
+}
+
+/* Show list */
+.select-items.select-show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Dropdown items */
+.select-item {
+    padding: 8px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    background-color: var(--vscode-dropdown-background);
+    transition: background-color 0.1s;
+    white-space: nowrap;
+}
+
+.select-item:last-child {
+    border-bottom: none;
+}
+
+.select-item:hover {
+    background-color: var(--vscode-list-hoverBackground);
+}
+
+/* Keyboard navigation highlight */
+.select-item-highlighted {
+    background-color: var(--vscode-list-focusBackground);
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: -1px;
+}
+
+/* Selected item styling */
+.same-as-selected {
+    background-color: var(--vscode-list-activeSelectionBackground);
+    color: var(--vscode-list-activeSelectionForeground);
+}
+
+/* Scrollbar styling for the dropdown list */
+.select-items::-webkit-scrollbar {
+    width: 10px;
+}
+
+.select-items::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.select-items::-webkit-scrollbar-thumb {
+    background: var(--vscode-scrollbarSlider-background);
+    border-radius: 5px;
+    border: 2px solid var(--vscode-dropdown-background); /* Creates padding effect */
+}
+
+.select-items::-webkit-scrollbar-thumb:hover {
+    background: var(--vscode-scrollbarSlider-hoverBackground);
+}
+
+.select-items::-webkit-scrollbar-thumb:active {
+    background: var(--vscode-scrollbarSlider-activeBackground);
+}

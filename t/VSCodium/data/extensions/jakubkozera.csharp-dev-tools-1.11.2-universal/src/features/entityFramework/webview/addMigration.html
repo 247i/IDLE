@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Migration</title>
+    <link rel="stylesheet" href="addMigration.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Add Entity Framework Migration</h1>
+        
+        <div class="form-group">
+            <label for="migrationName">Migration Name *</label>
+            <input type="text" id="migrationName" placeholder="InitialCreate" required>
+            <div class="help-text">Enter a descriptive name for your migration (e.g., InitialCreate, AddUserTable)</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="startupProject">Startup Project</label>
+            <div class="project-select-container">
+                <div class="custom-select" id="startupProjectSelect">
+                    <div class="custom-select-trigger" tabindex="0">
+                        <div class="project-icon" id="startupProjectIcon"></div>
+                        <span class="project-name placeholder-text">Select startup project...</span>
+                    </div>
+                    <div class="custom-select-options" id="startupProjectOptions">
+                        <!-- Options will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            <div class="help-text">The executable project used to provide connection strings and other configuration</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="migrationsProject">Migrations Project</label>
+            <div class="project-select-container">
+                <div class="custom-select" id="migrationsProjectSelect">
+                    <div class="custom-select-trigger" tabindex="0">
+                        <div class="project-icon" id="migrationsProjectIcon"></div>
+                        <span class="project-name placeholder-text">Select project containing DbContext...</span>
+                    </div>
+                    <div class="custom-select-options" id="migrationsProjectOptions">
+                        <!-- Options will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            <div class="help-text">The project containing your DbContext and where migrations will be stored</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="dbContextClass">DbContext Class</label>
+            <input type="text" id="dbContextClass" placeholder="ApplicationDbContext">
+            <div class="help-text">Specify the DbContext class name if you have multiple contexts</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="migrationsFolder">Migrations Folder</label>
+            <input type="text" id="migrationsFolder" placeholder="Migrations" value="Migrations">
+            <div class="help-text">Folder where migration files will be created</div>
+        </div>
+        
+        <div class="preview-section">
+            <div class="preview-command" id="commandPreview">
+                Enter migration details to see the generated command...
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="secondary-button" id="cancelButton">Cancel</button>
+            <button class="primary-button" id="runButton" disabled>Run</button>
+        </div>
+    </div>
+
+    <script src="addMigration.js"></script>
+</body>
+</html>

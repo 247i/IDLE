@@ -1,0 +1,55 @@
+{
+  "id": "solutionViewer",
+  "title": "Solution Explorer",
+  "description": "Learn how to navigate and manage your .NET solution using the enhanced Solution Explorer.",
+  "steps": [
+    {
+      "id": "openSolutionViewer",
+      "title": "Opening the Solution Explorer",
+      "description": "The Solution Explorer is automatically activated when opening a workspace with a .NET solution (.sln) file. You can find it in the Activity Bar on the left side of VS Code.\n\nIf it's not visible, you can click on the C# icon in the Activity Bar to open it.",
+      "media": {
+        "image": "media/walkthroughs/solution-explorer.png",
+        "altText": "Solution Explorer view showing a .NET solution structure"
+      },
+      "completionEvents": [
+        "onView:solutionViewer"
+      ]
+    },
+    {
+      "id": "solutionStructure",
+      "title": "Understanding the Solution Structure",
+      "description": "The Solution Explorer shows a tree view of your solution with all projects and files:\n\n- **Solution**: The root node that contains all projects\n- **Projects**: Individual .NET projects in your solution\n- **Solution Folders**: Used to organize projects (not actual file system folders)\n- **References**: References to assemblies and NuGet packages\n- **Files & Folders**: All source files organized by their physical structure",
+      "media": {
+        "image": "media/walkthroughs/solution-explorer.png",
+        "altText": "Solution Explorer showing the solution structure with projects and files"
+      }
+    },
+    {
+      "id": "contextMenu",
+      "title": "Using the Context Menu",
+      "description": "Right-click on any item in the Solution Explorer to access a context-sensitive menu with various actions:\n\n- **Add**: Create new files, classes, or folders\n- **Build/Rebuild/Clean**: Manage project build operations\n- **NuGet**: Manage NuGet packages for the project\n- **User Secrets**: Manage configuration secrets\n- **Cut/Copy/Paste/Rename/Delete**: Manage files and folders\n\nMany operations typically found in Visual Studio are available directly in the context menu.",
+      "media": {
+        "image": "media/walkthroughs/context-menu.png",
+        "altText": "Context menu showing various actions available for a project"
+      }
+    },
+    {
+      "id": "recentSolutions",
+      "title": "Recent Solutions",
+      "description": "The Solution Explorer includes a **Recent Solutions** panel that tracks your previously opened solutions.\n\n- **Pin solutions**: Click the pin icon to keep important solutions at the top\n- **Open in new window**: Click the external link icon to open a solution in a new window\n- **Clear list**: Use the view menu to clear unpinned or all solutions",
+      "media": {
+        "image": "media/walkthroughs/solution-explorer.png",
+        "altText": "Recent Solutions panel showing pinned and recent solutions"
+      }
+    },
+    {
+      "id": "syncWithEditor",
+      "title": "Sync with Editor",
+      "description": "The Solution Explorer automatically highlights the file you're currently editing. This behavior can be customized in the settings:\n\n1. **Track Active File**: Automatically reveal the current file (enabled by default)\n2. **Collapse Other Paths**: Collapse other expanded paths when tracking the active file\n\nYou can also manually reveal the current file using the command **Reveal Current File in Solution Explorer** (Shift+Alt+L).",
+      "media": {
+        "image": "media/walkthroughs/solution-explorer.png",
+        "altText": "Solution Explorer with a file highlighted that matches the active editor"
+      }
+    }
+  ]
+}

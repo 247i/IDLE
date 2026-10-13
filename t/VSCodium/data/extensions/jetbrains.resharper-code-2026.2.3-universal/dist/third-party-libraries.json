@@ -1,0 +1,2669 @@
+[
+  {
+    "name": ".NET Runtime",
+    "version": "6.0",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "MIT",
+    "licenseUrl": "https://github.com/dotnet/runtime/blob/39b9607807f29e48cae4652cd74735182b31182e/LICENSE.TXT"
+  },
+  {
+    "name": "@colors/colors",
+    "version": "1.6.0",
+    "url": "https://www.npmjs.com/package/@colors/colors",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@dabh/diagnostics",
+    "version": "2.0.3",
+    "url": "https://www.npmjs.com/package/@dabh/diagnostics",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@dabh/diagnostics",
+    "version": "2.0.8",
+    "url": "https://www.npmjs.com/package/@dabh/diagnostics",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@inversifyjs/common",
+    "version": "1.4.0",
+    "url": "https://www.npmjs.com/package/@inversifyjs/common",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@inversifyjs/core",
+    "version": "1.3.5",
+    "url": "https://www.npmjs.com/package/@inversifyjs/core",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@inversifyjs/reflect-metadata-utils",
+    "version": "0.2.4",
+    "url": "https://www.npmjs.com/package/@inversifyjs/reflect-metadata-utils",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@isaacs/balanced-match",
+    "version": "4.0.1",
+    "url": "https://www.npmjs.com/package/@isaacs/balanced-match",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@isaacs/brace-expansion",
+    "version": "5.0.0",
+    "url": "https://www.npmjs.com/package/@isaacs/brace-expansion",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@isaacs/cliui",
+    "version": "8.0.2",
+    "url": "https://www.npmjs.com/package/@isaacs/cliui",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "@lit-labs/ssr-dom-shim",
+    "version": "1.3.0",
+    "url": "https://www.npmjs.com/package/@lit-labs/ssr-dom-shim",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "@lit-labs/ssr-dom-shim",
+    "version": "1.4.0",
+    "url": "https://www.npmjs.com/package/@lit-labs/ssr-dom-shim",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "@lit/react",
+    "version": "1.0.7",
+    "url": "https://www.npmjs.com/package/@lit/react",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "@lit/react",
+    "version": "1.0.8",
+    "url": "https://www.npmjs.com/package/@lit/react",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "@lit/reactive-element",
+    "version": "2.0.4",
+    "url": "https://www.npmjs.com/package/@lit/reactive-element",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "@lit/reactive-element",
+    "version": "2.1.1",
+    "url": "https://www.npmjs.com/package/@lit/reactive-element",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "@so-ric/colorspace",
+    "version": "1.1.6",
+    "url": "https://www.npmjs.com/package/@so-ric/colorspace",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@types/mocha",
+    "version": "10.0.10",
+    "url": "https://www.npmjs.com/package/@types/mocha",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@types/prop-types",
+    "version": "15.7.14",
+    "url": "https://www.npmjs.com/package/@types/prop-types",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@types/prop-types",
+    "version": "15.7.15",
+    "url": "https://www.npmjs.com/package/@types/prop-types",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@types/react",
+    "version": "18.3.20",
+    "url": "https://www.npmjs.com/package/@types/react",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@types/react",
+    "version": "18.3.26",
+    "url": "https://www.npmjs.com/package/@types/react",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@types/triple-beam",
+    "version": "1.3.5",
+    "url": "https://www.npmjs.com/package/@types/triple-beam",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@types/trusted-types",
+    "version": "2.0.7",
+    "url": "https://www.npmjs.com/package/@types/trusted-types",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@vscode-elements/elements",
+    "version": "1.16.1",
+    "url": "https://www.npmjs.com/package/@vscode-elements/elements",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@vscode-elements/elements",
+    "version": "1.17.0",
+    "url": "https://www.npmjs.com/package/@vscode-elements/elements",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "@vscode-elements/react-elements",
+    "version": "1.15.1",
+    "url": "https://www.npmjs.com/package/@vscode-elements/react-elements",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "@vscode/codicons",
+    "version": "0.0.36",
+    "url": "https://www.npmjs.com/package/@vscode/codicons",
+    "license": "CC-BY-4.0",
+    "licenseUrl": "https://spdx.org/licenses/CC-BY-4.0.html"
+  },
+  {
+    "name": "@vscode/l10n",
+    "version": "0.0.18",
+    "url": "https://www.npmjs.com/package/@vscode/l10n",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "ANTLRv2 Runtime",
+    "version": "2.7.7.3",
+    "url": "http://www.antlr2.org/",
+    "license": "ANTLR Software Rights Notice",
+    "licenseUrl": "https://spdx.org/licenses/ANTLR-PD.html"
+  },
+  {
+    "name": "Appccelerate.StateMachine",
+    "version": "3.3.0",
+    "url": "https://github.com/appccelerate/statemachine",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "Autofac Package",
+    "version": "4.8.1",
+    "url": "http://autofac.org/",
+    "license": "MIT License (2014 Autofac Project)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2014%20Autofac%20Project"
+  },
+  {
+    "name": "BouncyCastle.NET Cryptography",
+    "version": "2.5.1",
+    "url": "https://www.bouncycastle.org/stable/nuget/csharp/website",
+    "license": "MIT License (Legion of the Bouncy Castle Inc. 2000-2024)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Legion%20of%20the%20Bouncy%20Castle%20Inc.%202000-2024"
+  },
+  {
+    "name": "CLR Memory Diagnostics (ClrMD)",
+    "version": "3.1.20251023.10",
+    "url": "https://github.com/Microsoft/clrmd",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "DebuggerComInteropAnalyzer",
+    "version": "1.0.1",
+    "url": "",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "DockerUtils.cs",
+    "version": "1.0.5",
+    "url": "https://github.com/aspnet/DataProtection",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "ILSpy Decompiler Engine",
+    "version": "8.2.0.7535",
+    "url": "https://github.com/icsharpcode/ILSpy/",
+    "license": "MIT License (2011-2023 AlphaSierraPapa)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2011-2023%20AlphaSierraPapa"
+  },
+  {
+    "name": "Implementation of json-rpc for .NET",
+    "version": "1.0.2",
+    "url": "",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains Annotations",
+    "version": "2022.1.0",
+    "url": "https://www.jetbrains.com/help/resharper/Code_Analysis__Code_Annotations.html",
+    "license": "MIT",
+    "licenseUrl": "https://github.com/JetBrains/JetBrains.Annotations/blob/ac4bd27/license.md"
+  },
+  {
+    "name": "JetBrains Annotations Package",
+    "version": "2026.2.0",
+    "url": "https://www.jetbrains.com/help/resharper/Code_Analysis__Code_Annotations.html",
+    "license": "MIT License (2016-2025 JetBrains s.r.o)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2016-2025%20JetBrains%20s.r.o."
+  },
+  {
+    "name": "JetBrains DotNetCore Runtime linux-arm Package",
+    "version": "10.0.20260702.16",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "MIT License with third party notices",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MicrosoftNetLibrary-MIT-ThirdPartyNotices-10-0-0.html"
+  },
+  {
+    "name": "JetBrains DotNetCore Runtime linux-arm64 Package",
+    "version": "10.0.20260702.16",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "MIT License with third party notices",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MicrosoftNetLibrary-MIT-ThirdPartyNotices-10-0-0.html"
+  },
+  {
+    "name": "JetBrains DotNetCore Runtime linux-musl-arm Package",
+    "version": "10.0.20260702.16",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "MIT License with third party notices",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MicrosoftNetLibrary-MIT-ThirdPartyNotices-10-0-0.html"
+  },
+  {
+    "name": "JetBrains DotNetCore Runtime linux-musl-arm64 Package",
+    "version": "10.0.20260702.16",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "MIT License with third party notices",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MicrosoftNetLibrary-MIT-ThirdPartyNotices-10-0-0.html"
+  },
+  {
+    "name": "JetBrains DotNetCore Runtime linux-musl-x64 Package",
+    "version": "10.0.20260702.16",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "MIT License with third party notices",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MicrosoftNetLibrary-MIT-ThirdPartyNotices-10-0-0.html"
+  },
+  {
+    "name": "JetBrains DotNetCore Runtime linux-x64 Package",
+    "version": "10.0.20260702.16",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "MIT License with third party notices",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MicrosoftNetLibrary-MIT-ThirdPartyNotices-10-0-0.html"
+  },
+  {
+    "name": "JetBrains DotNetCore Runtime macos-arm64 Package",
+    "version": "10.0.20260702.16",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "MIT License with third party notices",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MicrosoftNetLibrary-MIT-ThirdPartyNotices-10-0-0.html"
+  },
+  {
+    "name": "JetBrains DotNetCore Runtime macos-x64 Package",
+    "version": "10.0.20260702.16",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "MIT License with third party notices",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MicrosoftNetLibrary-MIT-ThirdPartyNotices-10-0-0.html"
+  },
+  {
+    "name": "JetBrains DotNetCore Runtime windows-arm64 Package",
+    "version": "10.0.20260702.16",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "Microsoft Software License Terms (Microsoft .NET Library)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MicrosoftNetLibrary-13-Clause-ThirdPartyNotices-10-0-0.html"
+  },
+  {
+    "name": "JetBrains DotNetCore Runtime windows-x64 Package",
+    "version": "10.0.20260702.16",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "Microsoft Software License Terms (Microsoft .NET Library)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MicrosoftNetLibrary-13-Clause-ThirdPartyNotices-10-0-0.html"
+  },
+  {
+    "name": "JetBrains FormatRipper Package",
+    "version": "2.4.0",
+    "url": "https://github.com/JetBrains/format-ripper",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains HabitatDetector Package",
+    "version": "1.5.0",
+    "url": "https://github.com/JetBrains/habitat-detector",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains ICorDebug Package",
+    "version": "2.0.20251125.126",
+    "url": "",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains IlUtils Package",
+    "version": "1.0.4",
+    "url": "",
+    "license": "MIT License (2026 JetBrains s.r.o)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2026%20JetBrains%20s.r.o."
+  },
+  {
+    "name": "JetBrains Lifetimes Package",
+    "version": "2026.2.5",
+    "url": "https://github.com/JetBrains/rd",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains Microsoft FileFormats Package",
+    "version": "1.0.150601.3",
+    "url": "https://github.com/dotnet/symstore",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "JetBrains NuGet Commands Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains NuGet Common Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains NuGet Configurations Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains NuGet Credentials Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains NuGet DependencyResolver Core Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains NuGet Frameworks Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains NuGet LibraryModel Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains NuGet PackageManagement Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains NuGet Packaging Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains NuGet ProjectModel Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains NuGet Protocol Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains NuGet Resolver Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains NuGet Versioning Package",
+    "version": "7.7.20260625.175",
+    "url": "https://aka.ms/nugetprj",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains Profiler Api Package",
+    "version": "1.4.13",
+    "url": "https://github.com/JetBrains/profiler-api/blob/master/README.md",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains Profiler SelfApi Package",
+    "version": "2.5.18",
+    "url": "https://github.com/JetBrains/profiler-self-api/blob/master/README.md",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains RdFramework Package",
+    "version": "2026.2.5",
+    "url": "https://github.com/JetBrains/rd",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains RdFramework Reflection Package",
+    "version": "2026.2.5",
+    "url": "https://github.com/JetBrains/rd",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains ReSharper TestRunner Adapters MsTest Package",
+    "version": "2.16.1.49",
+    "url": "https://www.jetbrains.com/resharper/",
+    "license": "Microsoft Software License Terms (Microsoft .NET Library)",
+    "licenseUrl": "https://dotnet.microsoft.com/en-us/dotnet_library_license.htm"
+  },
+  {
+    "name": "JetBrains ReSharper TestRunner Adapters NUnit2 Package",
+    "version": "2.16.1.35",
+    "url": "https://www.jetbrains.com/resharper/",
+    "license": "MIT License (2021 Charlie Poole, Rob Prouse)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2021%20Charlie%20Poole%2C%20Rob%20Prouse"
+  },
+  {
+    "name": "JetBrains ReSharper TestRunner Adapters NUnit3 Package",
+    "version": "2.16.1.77",
+    "url": "https://www.jetbrains.com/resharper/",
+    "license": "MIT License (2021 Charlie Poole, Rob Prouse)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2021%20Charlie%20Poole%2C%20Rob%20Prouse"
+  },
+  {
+    "name": "JetBrains ReSharper TestRunner Adapters VsTest Package",
+    "version": "2.16.1.14",
+    "url": "https://www.jetbrains.com/resharper/",
+    "license": "Microsoft Software License Terms (Microsoft .NET Library)",
+    "licenseUrl": "https://dotnet.microsoft.com/en-us/dotnet_library_license.htm"
+  },
+  {
+    "name": "JetBrains ReSharper TestRunner Adapters XUnit Package",
+    "version": "2.16.1.44",
+    "url": "https://www.jetbrains.com/resharper/",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains ReSharper TestRunner Adapters XUnit3 Package",
+    "version": "2.16.1.15",
+    "url": "https://www.jetbrains.com/resharper/",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains ReSharper TestRunner Adapters XUnit3_2 Package",
+    "version": "2.16.1.5",
+    "url": "https://www.jetbrains.com/resharper/",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains ReSharper TestRunner Package",
+    "version": "2.16.1.112",
+    "url": "https://www.jetbrains.com/resharper/",
+    "license": "Apache License 2.0, Microsoft Software License Terms (Microsoft .NET Library), MIT License (2021 Charlie Poole, Rob Prouse), MIT License (James Newton-King 2008)",
+    "licenseUrl": "https://www.nuget.org/packages/JetBrains.ReSharper.TestRunner/2.11.2.94/License"
+  },
+  {
+    "name": "JetBrains Repack DiaSymReader PortablePdb Package",
+    "version": "1.7.0.20241003",
+    "url": "https://github.com/dotnet/symreader-portable",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "JetBrains Roslyn References Repack Package",
+    "version": "42.42.20251205.162645",
+    "url": "https://jetbrains.com/",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains SharpGen Runtime COM Package",
+    "version": "2.0.20251125.126",
+    "url": "https://github.com/jkoritzinsky/SharpGen.Runtime.COM",
+    "license": "MIT License (2010-2017 Alexandre Mutel, 2017 Jeremy Koritzinsky)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2010-2017%20Alexandre%20Mutel%2C%202017%20Jeremy%20Koritzinsky"
+  },
+  {
+    "name": "JetBrains SharpGen Runtime Package",
+    "version": "2.0.20251125.126",
+    "url": "https://github.com/jkoritzinsky/SharpGenTools",
+    "license": "MIT License (2010-2017 Alexandre Mutel, 2017-2018 Jeremy Koritzinsky)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2010-2017%20Alexandre%20Mutel%2C%202017-2018%20Jeremy%20Koritzinsky"
+  },
+  {
+    "name": "JetBrains SignatureVerifier Package",
+    "version": "2.5.0",
+    "url": "https://github.com/JetBrains/format-ripper",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains.SharpZipLib.Stripped",
+    "version": "1.3.3.37",
+    "url": "https://github.com/JetBrains/SharpZipLib",
+    "license": "MIT License (2000-2021 SharpZipLib Contributors)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2000-2021%20SharpZipLib%20Contributors"
+  },
+  {
+    "name": "Json.NET",
+    "version": "13.0.3",
+    "url": "https://www.newtonsoft.com/json",
+    "license": "MIT License (James Newton-King 2008)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=James%20Newton-King%202008"
+  },
+  {
+    "name": "LevelDB",
+    "version": "1.2.1",
+    "url": "https://github.com/google/leveldb",
+    "license": "BSD 3-Clause \"New\" or \"Revised\" License (The LevelDB Authors)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/BSD-3-Clause.html?copyright=The%20LevelDB%20Authors"
+  },
+  {
+    "name": "MessagePack annotations for C#",
+    "version": "2.5.198",
+    "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp",
+    "license": "MIT License (Yoshifumi Kawai and contributors)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Yoshifumi%20Kawai%20and%20contributors."
+  },
+  {
+    "name": "MessagePack for C#",
+    "version": "2.5.198",
+    "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp",
+    "license": "MIT License (Yoshifumi Kawai and contributors)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Yoshifumi%20Kawai%20and%20contributors."
+  },
+  {
+    "name": "Microsoft Bcl AsyncInterfaces Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft CodeAnalysis FlowAnalysis Utilities Package",
+    "version": "2.9.5",
+    "url": "https://github.com/dotnet/roslyn-analyzers",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "Microsoft DiaSymReader Package",
+    "version": "2.0.0",
+    "url": "https://github.com/dotnet/symreader",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft Diagnostics NETCore Client Package",
+    "version": "0.2.510501",
+    "url": "https://github.com/dotnet/diagnostics",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft Extensions DependencyInjection Abstractions Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft Extensions DependencyInjection Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft Extensions DependencyModel Package",
+    "version": "3.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (.NET Foundation and Contributors)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=.NET%20Foundation%20and%20Contributors"
+  },
+  {
+    "name": "Microsoft Extensions FileProviders Abstractions Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft Extensions FileSystemGlobbing Package",
+    "version": "6.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft Extensions Logging Abstractions Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft Extensions Logging Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft Extensions Options Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft Extensions Primitives Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft IO Redist Package",
+    "version": "6.0.1",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft IdentityModel Abstractions Package",
+    "version": "6.35.0",
+    "url": "https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft IdentityModel JsonWebTokens Package",
+    "version": "6.35.0",
+    "url": "https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft IdentityModel Logging Package",
+    "version": "6.35.0",
+    "url": "https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft IdentityModel Tokens Package",
+    "version": "6.35.0",
+    "url": "https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft NET StringTools Package",
+    "version": "17.6.3",
+    "url": "http://go.microsoft.com/fwlink/?LinkId=624683",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft Owin FileSystems Package",
+    "version": "4.2.2",
+    "url": "https://github.com/aspnet/AspNetKatana",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "Microsoft Owin Host HttpListener Package",
+    "version": "4.2.2",
+    "url": "https://github.com/aspnet/AspNetKatana",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "Microsoft Owin Hosting Package",
+    "version": "4.2.2",
+    "url": "https://github.com/aspnet/AspNetKatana",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "Microsoft Owin Package",
+    "version": "4.2.2",
+    "url": "https://github.com/aspnet/AspNetKatana",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "Microsoft Owin StaticFiles Package",
+    "version": "4.2.2",
+    "url": "https://github.com/aspnet/AspNetKatana",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "Microsoft VisualStudio SolutionPersistence Package",
+    "version": "1.0.52",
+    "url": "https://github.com/microsoft/vs-solutionpersistence",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft VisualStudio Threading Package",
+    "version": "17.13.2",
+    "url": "https://github.com/Microsoft/vs-threading",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft VisualStudio Validation Package",
+    "version": "17.8.8",
+    "url": "https://github.com/Microsoft/vs-validation",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft Xml Document Transformation",
+    "version": "3.2.0",
+    "url": "https://github.com/dotnet/xdt",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft.IO.RecyclableMemoryStream",
+    "version": "2.3.2",
+    "url": "https://github.com/Microsoft/Microsoft.IO.RecyclableMemoryStream",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft.TestPlatform.TranslationLayer",
+    "version": "16.0.0.20191015",
+    "url": "https://github.com/microsoft/vstest/",
+    "license": "Microsoft Software License Terms (Microsoft .NET Library)",
+    "licenseUrl": "https://dotnet.microsoft.com/en-us/dotnet_library_license.htm"
+  },
+  {
+    "name": "Microsoft.Win32.Registry",
+    "version": "5.0.0",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Microsoft.Win32.SystemEvents",
+    "version": "4.7.0",
+    "url": "https://github.com/dotnet/corefx",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Mono.Cecil",
+    "version": "0.11.5",
+    "url": "http://github.com/jbevain/cecil/",
+    "license": "MIT License (2008 - 2015 Jb Evain; 2008 - 2011 Novell, Inc)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2008%20-%202015%20Jb%20Evain&copyright=2008%20-%202011%20Novell%2C%20Inc."
+  },
+  {
+    "name": "Mono.Debugger.Libs",
+    "version": "1.0.0",
+    "url": "https://github.com/mono/debugger-libs",
+    "license": "MIT License (2001-2011 Novell Inc., 2011-2015 Xamarin Inc)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2001-2011%20Novell%20Inc.%2C%202011-2015%20Xamarin%20Inc."
+  },
+  {
+    "name": "NVelocity Package",
+    "version": "1.0.3",
+    "url": "",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "Nerdbank Streams Package",
+    "version": "2.11.74",
+    "url": "https://github.com/AArnott/Nerdbank.Streams",
+    "license": "MIT License (Andrew Arnott)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Andrew%20Arnott."
+  },
+  {
+    "name": "OWIN",
+    "version": "1.0",
+    "url": "https://github.com/owin-contrib/owin-hosting/",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "SQLitePCLRaw.core",
+    "version": "1.1.2",
+    "url": "https://github.com/ericsink/SQLitePCL.raw",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "Sprache.JetBrains",
+    "version": "2.3.1",
+    "url": "https://github.com/sprache/Sprache",
+    "license": "MIT License (Sprache Contributors 2017)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Sprache%20Contributors%202017"
+  },
+  {
+    "name": "StreamJsonRpc Package",
+    "version": "2.19.27",
+    "url": "https://github.com/Microsoft/vs-streamjsonrpc",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "Stubs for Microsoft.WindowsDesktop.App",
+    "version": "0.0.18",
+    "url": "http://www.jetbrains.com/",
+    "license": "MIT License (JetBrains s.r.o)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=JetBrains%20s.r.o."
+  },
+  {
+    "name": "System Buffers Package",
+    "version": "4.6.0",
+    "url": "https://github.com/dotnet/maintenance-packages",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System CodeDom Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Collections Immutable Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Composition AttributedModel Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Composition Convention Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Composition Hosting Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Composition Runtime Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Composition TypedParts Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Configuration ConfigurationManager Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Diagnostics DiagnosticSource Package",
+    "version": "8.0.1",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Diagnostics EventLog Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Drawing Common Package",
+    "version": "8.0.0",
+    "url": "https://github.com/dotnet/winforms",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Formats Asn1 Package",
+    "version": "9.0.10",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System IO Packaging Package",
+    "version": "8.0.1",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System IO Pipelines Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Memory Package",
+    "version": "4.6.0",
+    "url": "https://github.com/dotnet/maintenance-packages",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Numerics Vectors Package",
+    "version": "4.6.0",
+    "url": "https://github.com/dotnet/maintenance-packages",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Reactive Package",
+    "version": "6.0.0",
+    "url": "https://github.com/dotnet/reactive",
+    "license": "MIT License (.NET Foundation and Contributors)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=.NET%20Foundation%20and%20Contributors."
+  },
+  {
+    "name": "System Reflection Metadata Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Runtime CompilerServices Unsafe Package",
+    "version": "6.1.0",
+    "url": "https://github.com/dotnet/maintenance-packages",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Security AccessControl Package",
+    "version": "6.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Security Cryptography Pkcs Package",
+    "version": "8.0.1",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Security Cryptography ProtectedData Package",
+    "version": "9.0.6",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Security Permissions Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Text Encoding CodePages Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Text Encodings Web Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Text Json Package",
+    "version": "8.0.5",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Threading Channels Package",
+    "version": "8.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System Threading Tasks Dataflow Package",
+    "version": "6.0.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System.ComponentModel.Annotations",
+    "version": "4.5.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System.IO.FileSystem.AccessControl",
+    "version": "5.0.0",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System.IO.FileSystem.Primitives",
+    "version": "4.3.0",
+    "url": "https://dot.net/",
+    "license": "Microsoft Software License Terms (Microsoft .NET Library)",
+    "licenseUrl": "https://dotnet.microsoft.com/en-us/dotnet_library_license.htm"
+  },
+  {
+    "name": "System.Reflection.TypeExtensions",
+    "version": "4.7.0",
+    "url": "https://github.com/dotnet/corefx",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System.Runtime",
+    "version": "4.3.1",
+    "url": "https://dot.net/",
+    "license": "Microsoft Software License Terms (Microsoft .NET Library)",
+    "licenseUrl": "https://dotnet.microsoft.com/en-us/dotnet_library_license.htm"
+  },
+  {
+    "name": "System.Runtime.InteropServices.RuntimeInformation",
+    "version": "4.3.0",
+    "url": "https://dot.net/",
+    "license": "Microsoft Software License Terms (Microsoft .NET Library)",
+    "licenseUrl": "https://dotnet.microsoft.com/en-us/dotnet_library_license.htm"
+  },
+  {
+    "name": "System.Security.Principal.Windows",
+    "version": "5.0.0",
+    "url": "https://github.com/dotnet/runtime",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System.ServiceProcess.ServiceController",
+    "version": "4.7.0",
+    "url": "https://github.com/dotnet/corefx",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System.Threading.Tasks.Extensions",
+    "version": "4.5.4",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "System.ValueTuple",
+    "version": "4.5.0",
+    "url": "https://dot.net/",
+    "license": "MIT License (Microsoft Corporation)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=Microsoft%20Corporation."
+  },
+  {
+    "name": "TeamCity Service Messages read/write access",
+    "version": "3.0.20210120.1",
+    "url": "https://github.com/JetBrains/TeamCity.ServiceMessages",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "Vestris Resource Lib",
+    "version": "1.4.20210120.2",
+    "url": "https://github.com/dblock/resourcelib",
+    "license": "MIT License (2008-2016 Daniel Doubrovkine, Vestris Inc)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2008-2016%20Daniel%20Doubrovkine%2C%20Vestris%20Inc."
+  },
+  {
+    "name": "WiX: Windows Installer XML Toolset",
+    "version": "3.11.0",
+    "url": "http://wixtoolset.org/",
+    "license": "Microsoft Reciprocal License",
+    "licenseUrl": "https://spdx.org/licenses/MS-RL.html"
+  },
+  {
+    "name": "YamlDotNet Signed Package",
+    "version": "5.2.1",
+    "url": "https://github.com/aaubry/YamlDotNet/wiki",
+    "license": "MIT License (2008, 2009, 2010, 2011, 2012, 2013, 2014 Antoine Aubry and contributors)",
+    "licenseUrl": "https://resources.jetbrains.com/licenses/MIT.html?copyright=2008%2C%202009%2C%202010%2C%202011%2C%202012%2C%202013%2C%202014%20Antoine%20Aubry%20and%20contributors"
+  },
+  {
+    "name": "adm-zip",
+    "version": "0.5.16",
+    "url": "https://www.npmjs.com/package/adm-zip",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "agent-base",
+    "version": "7.1.4",
+    "url": "https://www.npmjs.com/package/agent-base",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "ansi-regex",
+    "version": "5.0.1",
+    "url": "https://www.npmjs.com/package/ansi-regex",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "ansi-regex",
+    "version": "6.2.2",
+    "url": "https://www.npmjs.com/package/ansi-regex",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "ansi-styles",
+    "version": "4.3.0",
+    "url": "https://www.npmjs.com/package/ansi-styles",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "ansi-styles",
+    "version": "6.2.3",
+    "url": "https://www.npmjs.com/package/ansi-styles",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "archiver",
+    "version": "4.0.2",
+    "url": "https://www.npmjs.com/package/archiver",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "archiver-utils",
+    "version": "2.1.0",
+    "url": "https://www.npmjs.com/package/archiver-utils",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "async",
+    "version": "3.2.6",
+    "url": "https://www.npmjs.com/package/async",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "available-typed-arrays",
+    "version": "1.0.7",
+    "url": "https://www.npmjs.com/package/available-typed-arrays",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "b4a",
+    "version": "1.7.3",
+    "url": "https://www.npmjs.com/package/b4a",
+    "license": "Apache-2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "balanced-match",
+    "version": "1.0.2",
+    "url": "https://www.npmjs.com/package/balanced-match",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "bare-events",
+    "version": "2.8.2",
+    "url": "https://www.npmjs.com/package/bare-events",
+    "license": "Apache-2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "base64-js",
+    "version": "1.5.1",
+    "url": "https://www.npmjs.com/package/base64-js",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "bl",
+    "version": "1.2.3",
+    "url": "https://www.npmjs.com/package/bl",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "bl",
+    "version": "4.1.0",
+    "url": "https://www.npmjs.com/package/bl",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "bluebird",
+    "version": "3.7.2",
+    "url": "https://www.npmjs.com/package/bluebird",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "brace-expansion",
+    "version": "1.1.11",
+    "url": "https://www.npmjs.com/package/brace-expansion",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "brace-expansion",
+    "version": "2.0.1",
+    "url": "https://www.npmjs.com/package/brace-expansion",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "brace-expansion",
+    "version": "2.0.2",
+    "url": "https://www.npmjs.com/package/brace-expansion",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "buffer",
+    "version": "5.7.1",
+    "url": "https://www.npmjs.com/package/buffer",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "buffer-alloc",
+    "version": "1.2.0",
+    "url": "https://www.npmjs.com/package/buffer-alloc",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "buffer-alloc-unsafe",
+    "version": "1.1.0",
+    "url": "https://www.npmjs.com/package/buffer-alloc-unsafe",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "buffer-crc32",
+    "version": "0.2.13",
+    "url": "https://www.npmjs.com/package/buffer-crc32",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "buffer-fill",
+    "version": "1.0.0",
+    "url": "https://www.npmjs.com/package/buffer-fill",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "call-bind",
+    "version": "1.0.8",
+    "url": "https://www.npmjs.com/package/call-bind",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "call-bind-apply-helpers",
+    "version": "1.0.2",
+    "url": "https://www.npmjs.com/package/call-bind-apply-helpers",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "call-bound",
+    "version": "1.0.4",
+    "url": "https://www.npmjs.com/package/call-bound",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "chownr",
+    "version": "1.1.4",
+    "url": "https://www.npmjs.com/package/chownr",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "classnames",
+    "version": "2.5.1",
+    "url": "https://www.npmjs.com/package/classnames",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "color",
+    "version": "3.2.1",
+    "url": "https://www.npmjs.com/package/color",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "color",
+    "version": "5.0.2",
+    "url": "https://www.npmjs.com/package/color",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "color-convert",
+    "version": "1.9.3",
+    "url": "https://www.npmjs.com/package/color-convert",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "color-convert",
+    "version": "2.0.1",
+    "url": "https://www.npmjs.com/package/color-convert",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "color-convert",
+    "version": "3.1.2",
+    "url": "https://www.npmjs.com/package/color-convert",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "color-name",
+    "version": "1.1.3",
+    "url": "https://www.npmjs.com/package/color-name",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "color-name",
+    "version": "1.1.4",
+    "url": "https://www.npmjs.com/package/color-name",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "color-name",
+    "version": "2.0.2",
+    "url": "https://www.npmjs.com/package/color-name",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "color-string",
+    "version": "1.9.1",
+    "url": "https://www.npmjs.com/package/color-string",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "color-string",
+    "version": "2.1.2",
+    "url": "https://www.npmjs.com/package/color-string",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "colorspace",
+    "version": "1.1.4",
+    "url": "https://www.npmjs.com/package/colorspace",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "compress-commons",
+    "version": "3.0.0",
+    "url": "https://www.npmjs.com/package/compress-commons",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "concat-map",
+    "version": "0.0.1",
+    "url": "https://www.npmjs.com/package/concat-map",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "cookie",
+    "version": "1.1.1",
+    "url": "https://www.npmjs.com/package/cookie",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "core-util-is",
+    "version": "1.0.3",
+    "url": "https://www.npmjs.com/package/core-util-is",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "crc",
+    "version": "3.8.0",
+    "url": "https://www.npmjs.com/package/crc",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "crc32-stream",
+    "version": "3.0.1",
+    "url": "https://www.npmjs.com/package/crc32-stream",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "cross-spawn",
+    "version": "7.0.6",
+    "url": "https://www.npmjs.com/package/cross-spawn",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "csstype",
+    "version": "3.1.3",
+    "url": "https://www.npmjs.com/package/csstype",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "data-uri-to-buffer",
+    "version": "4.0.1",
+    "url": "https://www.npmjs.com/package/data-uri-to-buffer",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "debug",
+    "version": "4.4.3",
+    "url": "https://www.npmjs.com/package/debug",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "define-data-property",
+    "version": "1.1.4",
+    "url": "https://www.npmjs.com/package/define-data-property",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "dunder-proto",
+    "version": "1.0.1",
+    "url": "https://www.npmjs.com/package/dunder-proto",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "duplexer2",
+    "version": "0.1.4",
+    "url": "https://www.npmjs.com/package/duplexer2",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "eastasianwidth",
+    "version": "0.2.0",
+    "url": "https://www.npmjs.com/package/eastasianwidth",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "emoji-regex",
+    "version": "8.0.0",
+    "url": "https://www.npmjs.com/package/emoji-regex",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "emoji-regex",
+    "version": "9.2.2",
+    "url": "https://www.npmjs.com/package/emoji-regex",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "enabled",
+    "version": "2.0.0",
+    "url": "https://www.npmjs.com/package/enabled",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "end-of-stream",
+    "version": "1.4.4",
+    "url": "https://www.npmjs.com/package/end-of-stream",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "end-of-stream",
+    "version": "1.4.5",
+    "url": "https://www.npmjs.com/package/end-of-stream",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "es-define-property",
+    "version": "1.0.1",
+    "url": "https://www.npmjs.com/package/es-define-property",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "es-errors",
+    "version": "1.3.0",
+    "url": "https://www.npmjs.com/package/es-errors",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "es-object-atoms",
+    "version": "1.1.1",
+    "url": "https://www.npmjs.com/package/es-object-atoms",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "events-universal",
+    "version": "1.0.1",
+    "url": "https://www.npmjs.com/package/events-universal",
+    "license": "Apache-2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "fast-fifo",
+    "version": "1.3.2",
+    "url": "https://www.npmjs.com/package/fast-fifo",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "fecha",
+    "version": "4.2.3",
+    "url": "https://www.npmjs.com/package/fecha",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "fetch-blob",
+    "version": "3.2.0",
+    "url": "https://www.npmjs.com/package/fetch-blob",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "fn.name",
+    "version": "1.1.0",
+    "url": "https://www.npmjs.com/package/fn.name",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "for-each",
+    "version": "0.3.5",
+    "url": "https://www.npmjs.com/package/for-each",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "foreground-child",
+    "version": "3.3.1",
+    "url": "https://www.npmjs.com/package/foreground-child",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "formdata-polyfill",
+    "version": "4.0.10",
+    "url": "https://www.npmjs.com/package/formdata-polyfill",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "fs-constants",
+    "version": "1.0.0",
+    "url": "https://www.npmjs.com/package/fs-constants",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "fs-extra",
+    "version": "11.3.2",
+    "url": "https://www.npmjs.com/package/fs-extra",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "fs.realpath",
+    "version": "1.0.0",
+    "url": "https://www.npmjs.com/package/fs.realpath",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "function-bind",
+    "version": "1.1.2",
+    "url": "https://www.npmjs.com/package/function-bind",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "get-intrinsic",
+    "version": "1.3.0",
+    "url": "https://www.npmjs.com/package/get-intrinsic",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "get-port",
+    "version": "7.1.0",
+    "url": "https://www.npmjs.com/package/get-port",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "get-proto",
+    "version": "1.0.1",
+    "url": "https://www.npmjs.com/package/get-proto",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "glob",
+    "version": "11.0.3",
+    "url": "https://www.npmjs.com/package/glob",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "glob",
+    "version": "7.2.3",
+    "url": "https://www.npmjs.com/package/glob",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "gopd",
+    "version": "1.2.0",
+    "url": "https://www.npmjs.com/package/gopd",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "graceful-fs",
+    "version": "4.2.11",
+    "url": "https://www.npmjs.com/package/graceful-fs",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "has-property-descriptors",
+    "version": "1.0.2",
+    "url": "https://www.npmjs.com/package/has-property-descriptors",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "has-symbols",
+    "version": "1.1.0",
+    "url": "https://www.npmjs.com/package/has-symbols",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "has-tostringtag",
+    "version": "1.0.2",
+    "url": "https://www.npmjs.com/package/has-tostringtag",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "hasown",
+    "version": "2.0.2",
+    "url": "https://www.npmjs.com/package/hasown",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "http-proxy-agent",
+    "version": "7.0.2",
+    "url": "https://www.npmjs.com/package/http-proxy-agent",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "https-proxy-agent",
+    "version": "7.0.6",
+    "url": "https://www.npmjs.com/package/https-proxy-agent",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "ieee754",
+    "version": "1.2.1",
+    "url": "https://www.npmjs.com/package/ieee754",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "immediate",
+    "version": "3.0.6",
+    "url": "https://www.npmjs.com/package/immediate",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "inflight",
+    "version": "1.0.6",
+    "url": "https://www.npmjs.com/package/inflight",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "inherits",
+    "version": "2.0.4",
+    "url": "https://www.npmjs.com/package/inherits",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "inversify",
+    "version": "6.2.2",
+    "url": "https://www.npmjs.com/package/inversify",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "is-arrayish",
+    "version": "0.3.2",
+    "url": "https://www.npmjs.com/package/is-arrayish",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "is-callable",
+    "version": "1.2.7",
+    "url": "https://www.npmjs.com/package/is-callable",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "is-fullwidth-code-point",
+    "version": "3.0.0",
+    "url": "https://www.npmjs.com/package/is-fullwidth-code-point",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "is-stream",
+    "version": "2.0.1",
+    "url": "https://www.npmjs.com/package/is-stream",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "is-typed-array",
+    "version": "1.1.15",
+    "url": "https://www.npmjs.com/package/is-typed-array",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "isarray",
+    "version": "1.0.0",
+    "url": "https://www.npmjs.com/package/isarray",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "isarray",
+    "version": "2.0.5",
+    "url": "https://www.npmjs.com/package/isarray",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "isexe",
+    "version": "2.0.0",
+    "url": "https://www.npmjs.com/package/isexe",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "jackspeak",
+    "version": "4.1.1",
+    "url": "https://www.npmjs.com/package/jackspeak",
+    "license": "BlueOak-1.0.0",
+    "licenseUrl": "https://spdx.org/licenses/BlueOak-1.0.0.html"
+  },
+  {
+    "name": "js-tokens",
+    "version": "4.0.0",
+    "url": "https://www.npmjs.com/package/js-tokens",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "jsonc-parser",
+    "version": "3.3.1",
+    "url": "https://www.npmjs.com/package/jsonc-parser",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "jsonfile",
+    "version": "6.1.0",
+    "url": "https://www.npmjs.com/package/jsonfile",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "jszip",
+    "version": "3.10.1",
+    "url": "https://www.npmjs.com/package/jszip",
+    "license": "(MIT OR GPL-3.0-or-later)",
+    "licenseUrl": "https://licenses.nuget.org/(MIT%20OR%20GPL-3.0-or-later)"
+  },
+  {
+    "name": "kuler",
+    "version": "2.0.0",
+    "url": "https://www.npmjs.com/package/kuler",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "lazystream",
+    "version": "1.0.1",
+    "url": "https://www.npmjs.com/package/lazystream",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "lie",
+    "version": "3.3.0",
+    "url": "https://www.npmjs.com/package/lie",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "lit",
+    "version": "3.2.1",
+    "url": "https://www.npmjs.com/package/lit",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "lit",
+    "version": "3.3.1",
+    "url": "https://www.npmjs.com/package/lit",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "lit-element",
+    "version": "4.1.1",
+    "url": "https://www.npmjs.com/package/lit-element",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "lit-element",
+    "version": "4.2.1",
+    "url": "https://www.npmjs.com/package/lit-element",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "lit-html",
+    "version": "3.2.1",
+    "url": "https://www.npmjs.com/package/lit-html",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "lit-html",
+    "version": "3.3.1",
+    "url": "https://www.npmjs.com/package/lit-html",
+    "license": "BSD-3-Clause",
+    "licenseUrl": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
+  {
+    "name": "lodash.defaults",
+    "version": "4.2.0",
+    "url": "https://www.npmjs.com/package/lodash.defaults",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "lodash.difference",
+    "version": "4.5.0",
+    "url": "https://www.npmjs.com/package/lodash.difference",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "lodash.flatten",
+    "version": "4.4.0",
+    "url": "https://www.npmjs.com/package/lodash.flatten",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "lodash.isplainobject",
+    "version": "4.0.6",
+    "url": "https://www.npmjs.com/package/lodash.isplainobject",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "lodash.union",
+    "version": "4.6.0",
+    "url": "https://www.npmjs.com/package/lodash.union",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "logform",
+    "version": "2.7.0",
+    "url": "https://www.npmjs.com/package/logform",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "loose-envify",
+    "version": "1.4.0",
+    "url": "https://www.npmjs.com/package/loose-envify",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "lru-cache",
+    "version": "11.2.2",
+    "url": "https://www.npmjs.com/package/lru-cache",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "math-intrinsics",
+    "version": "1.1.0",
+    "url": "https://www.npmjs.com/package/math-intrinsics",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "minimatch",
+    "version": "10.0.3",
+    "url": "https://www.npmjs.com/package/minimatch",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "minimatch",
+    "version": "3.1.2",
+    "url": "https://www.npmjs.com/package/minimatch",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "minimatch",
+    "version": "5.1.6",
+    "url": "https://www.npmjs.com/package/minimatch",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "minimist",
+    "version": "1.2.8",
+    "url": "https://www.npmjs.com/package/minimist",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "minipass",
+    "version": "7.1.2",
+    "url": "https://www.npmjs.com/package/minipass",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "mkdirp",
+    "version": "0.5.6",
+    "url": "https://www.npmjs.com/package/mkdirp",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "ms",
+    "version": "2.1.3",
+    "url": "https://www.npmjs.com/package/ms",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "node-domexception",
+    "version": "1.0.0",
+    "url": "https://www.npmjs.com/package/node-domexception",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "node-fetch",
+    "version": "3.3.2",
+    "url": "https://www.npmjs.com/package/node-fetch",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "node-int64",
+    "version": "0.4.0",
+    "url": "https://www.npmjs.com/package/node-int64",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "normalize-path",
+    "version": "3.0.0",
+    "url": "https://www.npmjs.com/package/normalize-path",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "once",
+    "version": "1.4.0",
+    "url": "https://www.npmjs.com/package/once",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "one-time",
+    "version": "1.0.0",
+    "url": "https://www.npmjs.com/package/one-time",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "package-json-from-dist",
+    "version": "1.0.1",
+    "url": "https://www.npmjs.com/package/package-json-from-dist",
+    "license": "BlueOak-1.0.0",
+    "licenseUrl": "https://spdx.org/licenses/BlueOak-1.0.0.html"
+  },
+  {
+    "name": "pako",
+    "version": "1.0.11",
+    "url": "https://www.npmjs.com/package/pako",
+    "license": "(MIT AND Zlib)",
+    "licenseUrl": "https://licenses.nuget.org/(MIT%20AND%20Zlib)"
+  },
+  {
+    "name": "path-is-absolute",
+    "version": "1.0.1",
+    "url": "https://www.npmjs.com/package/path-is-absolute",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "path-key",
+    "version": "3.1.1",
+    "url": "https://www.npmjs.com/package/path-key",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "path-scurry",
+    "version": "2.0.0",
+    "url": "https://www.npmjs.com/package/path-scurry",
+    "license": "BlueOak-1.0.0",
+    "licenseUrl": "https://spdx.org/licenses/BlueOak-1.0.0.html"
+  },
+  {
+    "name": "possible-typed-array-names",
+    "version": "1.1.0",
+    "url": "https://www.npmjs.com/package/possible-typed-array-names",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "process",
+    "version": "0.11.10",
+    "url": "https://www.npmjs.com/package/process",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "process-nextick-args",
+    "version": "2.0.1",
+    "url": "https://www.npmjs.com/package/process-nextick-args",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "pump",
+    "version": "1.0.3",
+    "url": "https://www.npmjs.com/package/pump",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "react",
+    "version": "18.3.1",
+    "url": "https://www.npmjs.com/package/react",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "react-dom",
+    "version": "18.3.1",
+    "url": "https://www.npmjs.com/package/react-dom",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "react-router",
+    "version": "7.10.1",
+    "url": "https://www.npmjs.com/package/react-router",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "readable-stream",
+    "version": "2.3.8",
+    "url": "https://www.npmjs.com/package/readable-stream",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "readable-stream",
+    "version": "3.6.2",
+    "url": "https://www.npmjs.com/package/readable-stream",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "reflect-metadata",
+    "version": "0.2.2",
+    "url": "https://www.npmjs.com/package/reflect-metadata",
+    "license": "Apache-2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "rxjs",
+    "version": "7.8.2",
+    "url": "https://www.npmjs.com/package/rxjs",
+    "license": "Apache-2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "safe-buffer",
+    "version": "5.1.2",
+    "url": "https://www.npmjs.com/package/safe-buffer",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "safe-buffer",
+    "version": "5.2.1",
+    "url": "https://www.npmjs.com/package/safe-buffer",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "safe-stable-stringify",
+    "version": "2.5.0",
+    "url": "https://www.npmjs.com/package/safe-stable-stringify",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "scheduler",
+    "version": "0.23.2",
+    "url": "https://www.npmjs.com/package/scheduler",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "semver",
+    "version": "7.7.2",
+    "url": "https://www.npmjs.com/package/semver",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "set-cookie-parser",
+    "version": "2.7.2",
+    "url": "https://www.npmjs.com/package/set-cookie-parser",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "set-function-length",
+    "version": "1.2.2",
+    "url": "https://www.npmjs.com/package/set-function-length",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "setimmediate",
+    "version": "1.0.5",
+    "url": "https://www.npmjs.com/package/setimmediate",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "shebang-command",
+    "version": "2.0.0",
+    "url": "https://www.npmjs.com/package/shebang-command",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "shebang-regex",
+    "version": "3.0.0",
+    "url": "https://www.npmjs.com/package/shebang-regex",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "signal-exit",
+    "version": "4.1.0",
+    "url": "https://www.npmjs.com/package/signal-exit",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "simple-swizzle",
+    "version": "0.2.2",
+    "url": "https://www.npmjs.com/package/simple-swizzle",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "stack-trace",
+    "version": "0.0.10",
+    "url": "https://www.npmjs.com/package/stack-trace",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "streamx",
+    "version": "2.23.0",
+    "url": "https://www.npmjs.com/package/streamx",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "string-width",
+    "version": "4.2.3",
+    "url": "https://www.npmjs.com/package/string-width",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "string-width",
+    "version": "5.1.2",
+    "url": "https://www.npmjs.com/package/string-width",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "string_decoder",
+    "version": "1.1.1",
+    "url": "https://www.npmjs.com/package/string_decoder",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "string_decoder",
+    "version": "1.3.0",
+    "url": "https://www.npmjs.com/package/string_decoder",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "strip-ansi",
+    "version": "6.0.1",
+    "url": "https://www.npmjs.com/package/strip-ansi",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "strip-ansi",
+    "version": "7.1.2",
+    "url": "https://www.npmjs.com/package/strip-ansi",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "tar-fs",
+    "version": "1.16.6",
+    "url": "https://www.npmjs.com/package/tar-fs",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "tar-stream",
+    "version": "1.6.2",
+    "url": "https://www.npmjs.com/package/tar-stream",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "tar-stream",
+    "version": "2.2.0",
+    "url": "https://www.npmjs.com/package/tar-stream",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "tar-stream",
+    "version": "3.1.7",
+    "url": "https://www.npmjs.com/package/tar-stream",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "targz",
+    "version": "1.0.1",
+    "url": "https://www.npmjs.com/package/targz",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "text-decoder",
+    "version": "1.2.3",
+    "url": "https://www.npmjs.com/package/text-decoder",
+    "license": "Apache-2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "text-hex",
+    "version": "1.0.0",
+    "url": "https://www.npmjs.com/package/text-hex",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "to-buffer",
+    "version": "1.2.2",
+    "url": "https://www.npmjs.com/package/to-buffer",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "triple-beam",
+    "version": "1.4.1",
+    "url": "https://www.npmjs.com/package/triple-beam",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "tslib",
+    "version": "2.8.1",
+    "url": "https://www.npmjs.com/package/tslib",
+    "license": "0BSD",
+    "licenseUrl": "https://spdx.org/licenses/0BSD.html"
+  },
+  {
+    "name": "typed-array-buffer",
+    "version": "1.0.3",
+    "url": "https://www.npmjs.com/package/typed-array-buffer",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "universalify",
+    "version": "2.0.1",
+    "url": "https://www.npmjs.com/package/universalify",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "unzipper",
+    "version": "0.12.3",
+    "url": "https://www.npmjs.com/package/unzipper",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "util-deprecate",
+    "version": "1.0.2",
+    "url": "https://www.npmjs.com/package/util-deprecate",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "vscode-csharp",
+    "version": "2.84.19",
+    "url": "https://github.com/dotnet/vscode-csharp/",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "vscode-jsonrpc",
+    "version": "8.2.0",
+    "url": "https://www.npmjs.com/package/vscode-jsonrpc",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "vscode-languageclient",
+    "version": "9.0.1",
+    "url": "https://www.npmjs.com/package/vscode-languageclient",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "vscode-languageserver-protocol",
+    "version": "3.17.5",
+    "url": "https://www.npmjs.com/package/vscode-languageserver-protocol",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "vscode-languageserver-types",
+    "version": "3.17.5",
+    "url": "https://www.npmjs.com/package/vscode-languageserver-types",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "web-streams-polyfill",
+    "version": "3.3.3",
+    "url": "https://www.npmjs.com/package/web-streams-polyfill",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "which",
+    "version": "2.0.2",
+    "url": "https://www.npmjs.com/package/which",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "which-typed-array",
+    "version": "1.1.19",
+    "url": "https://www.npmjs.com/package/which-typed-array",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "winston",
+    "version": "3.17.0",
+    "url": "https://www.npmjs.com/package/winston",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "winston",
+    "version": "3.18.3",
+    "url": "https://www.npmjs.com/package/winston",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "winston-transport",
+    "version": "4.9.0",
+    "url": "https://www.npmjs.com/package/winston-transport",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "wrap-ansi",
+    "version": "7.0.0",
+    "url": "https://www.npmjs.com/package/wrap-ansi",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "wrap-ansi",
+    "version": "8.1.0",
+    "url": "https://www.npmjs.com/package/wrap-ansi",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "wrappy",
+    "version": "1.0.2",
+    "url": "https://www.npmjs.com/package/wrappy",
+    "license": "ISC",
+    "licenseUrl": "https://spdx.org/licenses/ISC.html"
+  },
+  {
+    "name": "xUnit.net",
+    "version": "1.9.2",
+    "url": "https://github.com/xunit/xunit",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "xUnit.net [Abstractions]",
+    "version": "2.0.3",
+    "url": "https://github.com/xunit/xunit",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "xUnit.net [Runner Utility]",
+    "version": "2.4.1",
+    "url": "https://github.com/xunit/xunit",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "xtend",
+    "version": "4.0.2",
+    "url": "https://www.npmjs.com/package/xtend",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "zip-stream",
+    "version": "3.0.1",
+    "url": "https://www.npmjs.com/package/zip-stream",
+    "license": "MIT",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  }
+]

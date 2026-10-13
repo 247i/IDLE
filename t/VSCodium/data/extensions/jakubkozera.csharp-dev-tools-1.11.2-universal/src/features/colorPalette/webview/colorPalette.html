@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Palette Generator</title>
+    <link rel="stylesheet" href="colorPalette.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="tool-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <path d="M12 2C8.5 2 5.5 5 5.5 8.5V21h13V8.5C18.5 5 15.5 2 12 2z"/>
+                            <path d="M16 4.5c1.104 0 2 .896 2 2s-.896 2-2 2s-2-.896-2-2s.896-2 2-2"/>
+                            <path d="M8 4.5c1.104 0 2 .896 2 2s-.896 2-2 2s-2-.896-2-2s.896-2 2-2"/>
+                            <path d="M12 4.5c1.104 0 2 .896 2 2s-.896 2-2 2s-2-.896-2-2s.896-2 2-2"/>
+                        </g>
+                    </svg>
+                </div>
+                <h1>Color Palette Generator</h1>
+            </div>
+            <button id="clearBtn" class="clear-btn" title="Clear all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"></path>
+                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                </svg>
+                Clear
+            </button>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="control-group">
+                <label for="baseColorPicker">Base Color:</label>
+                <div class="color-input-group">
+                    <input type="color" id="baseColorPicker" value="#0f85fa">
+                    <input type="text" id="baseColorText" value="#0f85fa" placeholder="Enter color...">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label for="colorSteps">Color Steps: <span id="stepsValue">12</span></label>
+                <input type="range" id="colorSteps" min="3" max="20" value="12" class="slider">
+            </div>
+        </div>
+
+        <!-- Palette Display -->
+        <div class="palettes">
+            <div id="paletteSection" class="palette-section">
+                <!-- Palettes will be dynamically generated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="colorPalette.js"></script>
+</body>
+</html>

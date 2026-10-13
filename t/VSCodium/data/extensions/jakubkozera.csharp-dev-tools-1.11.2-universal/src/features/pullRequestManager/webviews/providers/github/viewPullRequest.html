@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pull Request - GitHub</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src {{cspSource}} 'unsafe-inline' https://unpkg.com; script-src {{cspSource}} 'unsafe-inline' https://unpkg.com; worker-src {{cspSource}} blob: https://unpkg.com; font-src {{cspSource}} https://unpkg.com; connect-src https://unpkg.com; img-src {{cspSource}} data: https:;">
+    
+    <!-- Base styles -->
+    <link rel="stylesheet" href="{{baseStylesPath}}">
+    <!-- GitHub-specific styles -->
+    <link rel="stylesheet" href="{{githubStylesPath}}">
+    
+    <!-- Monaco Editor -->
+    <script src="https://unpkg.com/monaco-editor@0.45.0/min/vs/loader.js"></script>
+</head>
+<body>
+    <!-- Global Overlay Spinner -->
+    <div class="overlay-spinner" id="globalOverlaySpinner">
+        <div class="overlay-spinner-content">
+            <div class="overlay-spinner-icon"></div>
+            <div class="overlay-spinner-title">Loading Pull Request</div>
+            <div class="overlay-spinner-text">Fetching GitHub pull request data...</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Pull Request Header -->
+        <div class="pr-header" id="prHeader">
+            <div class="header-left">
+                <div class="github-pr-icon">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                </div>
+                <h1 class="pr-title" id="prTitleText">Loading...</h1>
+            </div>
+            <div class="header-right" id="headerActions">
+                <button class="btn btn-secondary">
+                    <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z"/>
+                        <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z"/>
+                    </svg>
+                    Subscribe
+                </button>
+                <button class="btn btn-primary">
+                    <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+                        <path d="M1.5 8a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0zM8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0z"/>
+                    </svg>
+                    Review changes
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- PR Info Bar -->
+        <div class="pr-info github-info" id="prInfoBar">
+            <span class="status-badge github-status" id="statusBadge">Loading...</span>
+            <span class="pr-id github-pr-id" id="prIdDisplay">...</span>
+            <span class="github-merge-info" id="branchInfoDisplay">
+                <span>Loading branch information...</span>
+            </span>
+            <div class="github-checks" id="githubChecks">
+                <!-- GitHub-specific checks will be populated here -->
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="nav-tabs github-nav">
+            <div class="nav-tab active" data-tab="overview">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                </svg>
+                Conversation
+            </div>
+            <div class="nav-tab" data-tab="files" id="filesTabButton">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3z"/>
+                </svg>
+                <span class="tab-text">Files changed</span>
+                <span class="tab-badge github-badge" id="filesBadge" style="display: none;"></span>
+            </div>
+            <div class="nav-tab" data-tab="commits" id="commitsTabButton">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1h-3zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M1 5h14v7.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V5z"/>
+                </svg>
+                <span class="tab-text">Commits</span>
+                <span class="tab-badge github-badge" id="commitsBadge" style="display: none;"></span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Tab Contents -->
+            <div class="tab-contents">
+                <!-- Overview Tab -->
+                <div id="overviewTab" class="tab-content active">
+                    <div class="github-overview-layout">
+                        <div class="github-main-column">
+                            <!-- GitHub-specific overview content will be populated here -->
+                            <div class="github-description" id="githubDescription">
+                                <!-- Description will be populated -->
+                            </div>
+                            
+                            <!-- GitHub Timeline -->
+                            <div class="github-timeline" id="githubTimeline">
+                                <h3>Conversation</h3>
+                                <div class="github-timeline-items" id="githubTimelineItems">
+                                    <!-- Timeline items will be populated -->
+                                </div>
+                                
+                                <!-- Add comment section -->
+                                <div class="github-comment-form">
+                                    <div class="comment-input-wrapper">
+                                        <textarea 
+                                            id="githubCommentInput" 
+                                            class="comment-input" 
+                                            placeholder="Leave a comment..."
+                                            rows="3">
+                                        </textarea>
+                                        <div class="comment-actions">
+                                            <button id="githubCommentSubmitBtn" class="btn btn-primary" style="display: none;">
+                                                Comment
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="github-sidebar">
+                            <!-- GitHub-specific sidebar content -->
+                            <div id="githubSidebarContent">
+                                <!-- Sidebar will be populated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Files Tab -->
+                <div id="filesTab" class="tab-content">
+                    <div class="files-layout github-files">
+                        <div class="files-sidebar github-files-sidebar" id="filesSidebar">
+                            <div class="files-header">
+                                <button class="collapse-sidebar-btn" onclick="toggleFilesSidebar()">
+                                    <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                                    </svg>
+                                </button>
+                                <h4>Files changed</h4>
+                            </div>
+                            <div id="fileList" class="file-list">
+                                <div class="form-help">Loading changed files...</div>
+                            </div>
+                        </div>
+                        <div class="files-content github-diff-content">
+                            <div id="diffPreview" class="diff-preview">
+                                <div class="form-help">Select a file to view changes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Commits Tab -->
+                <div id="commitsTab" class="tab-content">
+                    <div class="commits-container github-commits">
+                        <div class="commits-header">
+                            <h3>
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1h-3zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5z"/>
+                                    <path d="M1 5h14v7.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V5z"/>
+                                </svg>
+                                Commits
+                            </h3>
+                            <div class="commits-count github-commits-count" id="commitsCount">Loading...</div>
+                        </div>
+                        <div class="commits-list github-commits-list" id="commitsList">
+                            <div class="loading">
+                                <div class="loading-content">
+                                    <div class="loading-spinner"></div>
+                                    <div class="loading-text">Loading commits...</div>
+                                    <div class="loading-subtext">Fetching GitHub commit history</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Base JavaScript -->
+    <script src="{{baseJsPath}}"></script>
+    <!-- GitHub-specific JavaScript -->
+    <script src="{{githubJsPath}}"></script>
+</body>
+</html>

@@ -1,0 +1,2220 @@
+/* NuGet Package Manager Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--vscode-font-family);
+    font-size: var(--vscode-font-size);
+    background-color: var(--vscode-editor-background);
+    color: var(--vscode-editor-foreground);
+    overflow: hidden;
+    padding: 0 !important;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.header {
+    background-color: var(--vscode-titleBar-activeBackground);
+    color: var(--vscode-titleBar-activeForeground);
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--vscode-panel-border);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+/* Hide title text on narrow viewports */
+@media (max-width: 1050px) {
+    .header h1 {
+        font-size: 0;
+    }
+    
+    .header h1 svg {
+        margin-right: 0;
+    }
+}
+
+.header-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.controls > :first-child {
+    margin-right: auto;
+}
+
+.search-container {
+    position: relative;
+    min-width: 200px;
+}
+
+/* Search input styling when positioned below tabs */
+.left-panel .search-container {
+    padding: 15px 10px;
+    border-bottom: 1px solid var(--vscode-widget-border);
+    background-color: var(--vscode-sideBar-background);
+}
+
+.left-panel .search-container .search-input {
+    width: 100%;
+    min-width: auto;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 35px 8px 12px;
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.search-input:focus {
+    outline: 1px solid var(--vscode-focusBorder);
+    border-color: var(--vscode-focusBorder);
+}
+
+.search-icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    fill: var(--vscode-descriptionForeground);
+    pointer-events: none;
+}
+
+.search-spinner {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--vscode-widget-border);
+    border-top: 2px solid var(--vscode-descriptionForeground);
+    border-radius: 50%;
+    animation: searchSpin 1s linear infinite;
+    pointer-events: none;
+    display: none;
+}
+
+@keyframes searchSpin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+}
+
+.filter-group label {
+    color: var(--vscode-input-foreground);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.filter-group select {
+    padding: 6px 8px;
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 4px;
+    font-size: 13px;
+    min-width: 120px;
+}
+
+.checkbox-label {
+    display: flex !important;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0;
+}
+
+.icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    min-width: 32px;
+    min-height: 32px;
+}
+
+.icon-btn:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.icon-btn.danger {
+    background-color: var(--vscode-errorForeground);
+    color: var(--vscode-editor-background);
+}
+
+.icon-btn.danger:hover {
+    background-color: var(--vscode-errorForeground);
+    opacity: 0.8;
+}
+
+.icon-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    stroke: currentColor;
+}
+
+/* Clean icon-only buttons with no background */
+.icon-btn-clean {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: none;
+    color: var(--vscode-foreground);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 32px;
+    min-height: 32px;
+}
+
+.icon-btn-clean:hover {
+    background-color: var(--vscode-toolbar-hoverBackground);
+    color: var(--vscode-foreground);
+}
+
+.icon-btn-clean.danger {
+    color: var(--vscode-errorForeground);
+}
+
+.icon-btn-clean.danger:hover {
+    background-color: var(--vscode-toolbar-hoverBackground);
+    color: var(--vscode-errorForeground);
+}
+
+.icon-btn-clean svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.left-panel {
+    flex: 0 0 50%;
+    min-width: 300px;
+    max-width: 80%;
+    background-color: var(--vscode-sideBar-background);
+    border-right: 1px solid var(--vscode-panel-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.resize-divider {
+    flex: 0 0 4px;
+    background-color: var(--vscode-panel-border);
+    cursor: col-resize;
+    position: relative;
+    transition: background-color 0.2s;
+}
+
+.resize-divider:hover,
+.resize-divider.resizing {
+    background-color: var(--vscode-focusBorder);
+}
+
+.resize-divider::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -2px;
+    right: -2px;
+    bottom: 0;
+}
+
+.right-panel {
+    flex: 1;
+    min-width: 300px;
+    background-color: var(--vscode-editor-background);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 20px;
+    padding-right: 0;
+}
+
+.right-panel.slide-in {
+    animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, opacity;
+}
+
+@keyframes slideInUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Reduced animation on smaller screens */
+@media (max-width: 768px) {
+    @keyframes slideInUp {
+        0% {
+            transform: translateY(15px);
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    .details-section {
+        transform: translateY(15px);
+    }
+    
+    .details-section:nth-child(n) {
+        transition-delay: 40ms;
+    }
+    
+    .details-section:nth-child(2) {
+        transition-delay: 80ms;
+    }
+    
+    .details-section:nth-child(3) {
+        transition-delay: 120ms;
+    }
+}
+
+.package-details {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 20px;
+}
+
+.package-stats {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--vscode-widget-border);
+    background-color: var(--vscode-sideBar-background);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0;
+    font-size: 13px;
+    color: var(--vscode-descriptionForeground);
+}
+
+.stat-item:last-child {
+    margin-bottom: 0;
+}
+
+.stat-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* Package filter buttons */
+.package-filters {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: none;
+    color: var(--vscode-foreground);
+    border: 1px solid var(--vscode-widget-border);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.filter-btn svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.filter-btn:hover {
+    background-color: var(--vscode-list-hoverBackground);
+    border-color: var(--vscode-focusBorder);
+}
+
+.filter-btn.active {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border-color: var(--vscode-button-background);
+}
+
+.filter-btn.active:hover {
+    background-color: var(--vscode-button-hoverBackground);
+    border-color: var(--vscode-button-hoverBackground);
+}
+
+.filter-btn .filter-count {
+    color: var(--vscode-descriptionForeground);
+    font-size: 11px;
+    margin-left: 4px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.filter-btn.active .filter-count {
+    color: var(--vscode-button-foreground);
+}
+
+.filter-btn:hover .filter-count {
+    color: var(--vscode-foreground);
+}
+
+/* Hide count when zero */
+.filter-btn .filter-count:empty::before {
+    content: "0";
+}
+
+.filter-btn[data-count="0"] .filter-count {
+    display: none;
+}
+
+/* Responsive design for filters */
+@media (max-width: 768px) {
+    .package-stats {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .package-filters {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .filter-btn {
+        flex: 1;
+        justify-content: center;
+        min-width: 0;
+    }
+    
+    .filter-btn span:not(.filter-count) {
+        display: none;
+    }
+}
+
+/* Cache indicator styling */
+.browse-count-cached {
+    color: var(--vscode-charts-blue) !important;
+    font-style: italic;
+}
+
+.package-list {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.package-item {
+    padding: 6px 8px;
+    border: 1px solid var(--vscode-widget-border);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: var(--vscode-editor-background);
+    position: relative;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.package-item:hover {
+    border-color: var(--vscode-focusBorder);
+    background-color: var(--vscode-list-hoverBackground);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.package-item.selected {
+    border-color: var(--vscode-focusBorder);
+    background-color: var(--vscode-list-activeSelectionBackground);
+    color: var(--vscode-list-activeSelectionForeground);
+}
+
+/* Fix for light theme visibility */
+body[data-vscode-theme-kind="vscode-light"] .package-item.selected {
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-editor-foreground);
+}
+
+.package-name {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: var(--vscode-editor-foreground);
+}
+
+.package-version {
+    font-size: 13px;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 2px;
+}
+
+.package-source {
+    font-size: 12px;
+    color: var(--vscode-descriptionForeground);
+    opacity: 0.8;
+}
+
+/* NuGet search results styling */
+.packages-separator {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    color: var(--vscode-descriptionForeground);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.packages-separator::before,
+.packages-separator::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--vscode-widget-border);
+}
+
+.packages-separator::before {
+    margin-right: 10px;
+}
+
+.packages-separator::after {
+    margin-left: 10px;
+}
+
+.nuget-package-item {
+    padding: 6px 8px;
+    border: 1px solid var(--vscode-widget-border);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: var(--vscode-editor-background);    position: relative;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.nuget-package-item:hover {
+    border-color: var(--vscode-focusBorder);
+    background-color: var(--vscode-list-hoverBackground);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nuget-package-item.selected {
+    border-color: var(--vscode-focusBorder);
+    background-color: var(--vscode-list-activeSelectionBackground);
+    color: var(--vscode-list-activeSelectionForeground);
+}
+
+/* Fix for light theme visibility */
+body[data-vscode-theme-kind="vscode-light"] .nuget-package-item.selected {
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-editor-foreground);
+}
+
+.package-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.package-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+    background-color: transparent;
+}
+
+.package-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.nuget-package-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.nuget-package-title {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: var(--vscode-editor-foreground);
+}
+
+.package-feed-indicator {
+    font-weight: normal;
+    font-size: 0.8rem;
+    color: var(--vscode-charts-blue);
+    margin-left: 0;
+    display: block;
+    margin-top: 2px;
+}
+
+.nuget-package-description {
+    color: var(--vscode-descriptionForeground);
+    font-size: 13px;
+    margin: 4px 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nuget-package-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--vscode-descriptionForeground);
+}
+
+.nuget-package-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Folder icon button for local packages */
+.folder-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: none;
+    color: var(--vscode-descriptionForeground);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 32px;
+    min-height: 32px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.folder-icon-btn:hover {
+    background-color: var(--vscode-toolbar-hoverBackground);
+    color: var(--vscode-foreground);
+    transform: scale(1.1);
+}
+
+.folder-icon-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Override for folder icon button to ensure it's clickable - add at end of file */
+.package-item .folder-icon-btn {
+    position: relative;
+    z-index: 20 !important;
+    pointer-events: auto !important;
+}
+
+.nuget-package-item .folder-icon-btn {
+    position: relative;
+    z-index: 20 !important;
+    pointer-events: auto !important;
+}
+
+.api-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    color: var(--vscode-descriptionForeground);
+    font-style: italic;
+}
+
+.api-loading::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--vscode-widget-border);
+    border-top: 2px solid var(--vscode-button-background);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+.api-error {
+    text-align: center;
+    padding: 20px;
+    color: var(--vscode-descriptionForeground);
+    margin: 10px 0;
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: var(--vscode-descriptionForeground);
+    text-align: center;
+}
+
+.loading .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--vscode-widget-border);
+    border-top: 3px solid var(--vscode-button-background);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.loading-content {
+    background-color: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    min-width: 250px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--vscode-widget-border);
+    border-top: 4px solid var(--vscode-button-background);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-message {
+    color: var(--vscode-editor-foreground);
+    font-size: 16px;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Package Details Styles */
+.package-header {
+    border-bottom: 1px solid var(--vscode-widget-border);
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.package-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.package-icon {
+    width: 24px;
+    height: 24px;
+    stroke: var(--vscode-symbolIcon-packageForeground, var(--vscode-editor-foreground));
+}
+
+.package-meta {
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 15px;
+}
+
+.package-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 100;
+}
+
+.version-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.version-control label {
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.version-control select {
+    padding: 6px 8px;
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 4px;
+    font-size: 13px;
+    min-width: 150px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Version loading state */
+.version-loading {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 6px 8px;
+    background-color: var(--vscode-input-background);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 4px;
+    min-width: 150px;
+    height: 30px;
+}
+
+.version-spinner {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Enhanced dropdown styling for better scrollability indication */
+.version-control select:focus {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: -1px;
+}
+
+/* Custom scrollbar styling for webkit browsers */
+.version-control select::-webkit-scrollbar {
+    width: 8px;
+}
+
+.version-control select::-webkit-scrollbar-track {
+    background: var(--vscode-scrollbarSlider-background);
+}
+
+.version-control select::-webkit-scrollbar-thumb {
+    background: var(--vscode-scrollbarSlider-hoverBackground);
+    border-radius: 4px;
+}
+
+.version-control select::-webkit-scrollbar-thumb:hover {
+    background: var(--vscode-scrollbarSlider-activeBackground);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.details-section {
+    margin-bottom: 16px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, opacity;
+}
+
+.details-section.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.package-details-header {
+    opacity: 1;
+    transform: translateY(0);
+    /* No transition - header appears instantly */
+}
+
+.package-details-header.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Staggered animation delays for multiple sections */
+.details-section:nth-child(1) {
+    transition-delay: 0ms;
+}
+
+.details-section:nth-child(2) {
+    transition-delay: 80ms;
+}
+
+.details-section:nth-child(3) {
+    transition-delay: 160ms;
+}
+
+.details-section:nth-child(4) {
+    transition-delay: 240ms;
+}
+
+.details-section:nth-child(5) {
+    transition-delay: 320ms;
+}
+
+.details-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    cursor: pointer;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--vscode-widget-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.details-section h3 .section-header {
+    display: flex;
+    align-items: center;
+}
+
+.details-section h3 .collapse-icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    transition: transform 0.2s;
+}
+
+.details-section h3.collapsed .collapse-icon {
+    transform: rotate(-90deg);
+}
+
+.details-content {
+    padding: 15px 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.details-section.animate-in .details-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+}
+
+/* Preserve the existing toggle functionality */
+.details-content.hidden {
+    display: none !important;
+    opacity: 0 !important;
+    transform: translateY(10px) !important;
+}
+
+.section-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+}
+
+.dependency-list, .project-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dependency-list li, .project-list li {
+    padding: 6px 8px;
+    background-color: var(--vscode-input-background);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 4px;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+}
+
+/* Style for individual dependency items (no background/border) */
+.dependency-list .dependency-item {
+    padding: 2px 0;
+    background: none !important;
+    border: none !important;
+    margin-bottom: 2px;
+    font-size: 13px;
+    color: var(--vscode-foreground);
+}
+
+.dependency-list li:last-child, .project-list li:last-child {
+    margin-bottom: 0;
+}
+
+/* Dependency framework header styling - collapsible */
+.dependency-framework-header {
+    display: flex !important;
+    align-items: center;
+    gap: 6px !important;
+    font-weight: 600 !important;
+    color: var(--vscode-foreground) !important;
+    margin: 8px 0 4px 0 !important;
+    background: none !important;
+    border: none !important;
+    border-bottom: 1px solid var(--vscode-widget-border) !important;
+    border-radius: 0 !important;
+    padding: 4px 0 !important;
+    font-size: 14px !important;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    user-select: none;
+    text-align: left !important;
+    justify-content: flex-start !important;
+}
+
+.dependency-framework-header:hover {
+    color: var(--vscode-focusBorder) !important;
+}
+
+.dependency-framework-header .framework-chevron {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    flex-shrink: 0;
+    margin-right: 0;
+}
+
+.dependency-framework-header.collapsed .framework-chevron {
+    transform: rotate(-90deg);
+}
+
+/* Framework name for groups with no dependencies (non-collapsible) */
+.dependency-framework-name {
+    font-weight: 600 !important;
+    color: var(--vscode-foreground) !important;
+    margin: 8px 0 4px 0 !important;
+    background: none !important;
+    border: none !important;
+    border-bottom: 1px solid var(--vscode-widget-border) !important;
+    border-radius: 0 !important;
+    padding: 4px 0 !important;
+    font-size: 14px !important;
+    text-align: left !important;    list-style: none !important;
+}
+
+/* Framework reference styling */
+.dependency-item.framework-reference {
+    color: var(--vscode-textLink-foreground) !important;
+    font-style: italic;
+}
+
+.dependency-framework-content {
+    margin-left: 16px;
+    overflow: hidden;
+    background: none !important;
+    border: none !important;
+}
+
+.dependency-framework-content.collapsed {
+    max-height: 0 !important;
+    opacity: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* Project icon styling */
+.project-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.project-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Theme-aware icon switching */
+.project-icon-light {
+    display: block;
+}
+
+.project-icon-dark {
+    display: none;
+}
+
+/* Dark theme - switch icons */
+body[data-vscode-theme-kind="vscode-dark"] .project-icon-light,
+body[data-vscode-theme-kind="vscode-high-contrast"] .project-icon-light {
+    display: none;
+}
+
+body[data-vscode-theme-kind="vscode-dark"] .project-icon-dark,
+body[data-vscode-theme-kind="vscode-high-contrast"] .project-icon-dark {
+    display: block;
+}
+
+/* Project icon fallback for SVG icons */
+.project-icon svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--vscode-foreground);
+}
+
+.confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.confirm-dialog {
+    background-color: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 4px;
+    padding: 20px;
+    min-width: 300px;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.confirm-dialog p {
+    margin-bottom: 20px;
+    color: var(--vscode-editor-foreground);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.confirm-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.confirm-buttons button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 3px;
+    font-size: 13px;
+    cursor: pointer;
+    min-width: 70px;
+}
+
+.btn-primary {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+}
+
+.btn-primary:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.btn-secondary {
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+}
+
+.btn-secondary:hover {
+    background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
+.btn-primary:focus,
+.btn-secondary:focus {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: 2px;
+}
+
+/* Tab Navigation Styles */
+.tab-navigation {
+    display: flex;
+    border-bottom: 1px solid var(--vscode-widget-border);
+    margin-bottom: 0;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    color: var(--vscode-descriptionForeground);
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    flex: 1;
+    justify-content: center;
+}
+
+.tab-button:hover {
+    color: var(--vscode-editor-foreground);
+    background-color: var(--vscode-list-hoverBackground);
+}
+
+.tab-button.active {
+    color: var(--vscode-focusBorder);
+    border-bottom-color: var(--vscode-focusBorder);
+    background-color: var(--vscode-tab-activeBackground);
+}
+
+/* Dark theme specific overrides for better visibility */
+body[data-vscode-theme-kind="vscode-dark"] .tab-button.active {
+    color: var(--vscode-list-activeSelectionForeground);
+    border-bottom: 1px solid var(--vscode-list-activeSelectionForeground);
+    font-weight: 500;
+}
+
+.tab-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.tab-content {
+    display: none;
+    flex: 1;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.tab-content.active {
+    display: flex;
+    animation: tabSlideIn 0.3s ease-out;
+    overflow-x: hidden;
+}
+
+/* Tab slide-in animation */
+@keyframes tabSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Tab switching preparation - reset package animations */
+.tab-content:not(.active) .package-item,
+.tab-content:not(.active) .nuget-package-item {
+    opacity: 1;
+    transform: translateX(0);
+    animation: none;
+}
+
+/* Fade out effect for inactive tabs */
+.tab-content {
+    opacity: 0;
+    transition: opacity 0.15s ease-out;
+}
+
+.tab-content.active {
+    opacity: 1;
+}
+
+/* Ensure package list has proper scrolling in both tabs */
+#installedContent.active,
+#browseContent.active {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#installedContent .package-list,
+#browseContent .package-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Package item slide-in animations */
+.tab-content.active .package-item,
+.tab-content.active .nuget-package-item {
+    animation: packageSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+/* Skip animations during in-place version updates */
+.tab-content.active.skip-animations .package-item,
+.tab-content.active.skip-animations .nuget-package-item {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+.tab-content.active .package-item:nth-child(1),
+.tab-content.active .nuget-package-item:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.tab-content.active .package-item:nth-child(2),
+.tab-content.active .nuget-package-item:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.tab-content.active .package-item:nth-child(3),
+.tab-content.active .nuget-package-item:nth-child(3) {
+    animation-delay: 0.11s;
+}
+
+.tab-content.active .package-item:nth-child(4),
+.tab-content.active .nuget-package-item:nth-child(4) {
+    animation-delay: 0.14s;
+}
+
+.tab-content.active .package-item:nth-child(5),
+.tab-content.active .nuget-package-item:nth-child(5) {
+    animation-delay: 0.17s;
+}
+
+.tab-content.active .package-item:nth-child(6),
+.tab-content.active .nuget-package-item:nth-child(6) {
+    animation-delay: 0.2s;
+}
+
+.tab-content.active .package-item:nth-child(7),
+.tab-content.active .nuget-package-item:nth-child(7) {
+    animation-delay: 0.23s;
+}
+
+.tab-content.active .package-item:nth-child(8),
+.tab-content.active .nuget-package-item:nth-child(8) {
+    animation-delay: 0.26s;
+}
+
+.tab-content.active .package-item:nth-child(n+9),
+.tab-content.active .nuget-package-item:nth-child(n+9) {
+    animation-delay: 0.29s;
+}
+
+@keyframes packageSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    60% {
+        opacity: 0.8;
+        transform: translateX(-2px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Empty State Styles */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--vscode-descriptionForeground);
+}
+
+.empty-state-svg {
+    width: 48px;
+    height: 48px;
+    stroke: var(--vscode-editor-foreground);
+    margin-bottom: 16px;
+}
+
+.empty-state-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--vscode-editor-foreground);
+}
+
+.empty-state-description {
+    font-size: 14px;
+    color: var(--vscode-descriptionForeground);
+    max-width: 300px;
+    line-height: 1.4;
+}
+
+/* Settings Modal Styles */
+.settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.settings-overlay.show {
+    display: flex; /* Show when .show class is added */
+}
+
+.settings-dialog {
+    background-color: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 8px;
+    min-width: 500px;
+    max-width: 700px;
+    max-height: 80vh;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.settings-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--vscode-editor-foreground);
+}
+
+.close-btn {
+    padding: 4px;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+.close-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.settings-content {
+    flex: 1;
+    padding: 20px 24px;
+    overflow-y: auto;
+}
+
+.settings-description {
+    margin: 0 0 20px 0;
+    color: var(--vscode-descriptionForeground);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.feed-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.feed-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background-color: var(--vscode-input-background);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: background-color 0.2s;
+}
+
+.feed-item:hover {
+    background-color: var(--vscode-list-hoverBackground);
+}
+
+.feed-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.feed-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--vscode-editor-foreground);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.feed-name span {
+    flex: 1;
+}
+
+.machine-wide-badge {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--vscode-charts-orange);
+    background-color: var(--vscode-badge-background);
+    padding: 2px 6px;
+    border-radius: 10px;
+    text-transform: uppercase;
+}
+
+.feed-url {
+    font-size: 12px;
+    color: var(--vscode-descriptionForeground);
+    word-break: break-all;
+}
+
+.feed-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 16px;
+    flex-shrink: 0;
+}
+
+.feed-toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--vscode-input-border);
+    transition: background-color 0.3s ease;
+    border-radius: 24px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--vscode-input-background);
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background-color: var(--vscode-button-background);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+    background-color: var(--vscode-button-foreground);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Hover effects */
+.toggle-switch:hover .toggle-slider {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(14, 99, 156, 0.2);
+}
+
+.toggle-switch:hover input:checked + .toggle-slider {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 0 0 2px rgba(14, 99, 156, 0.3);
+}
+
+.toggle-switch input:disabled + .toggle-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.toggle-switch input:disabled:hover + .toggle-slider {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Focus state for accessibility */
+.toggle-switch input:focus + .toggle-slider {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: 2px;
+}
+
+.feed-status-text {
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 60px;
+    transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feed-enabled {
+    color: var(--vscode-charts-green);
+}
+
+.feed-disabled {
+    color: var(--vscode-descriptionForeground);
+}
+
+.settings-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--vscode-panel-border);
+    background-color: var(--vscode-editor-background);
+}
+
+.settings-footer-right {
+    display: flex;
+    gap: 12px;
+}
+
+.settings-footer button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    min-width: 80px;
+    transition: background-color 0.2s;
+}
+
+/* Save Changes Animation */
+.save-changes-pending {
+    position: relative;
+    overflow: hidden;
+}
+
+.save-changes-pending::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: saveProgress 1.5s infinite;
+}
+
+@keyframes saveProgress {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Responsive settings modal */
+@media (max-width: 768px) {
+    .settings-dialog {
+        min-width: 90%;
+        max-width: 90%;
+        margin: 20px;
+    }
+    
+    .settings-header,
+    .settings-content,
+    .settings-footer {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    
+    .feed-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .feed-status {
+        margin-left: 0;
+        align-self: flex-end;
+    }
+}
+
+/* Consistent spinner for inline loading states */
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--vscode-widget-border);
+    border-top: 3px solid var(--vscode-button-background);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+
+/* Inline loading spinner for smaller loading states */
+.inline-loading-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--vscode-widget-border);
+    border-top: 2px solid var(--vscode-button-background);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Package Details Layout Styles */
+.package-details-header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--vscode-widget-border);
+}
+
+.package-title-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.package-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.package-icon-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.package-icon svg {
+    width: 48px;
+    height: 48px;
+}
+
+.package-name h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--vscode-foreground);
+}
+
+.package-info-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.info-item {
+    font-size: 14px;
+    color: var(--vscode-descriptionForeground);
+}
+
+.info-item strong {
+    color: var(--vscode-foreground);
+    margin-right: 4px;
+}
+
+.package-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.version-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.version-control label {
+    font-size: 14px;
+    color: var(--vscode-foreground);
+}
+
+.version-control select {
+    padding: 6px 12px;
+    background-color: var(--vscode-dropdown-background);
+    color: var(--vscode-dropdown-foreground);
+    border: 1px solid var(--vscode-dropdown-border);
+    border-radius: 4px;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.package-information-section {
+    padding: 20px;
+    border-bottom: 1px solid var(--vscode-widget-border);
+}
+
+.package-information-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    color: var(--vscode-foreground);
+}
+
+.description-section {
+    margin-bottom: 16px;
+}
+
+.description-section p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--vscode-foreground);
+    margin: 0;
+}
+
+.package-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.package-links a {
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.package-links a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments for package details */
+@media (max-width: 768px) {
+    .package-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .package-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .package-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .action-buttons {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+/* Mobile responsive layout - slide-in overlay for package details */
+@media (max-width: 900px) {
+    .main-content {
+        position: relative;
+    }
+    
+    /* Hide resize divider on mobile */
+    .resize-divider {
+        display: none;
+    }
+    
+    /* Left panel takes full width by default */
+    .left-panel {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    
+    /* Right panel hidden by default, slides in as overlay */
+    .right-panel {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        z-index: 1000;
+        background-color: var(--vscode-editor-background);
+        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: -4px 0 12px rgba(0, 0, 0, 0.3);
+        padding: 20px;
+        padding-top: 60px; /* Space for close button */
+        overflow-y: auto;
+    }
+    
+    /* Show right panel when active */
+    .right-panel.mobile-active {
+        right: 0;
+    }
+    
+    /* Close button for mobile - hidden by default */
+    .close-panel-btn {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        background-color: transparent;
+        color: var(--vscode-foreground);
+        border: none;
+        cursor: pointer;
+        z-index: 1001;
+        transition: all 0.2s;
+    }
+    
+    /* Show close button only when panel is active */
+    .right-panel.mobile-active ~ .close-panel-btn,
+    .right-panel.mobile-active .close-panel-btn {
+        display: flex;
+    }
+    
+    .close-panel-btn:hover {
+        color: var(--vscode-errorForeground);
+        transform: scale(1.15);
+    }
+    
+    .close-panel-btn svg {
+        width: 24px;
+        height: 24px;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    }
+    
+    /* Backdrop overlay */
+    .right-panel::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+        z-index: -1;
+    }
+    
+    .right-panel.mobile-active::before {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* Hide close button on desktop */
+@media (min-width: 901px) {
+    .close-panel-btn {
+        display: none;
+    }
+}
+
+.verified-author {
+    font-size: 12px;
+    color: var(--vscode-charts-green);
+    font-weight: 500;
+}
+
+/* Load more container for infinite scrolling */
+.load-more-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: var(--vscode-descriptionForeground);
+    font-size: 14px;
+    gap: 8px;
+    text-align: center;
+}
+
+.load-more-container .inline-loading-spinner {
+    margin-right: 0; /* Remove any right margin to ensure proper centering */
+}
+
+/* Update indicator styles */
+.update-indicator {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background: #22c55e !important;
+    border-radius: 50%;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--vscode-editor-background);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.update-indicator svg {
+    width: 12px !important;
+    height: 12px !important;
+    fill: white !important;
+    stroke: white !important;
+}
+
+/* Ensure parent container has relative positioning for absolute positioning */
+.package-icon {
+    position: relative;
+}
+
+/* Left panel loading overlay styles */
+.left-panel-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border-radius: 8px;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.left-panel-loading-overlay .loading-content {
+    background-color: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    min-width: 200px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.left-panel-loading-overlay .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--vscode-widget-border);
+    border-top: 4px solid var(--vscode-button-background);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+/* Style for "no dependencies" placeholder entries */
+.dependency-item.no-dependencies {
+    color: var(--vscode-descriptionForeground) !important;
+    font-style: italic !important;
+    opacity: 0.8;
+}
+
+.dependency-framework-content.collapsed {
+    max-height: 0 !important;
+    opacity: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* Custom Dropdown Styles */
+/* Fix for selected item contrast in light themes */
+.package-item.selected .package-name,
+.package-item.selected .package-version,
+.package-item.selected .package-source,
+.package-item.selected .package-feed-indicator,
+.package-item.selected .nuget-package-title,
+.package-item.selected .nuget-package-description,
+.package-item.selected .nuget-package-meta,
+.package-item.selected .nuget-package-meta span,
+.package-item.selected .stat-icon,
+.package-item.selected .package-icon svg,
+.nuget-package-item.selected .package-name,
+.nuget-package-item.selected .package-version,
+.nuget-package-item.selected .package-source,
+.nuget-package-item.selected .package-feed-indicator,
+.nuget-package-item.selected .nuget-package-title,
+.nuget-package-item.selected .nuget-package-description,
+.nuget-package-item.selected .nuget-package-meta,
+.nuget-package-item.selected .nuget-package-meta span,
+.nuget-package-item.selected .stat-icon,
+.nuget-package-item.selected .package-icon svg {
+    color: var(--vscode-list-activeSelectionForeground) !important;
+    stroke: var(--vscode-list-activeSelectionForeground) !important;
+}
+
+/* Override for light theme - use normal text colors */
+body[data-vscode-theme-kind="vscode-light"] .package-item.selected .package-name,
+body[data-vscode-theme-kind="vscode-light"] .package-item.selected .package-version,
+body[data-vscode-theme-kind="vscode-light"] .package-item.selected .package-source,
+body[data-vscode-theme-kind="vscode-light"] .package-item.selected .package-feed-indicator,
+body[data-vscode-theme-kind="vscode-light"] .package-item.selected .nuget-package-title,
+body[data-vscode-theme-kind="vscode-light"] .package-item.selected .nuget-package-description,
+body[data-vscode-theme-kind="vscode-light"] .package-item.selected .nuget-package-meta,
+body[data-vscode-theme-kind="vscode-light"] .package-item.selected .nuget-package-meta span,
+body[data-vscode-theme-kind="vscode-light"] .package-item.selected .stat-icon,
+body[data-vscode-theme-kind="vscode-light"] .package-item.selected .package-icon svg,
+body[data-vscode-theme-kind="vscode-light"] .nuget-package-item.selected .package-name,
+body[data-vscode-theme-kind="vscode-light"] .nuget-package-item.selected .package-version,
+body[data-vscode-theme-kind="vscode-light"] .nuget-package-item.selected .package-source,
+body[data-vscode-theme-kind="vscode-light"] .nuget-package-item.selected .package-feed-indicator,
+body[data-vscode-theme-kind="vscode-light"] .nuget-package-item.selected .nuget-package-title,
+body[data-vscode-theme-kind="vscode-light"] .nuget-package-item.selected .nuget-package-description,
+body[data-vscode-theme-kind="vscode-light"] .nuget-package-item.selected .nuget-package-meta,
+body[data-vscode-theme-kind="vscode-light"] .nuget-package-item.selected .nuget-package-meta span,
+body[data-vscode-theme-kind="vscode-light"] .nuget-package-item.selected .stat-icon,
+body[data-vscode-theme-kind="vscode-light"] .nuget-package-item.selected .package-icon svg {
+    color: var(--vscode-editor-foreground) !important;
+    stroke: var(--vscode-editor-foreground) !important;
+}
+
+.package-item.selected .package-icon svg,
+.nuget-package-item.selected .package-icon svg {
+    stroke: var(--vscode-list-activeSelectionForeground) !important;
+}

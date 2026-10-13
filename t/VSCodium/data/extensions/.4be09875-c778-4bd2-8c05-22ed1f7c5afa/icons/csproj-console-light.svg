@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-folder-api">
+  <!-- Modified Folder Icon (dark gray for light theme, thinner, no bottom/right sides) -->
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>  <!-- Only top, left, and tab parts of folder -->
+  <path stroke="#374151" stroke-width="1" d="M5 4h4l3 3h" />
+  <path stroke="#374151" stroke-width="1" d="M5 4a2 2 0 0 0 -2 2v11" />
+  <!-- Slight bottom side -->
+  <path stroke="#374151" stroke-width="1" d="M3 17h1.8" />
+
+  <!-- Terminal Icon: dark green for better contrast on light background + adjusted prompt -->
+  <g transform="translate(3.4, 6) scale(0.95, 0.85)">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/> 
+    <path d="M8 8l3 3l-3 3" stroke="#059669" stroke-width="2.2"/> <!-- Chevron -->
+    <path d="M14 14h3" stroke="#059669" stroke-width="2.2"/>       <!-- Underscore moved up -->
+    <path d="M3 4a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" stroke="#059669" stroke-width="2"/> <!-- Terminal Box -->
+  </g>
+</svg>
